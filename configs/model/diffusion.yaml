@@ -1,0 +1,22 @@
+# Mixed diffusion model (D3PM + DDPM)
+T: 1000  # total diffusion steps (change to 200 only when retraining from scratch)
+
+# Noise schedule for continuous time steps (DDPM)
+beta_schedule: cosine  # linear | cosine
+beta_start: 0.0001
+beta_end: 0.02
+
+# Classifier-Free Guidance
+guidance_scale: 3.0    # w_1: Hamiltonian condition guidance
+pinn_guidance_scale: 2.0  # w_2: PINN fidelity guidance
+p_cond_drop: 0.1  # probability of dropping condition during training
+
+# D3PM transition matrix type for discrete components
+transition_matrix: uniform  # uniform | absorbing | commutation_guided
+
+# Denoising network
+condition_dim: 256      # after projection from GNN 512-dim output
+time_embed_dim: 128
+grouping_transformer_layers: 4
+order_transformer_layers: 2
+timestep_mlp_layers: 3

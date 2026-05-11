@@ -1,0 +1,54 @@
+{
+  "overall_status": false,
+  "h2": {
+    "dataset": "H2",
+    "path": "experiments/benchmark_results/h2_bond_scan.json",
+    "total_rows": 26,
+    "checked": 26,
+    "passed": 22,
+    "skipped": 0,
+    "failed": 4,
+    "failures": [
+      {
+        "dataset": "H2",
+        "index": 7,
+        "bond_length": 1.2,
+        "ours": 0.9984323526971544,
+        "baseline": 1.0
+      },
+      {
+        "dataset": "H2",
+        "index": 14,
+        "bond_length": 1.9,
+        "ours": 0.9995749589401076,
+        "baseline": 1.0
+      },
+      {
+        "dataset": "H2",
+        "index": 18,
+        "bond_length": 2.3,
+        "ours": 0.9997879636008472,
+        "baseline": 1.0
+      },
+      {
+        "dataset": "H2",
+        "index": 21,
+        "bond_length": 2.6,
+        "ours": 0.9991498706466371,
+        "baseline": 1.0
+      }
+    ],
+    "status": false
+  },
+  "lih": {
+    "dataset": "LiH",
+    "path": "experiments/benchmark_results/lih_bond_scan.json",
+    "total_rows": 31,
+    "checked": 31,
+    "passed": 31,
+    "skipped": 0,
+    "failed": 0,
+    "failures": [],
+    "status": true
+  }
+}

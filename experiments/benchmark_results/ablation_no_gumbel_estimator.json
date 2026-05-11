@@ -1,0 +1,753 @@
+{
+  "config": {
+    "model": {
+      "n_fourier_features": 256,
+      "fourier_sigma": null,
+      "hidden_dim": 256,
+      "n_hidden_layers": 3,
+      "activation": "tanh",
+      "use_layer_norm": true,
+      "norm_penalty_weight": 0.1,
+      "output_real_imag": true,
+      "init_std": 0.02,
+      "n_layers": 4,
+      "output_dim": 512,
+      "pooling": "attention",
+      "node_feat_dim": 16,
+      "edge_feat_dim": 3,
+      "message_hidden_dim": 256,
+      "update_hidden_dim": 256,
+      "dropout": 0.1,
+      "T": 1000,
+      "beta_schedule": "cosine",
+      "beta_start": 0.0001,
+      "beta_end": 0.02,
+      "guidance_scale": 3.0,
+      "pinn_guidance_scale": 2.0,
+      "p_cond_drop": 0.1,
+      "transition_matrix": "uniform",
+      "condition_dim": 256,
+      "time_embed_dim": 128,
+      "grouping_transformer_layers": 4,
+      "order_transformer_layers": 2,
+      "timestep_mlp_layers": 3
+    },
+    "training": {
+      "n_samples": 500,
+      "n_qubits_distribution": {
+        "4": 0.6,
+        "6": 0.3,
+        "8": 0.1
+      },
+      "n_qubits": null,
+      "J_range": [
+        0.5,
+        2.0
+      ],
+      "h_range": [
+        0.1,
+        0.5
+      ],
+      "t_final_range": [
+        2.0,
+        2.0
+      ],
+      "n_groups_max": 8,
+      "order_probs": [
+        0.2,
+        0.6,
+        0.2
+      ],
+      "n_workers": 4,
+      "chunk_size": 100,
+      "output_path": "data/processed/dataset_tfim.h5",
+      "random_seed": 42,
+      "optimizer": {
+        "name": "adamw",
+        "lr": 0.0001,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "weight_decay": 0.01
+      },
+      "scheduler": {
+        "name": "cosine_warm_restarts",
+        "T_0": 500,
+        "T_mult": 2
+      },
+      "max_epochs": 500,
+      "n_collocation_points": 1000,
+      "early_stop_patience": 10,
+      "early_stop_threshold": 1e-05,
+      "loss_weights": {
+        "pde": 1.0,
+        "ic": 10.0,
+        "circuit": 5.0,
+        "grouping": 1.0,
+        "timesteps": 0.5,
+        "orders": 0.3
+      },
+      "warmstart_steps": 200,
+      "log_interval": 10,
+      "checkpoint_dir": "experiments/closed_loop_checkpoints/",
+      "ema_decay": 0.9999,
+      "batch_size": 128,
+      "train_split": 0.9,
+      "val_split": 0.1,
+      "augment": true,
+      "gnn_pretrain_epochs": 200,
+      "gnn_pretrain_lr": 0.0003,
+      "gnn_pretrain_log_interval": 20,
+      "gnn_pretrain_use_strategy_features": true,
+      "save_interval": 10,
+      "wandb_project": "pinn-trotter",
+      "device": "auto",
+      "n_iterations": 100,
+      "n_samples_per_iter": 32,
+      "baseline_ema": 0.9,
+      "policy_lr": 1e-05,
+      "lambda_weights": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5,
+        1.0
+      ],
+      "pareto_ref_point": [
+        0.0,
+        10000
+      ],
+      "checkpoint_interval": 100,
+      "max_checkpoints_keep": 3
+    },
+    "experiment": {
+      "name": "tfim_4q_poc",
+      "hamiltonian": "tfim",
+      "n_qubits": 4,
+      "J": 1.0,
+      "h": 0.5,
+      "boundary": "periodic",
+      "t_total": 2.0
+    },
+    "benchmark": {
+      "model_ckpt": "experiments/closed_loop_checkpoints/ckpt_iter_000099_fid0.0149_depth0008.pt",
+      "device": "cuda",
+      "n_test_hamiltonians": 100,
+      "n_seeds": 5,
+      "seed": 42,
+      "guidance_scale": 3.0,
+      "n_groups_max": 8,
+      "n_trials_latency": 10,
+      "fidelity_only": false,
+      "use_wandb": false,
+      "output_filename": "ablation_no_gumbel_estimator.json",
+      "methods": "ours,qiskit_4th,cirq,tket,pennylane",
+      "baseline_n_steps": 5,
+      "h_min": 0.1,
+      "h_max": 0.5
+    }
+  },
+  "summary": {
+    "methods": {
+      "ours": {
+        "n_samples": 500,
+        "fidelity": {
+          "mean": 0.2964815857390543,
+          "std": 0.2597947557039765
+        },
+        "depth": {
+          "mean": 21.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 8.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 5.2231242067995485,
+          "std": 0.169596647516332
+        }
+      },
+      "qiskit_4th": {
+        "n_samples": 500,
+        "fidelity": {
+          "mean": 0.9999949217468367,
+          "std": 9.435195455722805e-06
+        },
+        "depth": {
+          "mean": 202.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 72.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 2.3698439763393255e-05,
+          "std": 7.209763101035126e-07
+        }
+      },
+      "cirq": {
+        "n_samples": 500,
+        "fidelity": {
+          "mean": 0.9627967473400281,
+          "std": 0.02559691582646325
+        },
+        "depth": {
+          "mean": 202.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 72.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 0.08053993823967176,
+          "std": 0.002645916246658061
+        }
+      },
+      "tket": {
+        "n_samples": 500,
+        "fidelity": {
+          "mean": 0.9627967473400281,
+          "std": 0.02559691582646323
+        },
+        "depth": {
+          "mean": 202.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 72.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 0.007693870038492605,
+          "std": 0.00012277285387376488
+        }
+      },
+      "pennylane": {
+        "n_samples": 500,
+        "fidelity": {
+          "mean": 0.9543269165339577,
+          "std": 0.05265596074841335
+        },
+        "depth": {
+          "mean": 202.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 72.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 0.04093150311877253,
+          "std": 0.0029525895084017064
+        }
+      }
+    }
+  },
+  "per_seed": [
+    {
+      "seed": 42,
+      "methods": {
+        "ours": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.28221284338517,
+            "std": 0.2563593545588222
+          },
+          "depth": {
+            "mean": 21.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 8.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 5.416478953698243,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.999995125737683,
+            "std": 9.501167265260681e-06
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 2.479700051480904e-05,
+            "std": 0.0
+          }
+        },
+        "cirq": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9621679226300031,
+            "std": 0.026081254075808823
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.07833558269921923,
+            "std": 0.0
+          }
+        },
+        "tket": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9621679226300032,
+            "std": 0.02608125407580879
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.00792570459889248,
+            "std": 0.0
+          }
+        },
+        "pennylane": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9494755250490783,
+            "std": 0.054717450823810784
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.04080574999679811,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    {
+      "seed": 43,
+      "methods": {
+        "ours": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.3035439305682283,
+            "std": 0.25886580883584215
+          },
+          "depth": {
+            "mean": 21.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 8.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 5.43972736600117,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9999939980785132,
+            "std": 1.0626569117785172e-05
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 2.3919397790450603e-05,
+            "std": 0.0
+          }
+        },
+        "cirq": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.962613732178014,
+            "std": 0.026484436973737834
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.07646106210013386,
+            "std": 0.0
+          }
+        },
+        "tket": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9626137321780139,
+            "std": 0.026484436973737747
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.007580770898493938,
+            "std": 0.0
+          }
+        },
+        "pennylane": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.956764486829855,
+            "std": 0.05046875908087603
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.0388447905992507,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    {
+      "seed": 44,
+      "methods": {
+        "ours": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.28316659285936974,
+            "std": 0.2543107133577485
+          },
+          "depth": {
+            "mean": 21.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 8.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 5.096553983203194,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9999943235487457,
+            "std": 1.0045644810383635e-05
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 2.3047201102599503e-05,
+            "std": 0.0
+          }
+        },
+        "cirq": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9606319293613709,
+            "std": 0.027020928015715623
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.08303978839976481,
+            "std": 0.0
+          }
+        },
+        "tket": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.960631929361371,
+            "std": 0.027020928015715696
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.007671890901110601,
+            "std": 0.0
+          }
+        },
+        "pennylane": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9477228500729185,
+            "std": 0.062041996170600626
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.04583618310134625,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    {
+      "seed": 45,
+      "methods": {
+        "ours": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.2845746589754575,
+            "std": 0.2601772351739111
+          },
+          "depth": {
+            "mean": 21.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 8.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 5.122282640397316,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9999953751776143,
+            "std": 8.451116966467796e-06
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 2.2774399258196355e-05,
+            "std": 0.0
+          }
+        },
+        "cirq": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.961269785610049,
+            "std": 0.0242964183134836
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.08265714100125479,
+            "std": 0.0
+          }
+        },
+        "tket": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.961269785610049,
+            "std": 0.02429641831348355
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.007602694597153459,
+            "std": 0.0
+          }
+        },
+        "pennylane": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9537741134206854,
+            "std": 0.055926675298297215
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.03718343359651044,
+            "std": 0.0
+          }
+        }
+      }
+    },
+    {
+      "seed": 46,
+      "methods": {
+        "ours": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.3289099029070459,
+            "std": 0.2659787280095733
+          },
+          "depth": {
+            "mean": 21.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 8.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 5.040578090697818,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9999957861916274,
+            "std": 8.208323673196066e-06
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 2.3954200150910766e-05,
+            "std": 0.0
+          }
+        },
+        "cirq": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9673003669207033,
+            "std": 0.02337043508494712
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.0822061169979861,
+            "std": 0.0
+          }
+        },
+        "tket": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9673003669207033,
+            "std": 0.023370435084947107
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.007688289196812548,
+            "std": 0.0
+          }
+        },
+        "pennylane": {
+          "n_samples": 100,
+          "fidelity": {
+            "mean": 0.9638976072972517,
+            "std": 0.03435343490891583
+          },
+          "depth": {
+            "mean": 202.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.041987358299957124,
+            "std": 0.0
+          }
+        }
+      }
+    }
+  ]
+}

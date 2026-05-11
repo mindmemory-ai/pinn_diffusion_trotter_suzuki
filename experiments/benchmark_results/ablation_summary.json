@@ -1,0 +1,22 @@
+{
+  "profiles": [
+    "full_model",
+    "no_cfg"
+  ],
+  "train_iters": 1,
+  "n_test_hamiltonians": 1,
+  "n_seeds": 1,
+  "latency_trials": 1,
+  "results": {
+    "full_model": {
+      "note": "Reference configuration without ablation.",
+      "status": "dry_run",
+      "output_file": "ablation_full_model.json"
+    },
+    "no_cfg": {
+      "note": "Disable classifier-free guidance by removing condition dropout.",
+      "status": "dry_run",
+      "output_file": "ablation_no_cfg.json"
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "config": {
+    "basis": "sto-3g",
+    "bond_start": 0.5,
+    "bond_end": 3.0,
+    "bond_step": 0.1,
+    "t_total": 2.0,
+    "n_iterations": 10,
+    "batch_size": 2,
+    "max_groups": 8,
+    "guidance_scale": 2.0,
+    "lambda_weight": 0.1,
+    "device": "cuda",
+    "max_bonds": 1,
+    "gnn_checkpoint": null,
+    "diffusion_checkpoint": null,
+    "output": "experiments/benchmark_results/h2_bond_scan_smoke.json"
+  },
+  "results": [
+    {
+      "bond_length": 0.5,
+      "n_qubits": 4,
+      "n_terms": 15,
+      "history": {
+        "mean_fidelity": [
+          0.9997785473289172,
+          0.9990125747917851,
+          0.9986895678927568,
+          0.9998395215878904,
+          0.9950583449032377,
+          0.9994187481883384,
+          0.9983529738159139,
+          0.9995776996901904,
+          0.9990693521648517,
+          0.9985759704775288
+        ],
+        "mean_depth": [
+          34.0,
+          19.5,
+          20.0,
+          15.5,
+          15.0,
+          15.0,
+          15.0,
+          15.0,
+          15.0,
+          15.0
+        ],
+        "pareto_hv": [
+          976.8625980027081,
+          984.8592242643978,
+          984.8605275116577,
+          984.904497246787,
+          984.904497246787,
+          985.0,
+          985.0,
+          985.0,
+          985.0,
+          985.0
+        ]
+      },
+      "ours": {
+        "fidelity": 1.0,
+        "depth": 64
+      },
+      "qiskit_4th": {
+        "fidelity": 1.0,
+        "depth": 615
+      }
+    }
+  ]
+}

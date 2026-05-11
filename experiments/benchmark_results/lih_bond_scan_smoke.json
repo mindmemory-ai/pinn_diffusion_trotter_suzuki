@@ -1,0 +1,72 @@
+{
+  "config": {
+    "basis": "sto-3g",
+    "bond_start": 1.0,
+    "bond_end": 4.0,
+    "bond_step": 0.1,
+    "t_total": 2.0,
+    "n_iterations": 10,
+    "batch_size": 2,
+    "max_groups": 8,
+    "guidance_scale": 2.0,
+    "lambda_weight": 0.1,
+    "device": "cuda",
+    "max_bonds": 1,
+    "gnn_checkpoint": null,
+    "diffusion_checkpoint": null,
+    "output": "experiments/benchmark_results/lih_bond_scan_smoke.json"
+  },
+  "results": [
+    {
+      "bond_length": 1.0,
+      "n_qubits": 12,
+      "n_terms": 631,
+      "history": {
+        "mean_proxy_fidelity": [
+          0.9409646749553825,
+          0.9410603571067075,
+          0.952910948765076,
+          0.9585901371331516,
+          0.9655871064284764,
+          0.9689425081171354,
+          0.9689425081171354,
+          0.9689425081171354,
+          0.9689425081171354,
+          0.9689425081171354
+        ],
+        "mean_depth": [
+          1217.0,
+          1215.0,
+          965.5,
+          847.0,
+          700.5,
+          631.0,
+          631.0,
+          631.0,
+          631.0,
+          631.0
+        ],
+        "pareto_hv": [
+          0.0,
+          0.0,
+          207.6966096994662,
+          357.539785495223,
+          357.539785495223,
+          357.539785495223,
+          357.539785495223,
+          357.539785495223,
+          357.539785495223,
+          357.539785495223
+        ]
+      },
+      "ours": {
+        "proxy_fidelity": 0.9689425081171354,
+        "depth": 631
+      },
+      "qiskit_4th": {
+        "proxy_fidelity": 0.7296064498544915,
+        "depth": 6305
+      }
+    }
+  ]
+}

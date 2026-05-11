@@ -1,0 +1,25 @@
+{
+  "overall_status": true,
+  "h2": {
+    "dataset": "H2",
+    "path": "experiments/benchmark_results/h2_bond_scan_smoke.json",
+    "total_rows": 1,
+    "checked": 1,
+    "passed": 1,
+    "skipped": 0,
+    "failed": 0,
+    "failures": [],
+    "status": true
+  },
+  "lih": {
+    "dataset": "LiH",
+    "path": "experiments/benchmark_results/lih_bond_scan_smoke.json",
+    "total_rows": 1,
+    "checked": 1,
+    "passed": 1,
+    "skipped": 0,
+    "failed": 0,
+    "failures": [],
+    "status": true
+  }
+}

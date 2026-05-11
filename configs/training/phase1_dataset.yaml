@@ -1,0 +1,27 @@
+# Phase 1 dataset generation parameters
+n_samples: 10000
+
+# Hamiltonian distribution
+n_qubits_distribution:
+  4: 0.6
+  6: 0.3
+  8: 0.1
+# Set n_qubits to an integer to restrict all samples to a single qubit count
+n_qubits: null
+
+# Parameter sampling
+J_range: [0.5, 2.0]    # match benchmark sampling range exactly
+h_range: [0.1, 0.5]   # LogUniform — restricted to weak-field regime (5-D-2 benchmark range)
+t_final_range: [2.0, 2.0]  # fixed at benchmark value — eliminates t_final label noise entirely
+
+# Strategy sampling
+n_groups_max: 8
+order_probs: [0.2, 0.6, 0.2]  # probs for order 1, 2, 4
+
+# Parallelism
+n_workers: 8
+chunk_size: 100
+
+# Output
+output_path: data/processed/dataset_tfim.h5
+random_seed: 42

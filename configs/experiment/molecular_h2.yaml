@@ -1,0 +1,20 @@
+# @package _global_
+defaults:
+  - /model: [pinn, gnn_encoder, diffusion]
+  - /training: [phase2_pinn_pretrain, phase3_joint_train, phase4_closed_loop]
+
+# H2 molecular Hamiltonian experiment
+experiment:
+  name: molecular_h2
+  hamiltonian: h2
+  bond_length: 0.74  # Angstrom, equilibrium
+  basis: sto-3g
+  t_total: 3.0
+
+# H2 specific settings (smaller system, ~4 qubits after JW mapping)
+training:
+  phase2_pinn_pretrain:
+    max_epochs: 1000
+  phase4_closed_loop:
+    n_iterations: 500
+    lambda_weights: [0.0, 0.05, 0.1, 0.5]

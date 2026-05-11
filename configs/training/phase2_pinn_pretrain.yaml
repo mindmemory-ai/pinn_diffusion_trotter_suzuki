@@ -1,0 +1,32 @@
+# Phase 2: PINN pretraining per Hamiltonian
+optimizer:
+  name: adam
+  lr: 5.0e-4
+  betas: [0.9, 0.999]
+  weight_decay: 0.0
+
+scheduler:
+  name: cosine_warm_restarts
+  T_0: 500
+  T_mult: 2
+
+# Training loop
+max_epochs: 2000
+n_collocation_points: 1000  # time points for PDE residual
+
+# Early stopping
+early_stop_patience: 10
+early_stop_threshold: 1.0e-5  # relative change in PDE residual
+
+# Loss weights
+loss_weights:
+  pde: 1.0
+  ic: 10.0
+  circuit: 5.0
+
+# Warm-start for closed-loop
+warmstart_steps: 200
+
+# Logging
+log_interval: 100
+checkpoint_dir: experiments/pinn_checkpoints/

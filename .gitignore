@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Data files
+data/processed/*.h5
+data/processed/*.json
+data/raw/
+
+# Experiment outputs
+experiments/checkpoints/*.pt
+experiments/closed_loop_checkpoints/*.pt
+experiments/diffusion_checkpoints_4b3/*.pt
+experiments/pinn_checkpoints_phase3e2/*.pt
+experiments/pinn_checkpoints_smoke/*.pt
+experiments/pinn_checkpoints/*.pt
+outputs/
+multirun/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# wandb
+wandb/
+
+# pytest cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Planning and Paper
+.planning/
+paper/

@@ -1,0 +1,25 @@
+# Phase 4: Closed-loop policy gradient finetuning
+n_iterations: 1000
+n_samples_per_iter: 32  # strategies sampled per iteration
+
+# REINFORCE
+baseline_ema: 0.9
+policy_lr: 1.0e-5
+
+# PINN warm-start
+warmstart_steps: 200
+
+# Lambda sweep (fidelity vs depth tradeoff)
+lambda_weights: [0.0, 0.01, 0.05, 0.1, 0.5, 1.0]
+
+# Pareto tracking
+pareto_ref_point: [0.0, 10000]  # [fidelity, depth]
+
+# Checkpointing
+checkpoint_interval: 100
+max_checkpoints_keep: 3  # plus best_fidelity, best_hv
+checkpoint_dir: experiments/closed_loop_checkpoints/
+
+# Logging
+log_interval: 10
+wandb_project: pinn-trotter

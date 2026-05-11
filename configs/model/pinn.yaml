@@ -1,0 +1,14 @@
+# PINN network architecture
+n_fourier_features: 256
+fourier_sigma: null  # null = auto-compute from ‖H‖/(2π)
+hidden_dim: 512
+n_hidden_layers: 3
+activation: tanh
+use_layer_norm: true
+norm_penalty_weight: 0.1  # weight for ‖‖ψ‖ - 1‖² penalty
+
+# Output
+output_real_imag: true  # output (2^n, 2) tensor
+
+# Initialization
+init_std: 0.02

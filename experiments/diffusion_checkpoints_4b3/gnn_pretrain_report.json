@@ -1,0 +1,8 @@
+{
+  "gnn_pretrain_epochs": 80,
+  "gnn_pretrain_use_strategy_features": true,
+  "best_val_r2": 0.6001906394958496,
+  "best_val_rmse": 0.19697825610637665,
+  "best_epoch": 8,
+  "acceptance_r2_gt_0_8": false
+}

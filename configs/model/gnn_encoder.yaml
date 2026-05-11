@@ -1,0 +1,18 @@
+# GNN Hamiltonian encoder
+n_layers: 4
+hidden_dim: 256
+output_dim: 512  # condition vector dimension
+pooling: attention  # attention | mean | sum
+
+# Node features
+node_feat_dim: 16  # coeff + locality + support one-hot
+
+# Edge features
+edge_feat_dim: 3  # commutator_norm + shared_qubits + commuting_flag
+
+# Message passing
+message_hidden_dim: 256
+update_hidden_dim: 256
+
+# Dropout
+dropout: 0.1

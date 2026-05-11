@@ -1,0 +1,22 @@
+# @package _global_
+defaults:
+  - /model: [pinn, gnn_encoder, diffusion]
+  - /training: [phase1_dataset, phase2_pinn_pretrain, phase3_joint_train, phase4_closed_loop]
+
+# TFIM 8-qubit main experiment
+experiment:
+  name: tfim_8q_main
+  hamiltonian: tfim
+  n_qubits: 8
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 5.0
+
+# Use full-scale settings
+training:
+  phase1_dataset:
+    n_samples: 10000
+    n_workers: 8
+  phase4_closed_loop:
+    n_iterations: 1000

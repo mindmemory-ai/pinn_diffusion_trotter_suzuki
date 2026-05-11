@@ -1,0 +1,38 @@
+# Phase 3: GNN + diffusion joint training
+optimizer:
+  name: adamw
+  lr: 1.0e-4
+  betas: [0.9, 0.999]
+  weight_decay: 1.0e-2
+
+ema_decay: 0.9999
+
+# Training loop
+batch_size: 128
+max_epochs: 500
+
+# Data
+train_split: 0.9
+val_split: 0.1
+augment: true
+# h_max_filter omitted — train on all qubit-filtered samples for sufficient data;
+# benchmark already restricts to h ≤ 0.5 via tfim_4q_poc.yaml benchmark.h_max
+
+# GNN supervised pre-training (4-B-2 / 4-B-3)
+gnn_pretrain_epochs: 200
+gnn_pretrain_lr: 3.0e-4
+gnn_pretrain_log_interval: 20
+gnn_pretrain_use_strategy_features: true
+
+# Diffusion loss weights
+loss_weights:
+  grouping: 1.0
+  timesteps: 0.5
+  orders: 0.3
+
+# Logging
+log_interval: 50
+save_interval: 10
+checkpoint_dir: experiments/diffusion_checkpoints/
+wandb_project: pinn-trotter
+device: auto  # "auto" | "cpu" | "cuda"
