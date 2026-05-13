@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
@@ -78,6 +79,35 @@ def _run_command(cmd: list[str], dry_run: bool) -> None:
     subprocess.run(cmd, check=True)
 
 
+def _sanitize_token(text: str) -> str:
+    """Keep filenames shell-safe and cross-platform friendly."""
+    return re.sub(r"[^A-Za-z0-9._-]+", "-", text.strip())
+
+
+def _tagged_checkpoint_name(
+    profile_name: str,
+    train_iters: int,
+    source_name: str,
+    run_tag: str | None,
+) -> str:
+    """Build an ablation-specific checkpoint filename.
+
+    Example:
+      ablation_no_cfg_iter100_ckpt_iter_000099_fid0.0179_depth0008_r20260512-235901.pt
+    """
+    stem = Path(source_name).stem
+    ext = Path(source_name).suffix or ".pt"
+    parts = [
+        "ablation",
+        _sanitize_token(profile_name),
+        f"iter{train_iters}",
+        _sanitize_token(stem),
+    ]
+    if run_tag:
+        parts.append(_sanitize_token(run_tag))
+    return "_".join(parts) + ext
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run ablation retrain+evaluation loops.")
     parser.add_argument(
@@ -98,6 +128,15 @@ def main() -> None:
     parser.add_argument("--n-seeds", type=int, default=5)
     parser.add_argument("--latency-trials", type=int, default=10)
     parser.add_argument("--device", type=str, default="cuda", choices=["cpu", "cuda"])
+    parser.add_argument(
+        "--run-tag",
+        type=str,
+        default=None,
+        help=(
+            "Optional suffix for renamed ablation checkpoints "
+            "(e.g. r20260512-2359 or paper55_v2)."
+        ),
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
@@ -134,6 +173,28 @@ def main() -> None:
         _run_command(train_cmd, args.dry_run)
 
         ckpt_path = None if args.dry_run else _latest_checkpoint(ckpt_dir, start_ts)
+        if ckpt_path is not None:
+            renamed_name = _tagged_checkpoint_name(
+                profile_name=profile.name,
+                train_iters=args.train_iters,
+                source_name=ckpt_path.name,
+                run_tag=args.run_tag,
+            )
+            renamed_path = ckpt_path.with_name(renamed_name)
+            if renamed_path.exists() and renamed_path != ckpt_path:
+                unique_tag = int(time.time())
+                renamed_path = ckpt_path.with_name(
+                    _tagged_checkpoint_name(
+                        profile_name=profile.name,
+                        train_iters=args.train_iters,
+                        source_name=ckpt_path.name,
+                        run_tag=f"{args.run_tag or 'run'}-{unique_tag}",
+                    )
+                )
+            if renamed_path != ckpt_path:
+                ckpt_path.rename(renamed_path)
+                ckpt_path = renamed_path
+                print(f"Renamed checkpoint: {ckpt_path}")
         eval_filename = f"ablation_{profile.name}.json"
         eval_cmd = [
             sys.executable,

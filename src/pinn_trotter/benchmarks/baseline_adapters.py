@@ -1,4 +1,4 @@
-"""Cirq / TKET / PennyLane Trotter baseline adapters.
+"""Cirq / TKET / PennyLane / Paulihedral Trotter baseline adapters.
 
 Each adapter provides a uniform `evaluate(hamiltonian, t_total)` returning a
 metrics dict with `fidelity`, `depth`, `cx_count`, and `strategy` (a
@@ -321,6 +321,139 @@ class PennyLaneTrotterBaseline:
 
 
 # ---------------------------------------------------------------------------
+# Paulihedral adapter
+# ---------------------------------------------------------------------------
+
+
+class _PaulihedralTerm:
+    """Minimal wrapper for paulihedral scheduler APIs."""
+
+    def __init__(self, ps: str, coeff: float) -> None:
+        self.ps = ps
+        self.coeff = float(coeff)
+
+    def __len__(self) -> int:
+        return len(self.ps)
+
+    def count(self, token: str) -> int:
+        return self.ps.count(token)
+
+
+class PaulihedralBaseline:
+    """Paulihedral baseline with paulihedral.parallel_bl scheduling."""
+
+    name = "paulihedral"
+
+    def __init__(self, n_steps: int = 5, scheduler: str = "depth") -> None:
+        self.n_steps = int(n_steps)
+        self.scheduler = str(scheduler)
+        if self.n_steps <= 0:
+            raise ValueError("PaulihedralBaseline requires n_steps > 0")
+        if self.scheduler not in {"depth", "gate_count"}:
+            raise ValueError("scheduler must be one of {'depth', 'gate_count'}")
+
+    @staticmethod
+    def _depth_and_cx(circuit) -> tuple[int, int]:
+        from qiskit import transpile
+
+        transpiled = transpile(
+            circuit,
+            basis_gates=["h", "cx", "rz", "x"],
+            optimization_level=1,
+        )
+        return int(transpiled.depth()), int(transpiled.count_ops().get("cx", 0))
+
+    def _schedule_terms(self, terms: list[_PaulihedralTerm]) -> list[_PaulihedralTerm]:
+        import paulihedral.parallel_bl as pb
+
+        # paulihedral scheduler input shape: layer -> block -> term
+        raw_blocks = [[term] for term in terms]
+        if self.scheduler == "depth":
+            layers = pb.depth_oriented_scheduling(raw_blocks, maxiter=1)
+        else:
+            layers = pb.gate_count_oriented_scheduling(raw_blocks)
+        return [term for layer in layers for block in layer for term in block]
+
+    def _build_qiskit_circuit(self, hamiltonian, t_total: float):
+        from qiskit import QuantumCircuit
+        from qiskit.circuit.library import PauliEvolutionGate
+        from qiskit.quantum_info import SparsePauliOp
+
+        n = int(hamiltonian.n_qubits)
+        terms = [
+            _PaulihedralTerm(s[::-1], float(c))
+            for s, c in zip(hamiltonian.pauli_strings, hamiltonian.coefficients)
+        ]
+        ordered_terms = self._schedule_terms(terms)
+        dt = float(t_total) / self.n_steps
+
+        qc = QuantumCircuit(n)
+        for _ in range(self.n_steps):
+            for term in ordered_terms:
+                op = SparsePauliOp([term.ps], [term.coeff])
+                qc.append(PauliEvolutionGate(op, time=dt), list(range(n)))
+        return qc
+
+    def evaluate(self, hamiltonian, t_total: float) -> dict[str, Any]:
+        try:
+            import paulihedral.parallel_bl as _  # noqa: F401
+        except ImportError as exc:
+            raise ImportError(
+                "paulihedral is unavailable in current environment. "
+                "Please install package/module `paulihedral`."
+            ) from exc
+
+        from qiskit.quantum_info import Statevector
+
+        n = int(hamiltonian.n_qubits)
+        circuit = self._build_qiskit_circuit(hamiltonian, t_total)
+
+        psi_0 = _default_psi0(n)
+        psi_exact = _exact_state(hamiltonian, t_total)
+        psi_trotter_le = Statevector(self._swap_endian(psi_0, n)).evolve(circuit).data
+        psi_trotter = self._swap_endian(np.asarray(psi_trotter_le, dtype=complex), n)
+        fidelity = float(
+            np.clip(
+                abs(np.vdot(psi_exact, psi_trotter)) ** 2
+                / (np.linalg.norm(psi_exact) ** 2 * np.linalg.norm(psi_trotter) ** 2),
+                0.0,
+                1.0,
+            )
+        )
+        depth, cx = self._depth_and_cx(circuit)
+
+        strategy = _make_proxy_strategy(
+            hamiltonian=hamiltonian,
+            t_total=t_total,
+            order=1,
+            n_steps=self.n_steps,
+            tag="paulihedral",
+        )
+        strategy.metadata.update(
+            {
+                "framework": "paulihedral",
+                "scheduler": self.scheduler,
+            }
+        )
+        return {
+            "fidelity": fidelity,
+            "strategy": strategy,
+            "circuit": circuit,
+            "n_steps": self.n_steps,
+            "depth": depth,
+            "cx_count": cx,
+        }
+
+    @staticmethod
+    def _swap_endian(psi: np.ndarray, n_qubits: int) -> np.ndarray:
+        return (
+            psi.reshape([2] * n_qubits)
+            .transpose(range(n_qubits - 1, -1, -1))
+            .reshape(-1)
+        )
+
+
+# ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
 
@@ -329,4 +462,5 @@ BASELINE_REGISTRY: dict[str, type] = {
     "cirq": CirqTrotterBaseline,
     "tket": TketTrotterBaseline,
     "pennylane": PennyLaneTrotterBaseline,
+    "paulihedral": PaulihedralBaseline,
 }

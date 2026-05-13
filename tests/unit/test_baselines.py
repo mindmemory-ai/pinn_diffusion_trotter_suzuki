@@ -15,6 +15,7 @@ from pinn_trotter.benchmarks.baseline_adapters import (
     BASELINE_REGISTRY,
     CirqTrotterBaseline,
     PennyLaneTrotterBaseline,
+    PaulihedralBaseline,
     TketTrotterBaseline,
 )
 from pinn_trotter.benchmarks.hamiltonians import make_tfim
@@ -99,7 +100,7 @@ def test_sweep_n_steps_returns_valid_fidelity_range():
 
 
 def test_baseline_registry_contains_expected_adapters():
-    assert set(BASELINE_REGISTRY.keys()) == {"cirq", "tket", "pennylane"}
+    assert set(BASELINE_REGISTRY.keys()) == {"cirq", "tket", "pennylane", "paulihedral"}
 
 
 # ---------------------------------------------------------------------------
@@ -174,3 +175,20 @@ def test_external_baselines_agree_within_tolerance():
     # All three should be within 5% of each other (different sub-step orderings allowed)
     fids = [f_cirq, f_tket, f_pl]
     assert max(fids) - min(fids) < 0.05, f"Cross-baseline disagreement: {fids}"
+
+
+def test_paulihedral_adapter_returns_valid_metrics_or_skips_when_missing():
+    h = make_tfim(4, J=1.0, h=0.3)
+    adapter = PaulihedralBaseline(n_steps=3, scheduler="depth")
+    try:
+        res = adapter.evaluate(h, t_total=1.0)
+    except ImportError:
+        pytest.skip("paulihedral package unavailable in current test environment")
+        return
+
+    assert "fidelity" in res and "strategy" in res
+    assert "depth" in res and "cx_count" in res
+    assert 0.0 <= res["fidelity"] <= 1.0
+    assert res["depth"] >= 0
+    assert res["cx_count"] >= 0
+    assert res["strategy"].metadata["baseline"] == "paulihedral"

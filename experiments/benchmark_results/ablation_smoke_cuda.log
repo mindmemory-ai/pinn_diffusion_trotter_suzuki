@@ -1,0 +1,2533 @@
+[2026-05-13 00:01:49,327][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 50
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.1
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 1
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+  batch_size_hamiltonians: 2
+  lambda_weight_sweep:
+  - 0.1
+  guidance_scale: 2.0
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/diffusion_best.pt
+  device: cpu
+  n_test_hamiltonians: 100
+  n_seeds: 5
+  seed: 42
+  guidance_scale: 3.0
+  n_groups_max: 8
+  n_trials_latency: 10
+  fidelity_only: false
+  use_wandb: false
+  output_filename: benchmark_evaluation_results.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+
+[2026-05-13 00:01:50,745][pinn_trotter.pinn.evaluator][INFO] - make_evaluator: n_qubits=4 ≤ 8 → ExactFidelityEvaluator
+[2026-05-13 00:01:50,745][__main__][INFO] - Using evaluator: ExactFidelityEvaluator
+[2026-05-13 00:01:52,216][pinn_trotter.optimizer.closed_loop][INFO] - iter=0 loss=2.7131e-01 fid=0.2414 depth=13.0 hv=448.86
+[2026-05-13 00:01:52,751][pinn_trotter.optimizer.closed_loop][INFO] - Checkpoint saved: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ckpt_iter_000000_fid0.2414_depth0013.pt
+[2026-05-13 00:01:52,752][__main__][INFO] - Training complete: 1 iterations in 1.8s | final_fid=0.2414 | HV=448.8559
+[2026-05-13 00:01:54,980][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 1000
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.1
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 100
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/ablation_full_model_iter1_ckpt_iter_000000_fid0.2414_depth0013_smoke_cuda.pt
+  device: cuda
+  n_test_hamiltonians: 1
+  n_seeds: 1
+  seed: 42
+  guidance_scale: 3.0
+  n_groups_max: 8
+  n_trials_latency: 1
+  fidelity_only: false
+  use_wandb: false
+  output_filename: ablation_full_model.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+
+[2026-05-13 00:01:54,955][__main__][INFO] - Loaded model checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_full_model_iter1_ckpt_iter_000000_fid0.2414_depth0013_smoke_cuda.pt
+[2026-05-13 00:02:00,957][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00906 (ms)
+[2026-05-13 00:02:00,957][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01502 (ms)
+[2026-05-13 00:02:00,957][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00429 (ms)
+[2026-05-13 00:02:00,958][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00596 (ms)
+[2026-05-13 00:02:00,959][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.76914 (ms)
+[2026-05-13 00:02:00,960][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.50473 (ms)
+[2026-05-13 00:02:00,960][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00525 (ms)
+[2026-05-13 00:02:00,960][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.08345 (ms)
+[2026-05-13 00:02:00,961][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00620 (ms)
+[2026-05-13 00:02:00,961][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:00,961][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02789 (ms)
+[2026-05-13 00:02:00,961][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01240 (ms)
+[2026-05-13 00:02:00,962][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:02:00,962][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00620 (ms)
+[2026-05-13 00:02:00,962][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00668 (ms)
+[2026-05-13 00:02:00,962][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01812 (ms)
+[2026-05-13 00:02:00,963][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:02:00,963][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:00,963][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01383 (ms)
+[2026-05-13 00:02:00,964][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 430.13024 (ms)
+[2026-05-13 00:02:00,966][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00429 (ms)
+[2026-05-13 00:02:00,966][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00429 (ms)
+[2026-05-13 00:02:00,966][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:02:00,966][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00429 (ms)
+[2026-05-13 00:02:00,967][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.34022 (ms)
+[2026-05-13 00:02:00,968][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.18811 (ms)
+[2026-05-13 00:02:00,968][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00882 (ms)
+[2026-05-13 00:02:00,968][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01860 (ms)
+[2026-05-13 00:02:00,969][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:02:00,969][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:00,969][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02360 (ms)
+[2026-05-13 00:02:00,969][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01216 (ms)
+[2026-05-13 00:02:00,970][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:00,970][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00501 (ms)
+[2026-05-13 00:02:00,970][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:00,970][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00834 (ms)
+[2026-05-13 00:02:00,970][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:00,971][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:02:00,971][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00477 (ms)
+[2026-05-13 00:02:00,971][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 7.11560 (ms)
+[2026-05-13 00:02:10,205][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00668 (ms)
+[2026-05-13 00:02:10,208][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01383 (ms)
+[2026-05-13 00:02:10,209][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.55790 (ms)
+[2026-05-13 00:02:10,210][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.42272 (ms)
+[2026-05-13 00:02:10,210][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00572 (ms)
+[2026-05-13 00:02:10,210][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 6.45399 (ms)
+[2026-05-13 00:02:10,222][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00620 (ms)
+[2026-05-13 00:02:10,223][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00906 (ms)
+[2026-05-13 00:02:10,223][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00453 (ms)
+[2026-05-13 00:02:10,223][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00620 (ms)
+[2026-05-13 00:02:10,224][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.31948 (ms)
+[2026-05-13 00:02:10,224][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.27418 (ms)
+[2026-05-13 00:02:10,224][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:02:10,225][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.04745 (ms)
+[2026-05-13 00:02:10,225][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00715 (ms)
+[2026-05-13 00:02:10,225][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:10,225][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.07319 (ms)
+[2026-05-13 00:02:10,226][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05436 (ms)
+[2026-05-13 00:02:10,226][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00668 (ms)
+[2026-05-13 00:02:10,228][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01454 (ms)
+[2026-05-13 00:02:10,228][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00381 (ms)
+[2026-05-13 00:02:10,228][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01860 (ms)
+[2026-05-13 00:02:10,229][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01049 (ms)
+[2026-05-13 00:02:10,232][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:10,232][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04339 (ms)
+[2026-05-13 00:02:10,232][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02694 (ms)
+[2026-05-13 00:02:10,233][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00143 (ms)
+[2026-05-13 00:02:10,234][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00739 (ms)
+[2026-05-13 00:02:10,235][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00358 (ms)
+[2026-05-13 00:02:10,235][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02074 (ms)
+[2026-05-13 00:02:10,235][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00811 (ms)
+[2026-05-13 00:02:10,235][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:10,236][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00620 (ms)
+[2026-05-13 00:02:10,236][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 15.30981 (ms)
+[2026-05-13 00:02:10,239][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00381 (ms)
+[2026-05-13 00:02:10,239][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00501 (ms)
+[2026-05-13 00:02:10,239][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00429 (ms)
+[2026-05-13 00:02:10,239][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00501 (ms)
+[2026-05-13 00:02:10,240][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.37360 (ms)
+[2026-05-13 00:02:10,240][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.24986 (ms)
+[2026-05-13 00:02:10,240][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:10,241][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01907 (ms)
+[2026-05-13 00:02:10,241][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:02:10,241][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:10,241][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03982 (ms)
+[2026-05-13 00:02:10,242][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.08726 (ms)
+[2026-05-13 00:02:10,242][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:02:10,242][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00739 (ms)
+[2026-05-13 00:02:10,242][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:10,243][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01597 (ms)
+[2026-05-13 00:02:10,243][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:10,243][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01001 (ms)
+[2026-05-13 00:02:10,244][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.12851 (ms)
+[2026-05-13 00:02:10,244][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02837 (ms)
+[2026-05-13 00:02:10,244][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:02:10,245][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00668 (ms)
+[2026-05-13 00:02:10,245][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:10,245][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03862 (ms)
+[2026-05-13 00:02:10,245][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00787 (ms)
+[2026-05-13 00:02:10,246][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:10,246][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00477 (ms)
+[2026-05-13 00:02:10,246][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.25899 (ms)
+[2026-05-13 00:02:10,829][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00858 (ms)
+[2026-05-13 00:02:10,832][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00834 (ms)
+[2026-05-13 00:02:10,833][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.01121 (ms)
+[2026-05-13 00:02:10,833][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00763 (ms)
+[2026-05-13 00:02:10,833][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.38028 (ms)
+[2026-05-13 00:02:10,834][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.48614 (ms)
+[2026-05-13 00:02:10,835][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.01216 (ms)
+[2026-05-13 00:02:10,835][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.04768 (ms)
+[2026-05-13 00:02:10,835][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01097 (ms)
+[2026-05-13 00:02:10,836][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00978 (ms)
+[2026-05-13 00:02:10,836][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04530 (ms)
+[2026-05-13 00:02:10,836][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.08988 (ms)
+[2026-05-13 00:02:10,837][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00405 (ms)
+[2026-05-13 00:02:10,837][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.02003 (ms)
+[2026-05-13 00:02:10,837][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:10,837][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03004 (ms)
+[2026-05-13 00:02:10,838][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00501 (ms)
+[2026-05-13 00:02:10,838][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:10,838][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04029 (ms)
+[2026-05-13 00:02:10,838][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05054 (ms)
+[2026-05-13 00:02:10,839][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:02:10,839][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:02:10,839][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00453 (ms)
+[2026-05-13 00:02:10,839][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03600 (ms)
+[2026-05-13 00:02:10,839][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:02:10,840][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:02:10,840][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00596 (ms)
+[2026-05-13 00:02:10,840][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 15.18583 (ms)
+[2026-05-13 00:02:10,843][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00286 (ms)
+[2026-05-13 00:02:10,843][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03362 (ms)
+[2026-05-13 00:02:10,843][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:10,844][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:02:10,844][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.40960 (ms)
+[2026-05-13 00:02:10,845][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.34690 (ms)
+[2026-05-13 00:02:10,845][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00358 (ms)
+[2026-05-13 00:02:10,845][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01740 (ms)
+[2026-05-13 00:02:10,846][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00501 (ms)
+[2026-05-13 00:02:10,846][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:10,846][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03862 (ms)
+[2026-05-13 00:02:10,846][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03743 (ms)
+[2026-05-13 00:02:10,847][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:10,847][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.02217 (ms)
+[2026-05-13 00:02:10,847][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00381 (ms)
+[2026-05-13 00:02:10,847][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03958 (ms)
+[2026-05-13 00:02:10,847][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00763 (ms)
+[2026-05-13 00:02:10,848][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00954 (ms)
+[2026-05-13 00:02:10,848][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03576 (ms)
+[2026-05-13 00:02:10,848][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.08154 (ms)
+[2026-05-13 00:02:10,849][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00715 (ms)
+[2026-05-13 00:02:10,849][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:02:10,849][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:10,850][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03672 (ms)
+[2026-05-13 00:02:10,850][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:10,850][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01359 (ms)
+[2026-05-13 00:02:10,851][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:02:10,851][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.48405 (ms)
+[2026-05-13 00:02:11,321][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00668 (ms)
+[2026-05-13 00:02:11,321][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02670 (ms)
+[2026-05-13 00:02:11,324][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:02:11,324][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.02122 (ms)
+[2026-05-13 00:02:11,326][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.74720 (ms)
+[2026-05-13 00:02:11,326][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.47016 (ms)
+[2026-05-13 00:02:11,327][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00501 (ms)
+[2026-05-13 00:02:11,327][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02050 (ms)
+[2026-05-13 00:02:11,327][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00644 (ms)
+[2026-05-13 00:02:11,327][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01049 (ms)
+[2026-05-13 00:02:11,328][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.10514 (ms)
+[2026-05-13 00:02:11,328][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03886 (ms)
+[2026-05-13 00:02:11,329][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00978 (ms)
+[2026-05-13 00:02:11,329][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00954 (ms)
+[2026-05-13 00:02:11,329][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00787 (ms)
+[2026-05-13 00:02:11,329][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01836 (ms)
+[2026-05-13 00:02:11,330][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:11,330][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:02:11,330][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04363 (ms)
+[2026-05-13 00:02:11,330][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03195 (ms)
+[2026-05-13 00:02:11,331][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:02:11,331][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00763 (ms)
+[2026-05-13 00:02:11,331][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00811 (ms)
+[2026-05-13 00:02:11,331][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01717 (ms)
+[2026-05-13 00:02:11,332][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:11,332][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:11,332][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00668 (ms)
+[2026-05-13 00:02:11,332][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 13.08393 (ms)
+[2026-05-13 00:02:11,335][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00548 (ms)
+[2026-05-13 00:02:11,336][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00572 (ms)
+[2026-05-13 00:02:11,336][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00405 (ms)
+[2026-05-13 00:02:11,336][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00620 (ms)
+[2026-05-13 00:02:11,337][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.35906 (ms)
+[2026-05-13 00:02:11,338][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.46134 (ms)
+[2026-05-13 00:02:11,338][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00978 (ms)
+[2026-05-13 00:02:11,339][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.05364 (ms)
+[2026-05-13 00:02:11,339][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00620 (ms)
+[2026-05-13 00:02:11,340][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00262 (ms)
+[2026-05-13 00:02:11,340][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05603 (ms)
+[2026-05-13 00:02:11,340][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03743 (ms)
+[2026-05-13 00:02:11,340][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:11,340][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00691 (ms)
+[2026-05-13 00:02:11,341][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:11,341][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01979 (ms)
+[2026-05-13 00:02:11,341][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:11,341][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:11,342][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03457 (ms)
+[2026-05-13 00:02:11,342][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02670 (ms)
+[2026-05-13 00:02:11,342][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:11,342][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00644 (ms)
+[2026-05-13 00:02:11,342][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:11,343][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01597 (ms)
+[2026-05-13 00:02:11,343][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:11,343][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01025 (ms)
+[2026-05-13 00:02:11,343][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01121 (ms)
+[2026-05-13 00:02:11,344][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 10.28919 (ms)
+[2026-05-13 00:02:12,110][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00978 (ms)
+[2026-05-13 00:02:12,110][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00834 (ms)
+[2026-05-13 00:02:12,110][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:02:12,111][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01144 (ms)
+[2026-05-13 00:02:12,111][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.46015 (ms)
+[2026-05-13 00:02:12,112][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.42629 (ms)
+[2026-05-13 00:02:12,112][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00525 (ms)
+[2026-05-13 00:02:12,113][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01955 (ms)
+[2026-05-13 00:02:12,113][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00739 (ms)
+[2026-05-13 00:02:12,113][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01001 (ms)
+[2026-05-13 00:02:12,114][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04768 (ms)
+[2026-05-13 00:02:12,114][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04101 (ms)
+[2026-05-13 00:02:12,114][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:12,114][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00978 (ms)
+[2026-05-13 00:02:12,115][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:12,115][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01645 (ms)
+[2026-05-13 00:02:12,115][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:12,116][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01359 (ms)
+[2026-05-13 00:02:12,116][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.08988 (ms)
+[2026-05-13 00:02:12,116][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.06723 (ms)
+[2026-05-13 00:02:12,117][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00644 (ms)
+[2026-05-13 00:02:12,117][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00858 (ms)
+[2026-05-13 00:02:12,117][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:12,118][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.05031 (ms)
+[2026-05-13 00:02:12,118][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:02:12,118][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:12,118][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:02:12,119][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 11.03568 (ms)
+[2026-05-13 00:02:12,122][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00596 (ms)
+[2026-05-13 00:02:12,122][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00453 (ms)
+[2026-05-13 00:02:12,122][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:12,123][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00548 (ms)
+[2026-05-13 00:02:12,123][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.35071 (ms)
+[2026-05-13 00:02:12,124][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.56434 (ms)
+[2026-05-13 00:02:12,124][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00477 (ms)
+[2026-05-13 00:02:12,124][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01931 (ms)
+[2026-05-13 00:02:12,125][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00596 (ms)
+[2026-05-13 00:02:12,125][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01097 (ms)
+[2026-05-13 00:02:12,126][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.17667 (ms)
+[2026-05-13 00:02:12,126][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.15950 (ms)
+[2026-05-13 00:02:12,126][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:02:12,127][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01574 (ms)
+[2026-05-13 00:02:12,127][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:12,127][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02313 (ms)
+[2026-05-13 00:02:12,128][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00548 (ms)
+[2026-05-13 00:02:12,128][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00548 (ms)
+[2026-05-13 00:02:12,128][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05627 (ms)
+[2026-05-13 00:02:12,129][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04220 (ms)
+[2026-05-13 00:02:12,129][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00811 (ms)
+[2026-05-13 00:02:12,130][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00930 (ms)
+[2026-05-13 00:02:12,130][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:02:12,130][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02170 (ms)
+[2026-05-13 00:02:12,131][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00596 (ms)
+[2026-05-13 00:02:12,131][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:12,131][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.02170 (ms)
+[2026-05-13 00:02:12,131][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 11.42120 (ms)
+[2026-05-13 00:02:12,326][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00739 (ms)
+[2026-05-13 00:02:12,326][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00739 (ms)
+[2026-05-13 00:02:12,326][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00763 (ms)
+[2026-05-13 00:02:12,326][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00882 (ms)
+[2026-05-13 00:02:12,329][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 2.40469 (ms)
+[2026-05-13 00:02:12,330][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.27275 (ms)
+[2026-05-13 00:02:12,330][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:02:12,330][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01264 (ms)
+[2026-05-13 00:02:12,330][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01359 (ms)
+[2026-05-13 00:02:12,331][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:12,331][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03648 (ms)
+[2026-05-13 00:02:12,331][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02432 (ms)
+[2026-05-13 00:02:12,331][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:02:12,332][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00763 (ms)
+[2026-05-13 00:02:12,332][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:12,332][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01359 (ms)
+[2026-05-13 00:02:12,332][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:12,333][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:12,333][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00548 (ms)
+[2026-05-13 00:02:12,333][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.30834 (ms)
+[2026-05-13 00:02:12,436][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:02:12,440][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00715 (ms)
+[2026-05-13 00:02:12,440][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00167 (ms)
+[2026-05-13 00:02:12,440][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00501 (ms)
+[2026-05-13 00:02:12,442][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.87731 (ms)
+[2026-05-13 00:02:12,443][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.28181 (ms)
+[2026-05-13 00:02:12,443][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00906 (ms)
+[2026-05-13 00:02:12,444][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01383 (ms)
+[2026-05-13 00:02:12,444][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00644 (ms)
+[2026-05-13 00:02:12,444][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:12,444][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03719 (ms)
+[2026-05-13 00:02:12,444][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02527 (ms)
+[2026-05-13 00:02:12,445][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:02:12,445][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:02:12,445][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00501 (ms)
+[2026-05-13 00:02:12,445][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01836 (ms)
+[2026-05-13 00:02:12,445][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:02:12,446][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:02:12,446][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:02:12,446][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 12.39467 (ms)
+[2026-05-13 00:02:12,548][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00739 (ms)
+[2026-05-13 00:02:12,548][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00739 (ms)
+[2026-05-13 00:02:12,549][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:02:12,549][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00596 (ms)
+[2026-05-13 00:02:12,551][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.76406 (ms)
+[2026-05-13 00:02:12,551][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.34428 (ms)
+[2026-05-13 00:02:12,552][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:02:12,552][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02193 (ms)
+[2026-05-13 00:02:12,552][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00691 (ms)
+[2026-05-13 00:02:12,552][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:12,553][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04148 (ms)
+[2026-05-13 00:02:12,553][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02742 (ms)
+[2026-05-13 00:02:12,553][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:02:12,553][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00858 (ms)
+[2026-05-13 00:02:12,554][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00453 (ms)
+[2026-05-13 00:02:12,554][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01717 (ms)
+[2026-05-13 00:02:12,554][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:12,554][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:12,555][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00620 (ms)
+[2026-05-13 00:02:12,555][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 8.26645 (ms)
+[2026-05-13 00:02:12,555][__main__][INFO] - Completed seed 1/1 (seed=42)
+[2026-05-13 00:02:12,559][__main__][INFO] - Saved benchmark report: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/benchmark_results/ablation_full_model.json
+[2026-05-13 00:02:15,400][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 50
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.1
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 1
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+  batch_size_hamiltonians: 2
+  lambda_weight_sweep:
+  - 0.1
+  guidance_scale: 2.0
+  disable_pinn_guidance: true
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/diffusion_best.pt
+  device: cpu
+  n_test_hamiltonians: 100
+  n_seeds: 5
+  seed: 42
+  guidance_scale: 3.0
+  n_groups_max: 8
+  n_trials_latency: 10
+  fidelity_only: false
+  use_wandb: false
+  output_filename: benchmark_evaluation_results.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+
+[2026-05-13 00:02:16,814][pinn_trotter.pinn.evaluator][INFO] - make_evaluator: n_qubits=4 ≤ 8 → ExactFidelityEvaluator
+[2026-05-13 00:02:16,814][__main__][INFO] - Using evaluator: ExactFidelityEvaluator
+[2026-05-13 00:02:17,962][pinn_trotter.optimizer.closed_loop][INFO] - iter=0 loss=5.8423e-01 fid=0.0000 depth=32.5 hv=0.00
+[2026-05-13 00:02:18,492][pinn_trotter.optimizer.closed_loop][INFO] - Checkpoint saved: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ckpt_iter_000000_fid0.0000_depth0029.pt
+[2026-05-13 00:02:18,493][__main__][INFO] - Training complete: 1 iterations in 1.5s | final_fid=0.0000 | HV=0.0000
+[2026-05-13 00:02:20,758][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 1000
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.1
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 100
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/ablation_no_pinn_guidance_iter1_ckpt_iter_000000_fid0.0000_depth0029_smoke_cuda.pt
+  device: cuda
+  n_test_hamiltonians: 1
+  n_seeds: 1
+  seed: 42
+  guidance_scale: 3.0
+  n_groups_max: 8
+  n_trials_latency: 1
+  fidelity_only: false
+  use_wandb: false
+  output_filename: ablation_no_pinn_guidance.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+
+[2026-05-13 00:02:23,058][__main__][INFO] - Loaded model checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_no_pinn_guidance_iter1_ckpt_iter_000000_fid0.0000_depth0029_smoke_cuda.pt
+[2026-05-13 00:02:26,649][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00930 (ms)
+[2026-05-13 00:02:26,650][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01311 (ms)
+[2026-05-13 00:02:26,650][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:02:26,651][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01287 (ms)
+[2026-05-13 00:02:26,652][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.62203 (ms)
+[2026-05-13 00:02:26,653][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.57745 (ms)
+[2026-05-13 00:02:26,653][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:02:26,653][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01526 (ms)
+[2026-05-13 00:02:26,654][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00620 (ms)
+[2026-05-13 00:02:26,654][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:26,654][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02885 (ms)
+[2026-05-13 00:02:26,655][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01717 (ms)
+[2026-05-13 00:02:26,655][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:02:26,655][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00691 (ms)
+[2026-05-13 00:02:26,655][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:26,656][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00906 (ms)
+[2026-05-13 00:02:26,656][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:26,656][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:26,656][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02313 (ms)
+[2026-05-13 00:02:26,657][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01311 (ms)
+[2026-05-13 00:02:26,657][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:02:26,657][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00381 (ms)
+[2026-05-13 00:02:26,657][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:26,658][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00763 (ms)
+[2026-05-13 00:02:26,658][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:26,658][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:26,658][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01025 (ms)
+[2026-05-13 00:02:26,659][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 407.58610 (ms)
+[2026-05-13 00:02:26,661][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00381 (ms)
+[2026-05-13 00:02:26,661][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00310 (ms)
+[2026-05-13 00:02:26,662][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:26,662][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00405 (ms)
+[2026-05-13 00:02:26,662][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.41699 (ms)
+[2026-05-13 00:02:26,663][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.18954 (ms)
+[2026-05-13 00:02:26,663][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:02:26,663][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00834 (ms)
+[2026-05-13 00:02:26,664][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00501 (ms)
+[2026-05-13 00:02:26,664][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:26,664][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.01979 (ms)
+[2026-05-13 00:02:26,664][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01407 (ms)
+[2026-05-13 00:02:26,665][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:26,665][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00477 (ms)
+[2026-05-13 00:02:26,665][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00262 (ms)
+[2026-05-13 00:02:26,666][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01979 (ms)
+[2026-05-13 00:02:26,666][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:26,666][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01001 (ms)
+[2026-05-13 00:02:26,667][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.01836 (ms)
+[2026-05-13 00:02:26,667][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01097 (ms)
+[2026-05-13 00:02:26,667][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:26,668][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00358 (ms)
+[2026-05-13 00:02:26,668][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:02:26,668][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00739 (ms)
+[2026-05-13 00:02:26,668][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:26,668][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00310 (ms)
+[2026-05-13 00:02:26,669][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01478 (ms)
+[2026-05-13 00:02:26,669][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.26757 (ms)
+[2026-05-13 00:02:35,977][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00691 (ms)
+[2026-05-13 00:02:35,978][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00644 (ms)
+[2026-05-13 00:02:35,982][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.47874 (ms)
+[2026-05-13 00:02:35,983][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.46158 (ms)
+[2026-05-13 00:02:35,983][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00453 (ms)
+[2026-05-13 00:02:35,991][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 14.81557 (ms)
+[2026-05-13 00:02:36,004][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00429 (ms)
+[2026-05-13 00:02:36,004][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00691 (ms)
+[2026-05-13 00:02:36,005][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00525 (ms)
+[2026-05-13 00:02:36,010][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01287 (ms)
+[2026-05-13 00:02:36,011][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.34118 (ms)
+[2026-05-13 00:02:36,012][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.46873 (ms)
+[2026-05-13 00:02:36,012][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:36,012][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02503 (ms)
+[2026-05-13 00:02:36,012][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00691 (ms)
+[2026-05-13 00:02:36,013][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:36,013][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05770 (ms)
+[2026-05-13 00:02:36,013][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03839 (ms)
+[2026-05-13 00:02:36,013][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:02:36,014][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.03147 (ms)
+[2026-05-13 00:02:36,014][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:36,014][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.04363 (ms)
+[2026-05-13 00:02:36,015][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:36,015][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00954 (ms)
+[2026-05-13 00:02:36,015][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09012 (ms)
+[2026-05-13 00:02:36,016][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03338 (ms)
+[2026-05-13 00:02:36,016][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:02:36,016][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:02:36,016][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:36,017][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01740 (ms)
+[2026-05-13 00:02:36,017][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00930 (ms)
+[2026-05-13 00:02:36,017][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:02:36,017][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00548 (ms)
+[2026-05-13 00:02:36,018][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 15.90824 (ms)
+[2026-05-13 00:02:36,020][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00429 (ms)
+[2026-05-13 00:02:36,021][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00405 (ms)
+[2026-05-13 00:02:36,022][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:36,022][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:02:36,022][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.31734 (ms)
+[2026-05-13 00:02:36,023][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.27299 (ms)
+[2026-05-13 00:02:36,023][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00763 (ms)
+[2026-05-13 00:02:36,023][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03147 (ms)
+[2026-05-13 00:02:36,024][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01168 (ms)
+[2026-05-13 00:02:36,024][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00930 (ms)
+[2026-05-13 00:02:36,024][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09251 (ms)
+[2026-05-13 00:02:36,025][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05579 (ms)
+[2026-05-13 00:02:36,025][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:02:36,025][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:02:36,025][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00262 (ms)
+[2026-05-13 00:02:36,026][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.06866 (ms)
+[2026-05-13 00:02:36,026][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00548 (ms)
+[2026-05-13 00:02:36,026][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:36,026][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05150 (ms)
+[2026-05-13 00:02:36,027][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.09584 (ms)
+[2026-05-13 00:02:36,027][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:36,028][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01812 (ms)
+[2026-05-13 00:02:36,028][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00763 (ms)
+[2026-05-13 00:02:36,029][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.08202 (ms)
+[2026-05-13 00:02:36,029][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01025 (ms)
+[2026-05-13 00:02:36,030][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00978 (ms)
+[2026-05-13 00:02:36,030][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00930 (ms)
+[2026-05-13 00:02:36,030][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 11.29270 (ms)
+[2026-05-13 00:02:36,600][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00763 (ms)
+[2026-05-13 00:02:36,600][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00739 (ms)
+[2026-05-13 00:02:36,601][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:02:36,601][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00620 (ms)
+[2026-05-13 00:02:36,602][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.38791 (ms)
+[2026-05-13 00:02:36,602][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.48494 (ms)
+[2026-05-13 00:02:36,602][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00453 (ms)
+[2026-05-13 00:02:36,603][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03862 (ms)
+[2026-05-13 00:02:36,603][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:02:36,603][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:02:36,604][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04363 (ms)
+[2026-05-13 00:02:36,604][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03695 (ms)
+[2026-05-13 00:02:36,604][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:36,604][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00858 (ms)
+[2026-05-13 00:02:36,605][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:36,605][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01597 (ms)
+[2026-05-13 00:02:36,605][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:36,605][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:36,605][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03409 (ms)
+[2026-05-13 00:02:36,606][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02933 (ms)
+[2026-05-13 00:02:36,606][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:36,606][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00715 (ms)
+[2026-05-13 00:02:36,606][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:02:36,607][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01645 (ms)
+[2026-05-13 00:02:36,607][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:36,607][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:36,607][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00763 (ms)
+[2026-05-13 00:02:36,607][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 11.37519 (ms)
+[2026-05-13 00:02:36,610][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00381 (ms)
+[2026-05-13 00:02:36,610][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00858 (ms)
+[2026-05-13 00:02:36,610][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:36,610][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00429 (ms)
+[2026-05-13 00:02:36,611][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.26226 (ms)
+[2026-05-13 00:02:36,611][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.43416 (ms)
+[2026-05-13 00:02:36,612][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00668 (ms)
+[2026-05-13 00:02:36,612][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03791 (ms)
+[2026-05-13 00:02:36,613][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01097 (ms)
+[2026-05-13 00:02:36,613][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:02:36,614][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09227 (ms)
+[2026-05-13 00:02:36,614][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03433 (ms)
+[2026-05-13 00:02:36,614][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:36,615][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00715 (ms)
+[2026-05-13 00:02:36,615][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:36,615][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01574 (ms)
+[2026-05-13 00:02:36,615][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:36,615][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:36,616][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03338 (ms)
+[2026-05-13 00:02:36,616][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05436 (ms)
+[2026-05-13 00:02:36,616][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.01192 (ms)
+[2026-05-13 00:02:36,617][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00739 (ms)
+[2026-05-13 00:02:36,617][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:02:36,617][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01550 (ms)
+[2026-05-13 00:02:36,617][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:36,617][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00978 (ms)
+[2026-05-13 00:02:36,618][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:02:36,618][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.69911 (ms)
+[2026-05-13 00:02:37,104][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00787 (ms)
+[2026-05-13 00:02:37,104][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00739 (ms)
+[2026-05-13 00:02:37,109][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00381 (ms)
+[2026-05-13 00:02:37,110][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00787 (ms)
+[2026-05-13 00:02:37,110][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.32210 (ms)
+[2026-05-13 00:02:37,111][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.48399 (ms)
+[2026-05-13 00:02:37,111][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00453 (ms)
+[2026-05-13 00:02:37,111][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01812 (ms)
+[2026-05-13 00:02:37,112][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00644 (ms)
+[2026-05-13 00:02:37,112][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:02:37,112][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09227 (ms)
+[2026-05-13 00:02:37,113][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.08988 (ms)
+[2026-05-13 00:02:37,114][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00715 (ms)
+[2026-05-13 00:02:37,114][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00906 (ms)
+[2026-05-13 00:02:37,115][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:37,115][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.05054 (ms)
+[2026-05-13 00:02:37,115][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01073 (ms)
+[2026-05-13 00:02:37,116][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:37,121][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04077 (ms)
+[2026-05-13 00:02:37,122][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02980 (ms)
+[2026-05-13 00:02:37,122][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:37,122][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00787 (ms)
+[2026-05-13 00:02:37,122][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:37,123][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01860 (ms)
+[2026-05-13 00:02:37,123][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:37,123][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,123][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00548 (ms)
+[2026-05-13 00:02:37,124][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 21.16680 (ms)
+[2026-05-13 00:02:37,126][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00358 (ms)
+[2026-05-13 00:02:37,126][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00882 (ms)
+[2026-05-13 00:02:37,126][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00191 (ms)
+[2026-05-13 00:02:37,127][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00572 (ms)
+[2026-05-13 00:02:37,127][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.35334 (ms)
+[2026-05-13 00:02:37,128][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.55599 (ms)
+[2026-05-13 00:02:37,128][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:02:37,128][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.07105 (ms)
+[2026-05-13 00:02:37,129][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:02:37,134][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01001 (ms)
+[2026-05-13 00:02:37,134][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04959 (ms)
+[2026-05-13 00:02:37,134][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05698 (ms)
+[2026-05-13 00:02:37,134][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:37,135][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00644 (ms)
+[2026-05-13 00:02:37,135][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:37,135][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01979 (ms)
+[2026-05-13 00:02:37,135][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:37,136][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00978 (ms)
+[2026-05-13 00:02:37,136][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03290 (ms)
+[2026-05-13 00:02:37,141][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04482 (ms)
+[2026-05-13 00:02:37,141][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:02:37,142][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00668 (ms)
+[2026-05-13 00:02:37,142][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:37,142][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.05579 (ms)
+[2026-05-13 00:02:37,143][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:37,145][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,146][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01192 (ms)
+[2026-05-13 00:02:37,146][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 21.59476 (ms)
+[2026-05-13 00:02:37,948][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00787 (ms)
+[2026-05-13 00:02:37,948][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00763 (ms)
+[2026-05-13 00:02:37,948][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:02:37,949][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:02:37,949][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.37384 (ms)
+[2026-05-13 00:02:37,950][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.39434 (ms)
+[2026-05-13 00:02:37,950][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00453 (ms)
+[2026-05-13 00:02:37,951][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01836 (ms)
+[2026-05-13 00:02:37,951][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01192 (ms)
+[2026-05-13 00:02:37,951][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,952][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09632 (ms)
+[2026-05-13 00:02:37,952][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03839 (ms)
+[2026-05-13 00:02:37,952][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:37,952][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00930 (ms)
+[2026-05-13 00:02:37,953][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:37,953][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01693 (ms)
+[2026-05-13 00:02:37,953][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,953][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:37,954][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03695 (ms)
+[2026-05-13 00:02:37,954][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04196 (ms)
+[2026-05-13 00:02:37,954][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:02:37,954][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00811 (ms)
+[2026-05-13 00:02:37,955][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:37,955][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01621 (ms)
+[2026-05-13 00:02:37,955][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:37,955][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,956][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00548 (ms)
+[2026-05-13 00:02:37,956][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.56273 (ms)
+[2026-05-13 00:02:37,958][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00358 (ms)
+[2026-05-13 00:02:37,958][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00405 (ms)
+[2026-05-13 00:02:37,959][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:37,959][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00405 (ms)
+[2026-05-13 00:02:37,959][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.26822 (ms)
+[2026-05-13 00:02:37,960][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.62537 (ms)
+[2026-05-13 00:02:37,961][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00668 (ms)
+[2026-05-13 00:02:37,961][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.11587 (ms)
+[2026-05-13 00:02:37,962][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:37,962][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,962][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03743 (ms)
+[2026-05-13 00:02:37,962][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03386 (ms)
+[2026-05-13 00:02:37,962][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:02:37,963][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:02:37,963][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:37,963][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01526 (ms)
+[2026-05-13 00:02:37,963][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,964][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00834 (ms)
+[2026-05-13 00:02:37,964][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03481 (ms)
+[2026-05-13 00:02:37,964][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03147 (ms)
+[2026-05-13 00:02:37,964][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:37,965][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00763 (ms)
+[2026-05-13 00:02:37,966][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:37,967][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01478 (ms)
+[2026-05-13 00:02:37,967][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01073 (ms)
+[2026-05-13 00:02:37,967][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:37,968][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.02146 (ms)
+[2026-05-13 00:02:37,969][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 11.83963 (ms)
+[2026-05-13 00:02:38,156][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00787 (ms)
+[2026-05-13 00:02:38,156][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00739 (ms)
+[2026-05-13 00:02:38,156][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00763 (ms)
+[2026-05-13 00:02:38,157][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:02:38,159][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.78313 (ms)
+[2026-05-13 00:02:38,159][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.27919 (ms)
+[2026-05-13 00:02:38,159][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00381 (ms)
+[2026-05-13 00:02:38,159][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01264 (ms)
+[2026-05-13 00:02:38,160][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:02:38,160][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00978 (ms)
+[2026-05-13 00:02:38,160][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.07749 (ms)
+[2026-05-13 00:02:38,161][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05460 (ms)
+[2026-05-13 00:02:38,161][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:02:38,161][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00787 (ms)
+[2026-05-13 00:02:38,161][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:38,162][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02623 (ms)
+[2026-05-13 00:02:38,162][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:38,162][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:38,163][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01240 (ms)
+[2026-05-13 00:02:38,163][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.25303 (ms)
+[2026-05-13 00:02:38,268][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00644 (ms)
+[2026-05-13 00:02:38,269][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00739 (ms)
+[2026-05-13 00:02:38,270][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:02:38,270][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00525 (ms)
+[2026-05-13 00:02:38,272][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.88518 (ms)
+[2026-05-13 00:02:38,272][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.31447 (ms)
+[2026-05-13 00:02:38,273][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:02:38,273][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01431 (ms)
+[2026-05-13 00:02:38,273][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01192 (ms)
+[2026-05-13 00:02:38,274][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00548 (ms)
+[2026-05-13 00:02:38,274][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03624 (ms)
+[2026-05-13 00:02:38,274][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02384 (ms)
+[2026-05-13 00:02:38,274][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:38,274][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.03552 (ms)
+[2026-05-13 00:02:38,275][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00858 (ms)
+[2026-05-13 00:02:38,275][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01240 (ms)
+[2026-05-13 00:02:38,275][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:38,276][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:38,276][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00572 (ms)
+[2026-05-13 00:02:38,276][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.79209 (ms)
+[2026-05-13 00:02:38,381][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00691 (ms)
+[2026-05-13 00:02:38,382][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00668 (ms)
+[2026-05-13 00:02:38,382][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:02:38,382][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00429 (ms)
+[2026-05-13 00:02:38,384][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.81913 (ms)
+[2026-05-13 00:02:38,385][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.44441 (ms)
+[2026-05-13 00:02:38,385][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:02:38,386][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01478 (ms)
+[2026-05-13 00:02:38,386][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00620 (ms)
+[2026-05-13 00:02:38,386][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:02:38,386][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03505 (ms)
+[2026-05-13 00:02:38,386][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02456 (ms)
+[2026-05-13 00:02:38,387][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:38,387][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00811 (ms)
+[2026-05-13 00:02:38,387][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:38,387][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01192 (ms)
+[2026-05-13 00:02:38,387][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:02:38,388][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:02:38,388][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:02:38,388][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 8.69131 (ms)
+[2026-05-13 00:02:38,389][__main__][INFO] - Completed seed 1/1 (seed=42)
+[2026-05-13 00:02:38,392][__main__][INFO] - Saved benchmark report: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/benchmark_results/ablation_no_pinn_guidance.json
+[2026-05-13 00:02:41,256][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 50
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.0
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 1
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+  batch_size_hamiltonians: 2
+  lambda_weight_sweep:
+  - 0.1
+  guidance_scale: 1.0
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/diffusion_best.pt
+  device: cpu
+  n_test_hamiltonians: 100
+  n_seeds: 5
+  seed: 42
+  guidance_scale: 3.0
+  n_groups_max: 8
+  n_trials_latency: 10
+  fidelity_only: false
+  use_wandb: false
+  output_filename: benchmark_evaluation_results.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+
+[2026-05-13 00:02:42,625][pinn_trotter.pinn.evaluator][INFO] - make_evaluator: n_qubits=4 ≤ 8 → ExactFidelityEvaluator
+[2026-05-13 00:02:42,626][__main__][INFO] - Using evaluator: ExactFidelityEvaluator
+[2026-05-13 00:02:44,114][pinn_trotter.optimizer.closed_loop][INFO] - iter=0 loss=-5.8449e-02 fid=0.2369 depth=25.5 hv=343.51
+[2026-05-13 00:02:44,633][pinn_trotter.optimizer.closed_loop][INFO] - Checkpoint saved: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ckpt_iter_000000_fid0.2369_depth0008.pt
+[2026-05-13 00:02:44,634][__main__][INFO] - Training complete: 1 iterations in 1.8s | final_fid=0.2369 | HV=343.5117
+[2026-05-13 00:02:46,926][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 1000
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.1
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 100
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/ablation_no_cfg_iter1_ckpt_iter_000000_fid0.2369_depth0008_smoke_cuda.pt
+  device: cuda
+  n_test_hamiltonians: 1
+  n_seeds: 1
+  seed: 42
+  guidance_scale: 1.0
+  n_groups_max: 8
+  n_trials_latency: 1
+  fidelity_only: false
+  use_wandb: false
+  output_filename: ablation_no_cfg.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+
+[2026-05-13 00:02:49,075][__main__][INFO] - Loaded model checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_no_cfg_iter1_ckpt_iter_000000_fid0.2369_depth0008_smoke_cuda.pt
+[2026-05-13 00:02:54,815][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00811 (ms)
+[2026-05-13 00:02:54,815][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01311 (ms)
+[2026-05-13 00:02:54,816][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:02:54,816][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00596 (ms)
+[2026-05-13 00:02:54,817][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.56124 (ms)
+[2026-05-13 00:02:54,818][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.58150 (ms)
+[2026-05-13 00:02:54,818][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00930 (ms)
+[2026-05-13 00:02:54,818][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01669 (ms)
+[2026-05-13 00:02:54,819][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00620 (ms)
+[2026-05-13 00:02:54,819][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:02:54,819][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02766 (ms)
+[2026-05-13 00:02:54,819][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01597 (ms)
+[2026-05-13 00:02:54,820][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:54,820][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00668 (ms)
+[2026-05-13 00:02:54,820][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:54,820][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00906 (ms)
+[2026-05-13 00:02:54,821][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:54,821][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:54,821][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02289 (ms)
+[2026-05-13 00:02:54,821][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01335 (ms)
+[2026-05-13 00:02:54,821][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:54,822][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00501 (ms)
+[2026-05-13 00:02:54,822][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:02:54,822][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00811 (ms)
+[2026-05-13 00:02:54,823][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:02:54,823][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:02:54,823][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00572 (ms)
+[2026-05-13 00:02:54,824][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 401.97420 (ms)
+[2026-05-13 00:02:54,826][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00405 (ms)
+[2026-05-13 00:02:54,826][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00405 (ms)
+[2026-05-13 00:02:54,827][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:02:54,827][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00525 (ms)
+[2026-05-13 00:02:54,828][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.35715 (ms)
+[2026-05-13 00:02:54,828][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.19336 (ms)
+[2026-05-13 00:02:54,829][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00381 (ms)
+[2026-05-13 00:02:54,829][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02289 (ms)
+[2026-05-13 00:02:54,830][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:02:54,830][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:02:54,830][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04625 (ms)
+[2026-05-13 00:02:54,831][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04625 (ms)
+[2026-05-13 00:02:54,831][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:02:54,831][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00691 (ms)
+[2026-05-13 00:02:54,831][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:54,832][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00906 (ms)
+[2026-05-13 00:02:54,832][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:54,832][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:54,832][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02599 (ms)
+[2026-05-13 00:02:54,833][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01335 (ms)
+[2026-05-13 00:02:54,833][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:02:54,833][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00405 (ms)
+[2026-05-13 00:02:54,833][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:02:54,834][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00739 (ms)
+[2026-05-13 00:02:54,834][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:02:54,834][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00286 (ms)
+[2026-05-13 00:02:54,834][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00453 (ms)
+[2026-05-13 00:02:54,835][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.99689 (ms)
+[2026-05-13 00:03:02,002][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00644 (ms)
+[2026-05-13 00:03:02,003][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00644 (ms)
+[2026-05-13 00:03:02,004][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.56958 (ms)
+[2026-05-13 00:03:02,005][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.49400 (ms)
+[2026-05-13 00:03:02,005][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01240 (ms)
+[2026-05-13 00:03:02,005][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 4.45032 (ms)
+[2026-05-13 00:03:02,017][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00477 (ms)
+[2026-05-13 00:03:02,018][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00930 (ms)
+[2026-05-13 00:03:02,018][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:03:02,018][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00548 (ms)
+[2026-05-13 00:03:02,019][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.30470 (ms)
+[2026-05-13 00:03:02,019][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.30351 (ms)
+[2026-05-13 00:03:02,019][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00477 (ms)
+[2026-05-13 00:03:02,020][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02074 (ms)
+[2026-05-13 00:03:02,020][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00811 (ms)
+[2026-05-13 00:03:02,020][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:02,022][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04792 (ms)
+[2026-05-13 00:03:02,023][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.09441 (ms)
+[2026-05-13 00:03:02,023][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.01025 (ms)
+[2026-05-13 00:03:02,023][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01788 (ms)
+[2026-05-13 00:03:02,023][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00548 (ms)
+[2026-05-13 00:03:02,024][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01764 (ms)
+[2026-05-13 00:03:02,024][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:02,024][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:02,024][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03552 (ms)
+[2026-05-13 00:03:02,024][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05651 (ms)
+[2026-05-13 00:03:02,025][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:03:02,025][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00811 (ms)
+[2026-05-13 00:03:02,025][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00811 (ms)
+[2026-05-13 00:03:02,026][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.05150 (ms)
+[2026-05-13 00:03:02,026][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01216 (ms)
+[2026-05-13 00:03:02,026][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00548 (ms)
+[2026-05-13 00:03:02,026][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00620 (ms)
+[2026-05-13 00:03:02,027][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 11.29532 (ms)
+[2026-05-13 00:03:02,029][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00334 (ms)
+[2026-05-13 00:03:02,030][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00978 (ms)
+[2026-05-13 00:03:02,031][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00429 (ms)
+[2026-05-13 00:03:02,031][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:03:02,032][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.29206 (ms)
+[2026-05-13 00:03:02,032][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.33545 (ms)
+[2026-05-13 00:03:02,032][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00572 (ms)
+[2026-05-13 00:03:02,033][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03147 (ms)
+[2026-05-13 00:03:02,033][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:03:02,033][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:02,033][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.06461 (ms)
+[2026-05-13 00:03:02,034][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03719 (ms)
+[2026-05-13 00:03:02,038][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00644 (ms)
+[2026-05-13 00:03:02,038][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01717 (ms)
+[2026-05-13 00:03:02,039][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:03:02,039][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02241 (ms)
+[2026-05-13 00:03:02,042][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01049 (ms)
+[2026-05-13 00:03:02,042][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00644 (ms)
+[2026-05-13 00:03:02,043][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.07510 (ms)
+[2026-05-13 00:03:02,043][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.08321 (ms)
+[2026-05-13 00:03:02,043][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:02,044][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01097 (ms)
+[2026-05-13 00:03:02,044][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:03:02,044][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02170 (ms)
+[2026-05-13 00:03:02,044][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:03:02,045][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:02,045][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00572 (ms)
+[2026-05-13 00:03:02,045][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 17.07458 (ms)
+[2026-05-13 00:03:02,649][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00787 (ms)
+[2026-05-13 00:03:02,654][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01025 (ms)
+[2026-05-13 00:03:02,654][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00691 (ms)
+[2026-05-13 00:03:02,655][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01478 (ms)
+[2026-05-13 00:03:02,656][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.42057 (ms)
+[2026-05-13 00:03:02,657][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.87643 (ms)
+[2026-05-13 00:03:02,657][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00596 (ms)
+[2026-05-13 00:03:02,657][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03433 (ms)
+[2026-05-13 00:03:02,658][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00715 (ms)
+[2026-05-13 00:03:02,658][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:02,659][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09894 (ms)
+[2026-05-13 00:03:02,659][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.15783 (ms)
+[2026-05-13 00:03:02,660][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00644 (ms)
+[2026-05-13 00:03:02,660][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00978 (ms)
+[2026-05-13 00:03:02,660][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:03:02,660][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01740 (ms)
+[2026-05-13 00:03:02,661][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:02,661][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:02,661][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03386 (ms)
+[2026-05-13 00:03:02,661][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03052 (ms)
+[2026-05-13 00:03:02,661][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00834 (ms)
+[2026-05-13 00:03:02,662][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00787 (ms)
+[2026-05-13 00:03:02,662][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.02408 (ms)
+[2026-05-13 00:03:02,663][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02456 (ms)
+[2026-05-13 00:03:02,663][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:03:02,663][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:02,663][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:03:02,664][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 19.17815 (ms)
+[2026-05-13 00:03:02,667][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00334 (ms)
+[2026-05-13 00:03:02,667][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00358 (ms)
+[2026-05-13 00:03:02,667][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:02,667][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00954 (ms)
+[2026-05-13 00:03:02,668][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.31614 (ms)
+[2026-05-13 00:03:02,668][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.45943 (ms)
+[2026-05-13 00:03:02,669][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:03:02,669][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.07772 (ms)
+[2026-05-13 00:03:02,669][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:03:02,669][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01049 (ms)
+[2026-05-13 00:03:02,670][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09823 (ms)
+[2026-05-13 00:03:02,670][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04220 (ms)
+[2026-05-13 00:03:02,670][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00644 (ms)
+[2026-05-13 00:03:02,671][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00858 (ms)
+[2026-05-13 00:03:02,671][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:02,671][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01597 (ms)
+[2026-05-13 00:03:02,671][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:02,672][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:02,672][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05603 (ms)
+[2026-05-13 00:03:02,672][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03815 (ms)
+[2026-05-13 00:03:02,672][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:02,672][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01597 (ms)
+[2026-05-13 00:03:02,673][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:02,673][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01526 (ms)
+[2026-05-13 00:03:02,673][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00930 (ms)
+[2026-05-13 00:03:02,673][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:02,674][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01264 (ms)
+[2026-05-13 00:03:02,674][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 8.93474 (ms)
+[2026-05-13 00:03:03,139][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00644 (ms)
+[2026-05-13 00:03:03,142][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00930 (ms)
+[2026-05-13 00:03:03,143][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.01311 (ms)
+[2026-05-13 00:03:03,143][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01001 (ms)
+[2026-05-13 00:03:03,144][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.39482 (ms)
+[2026-05-13 00:03:03,145][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.48804 (ms)
+[2026-05-13 00:03:03,145][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00858 (ms)
+[2026-05-13 00:03:03,145][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03695 (ms)
+[2026-05-13 00:03:03,146][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01287 (ms)
+[2026-05-13 00:03:03,146][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:03:03,146][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.06914 (ms)
+[2026-05-13 00:03:03,146][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.08011 (ms)
+[2026-05-13 00:03:03,147][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:03:03,147][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01049 (ms)
+[2026-05-13 00:03:03,147][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00381 (ms)
+[2026-05-13 00:03:03,148][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02432 (ms)
+[2026-05-13 00:03:03,148][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01073 (ms)
+[2026-05-13 00:03:03,148][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00930 (ms)
+[2026-05-13 00:03:03,148][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05078 (ms)
+[2026-05-13 00:03:03,149][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04029 (ms)
+[2026-05-13 00:03:03,149][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:03:03,149][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01693 (ms)
+[2026-05-13 00:03:03,150][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00787 (ms)
+[2026-05-13 00:03:03,150][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.04530 (ms)
+[2026-05-13 00:03:03,150][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01097 (ms)
+[2026-05-13 00:03:03,151][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:03:03,151][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01311 (ms)
+[2026-05-13 00:03:03,152][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 14.85014 (ms)
+[2026-05-13 00:03:03,154][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00477 (ms)
+[2026-05-13 00:03:03,155][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01192 (ms)
+[2026-05-13 00:03:03,156][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00644 (ms)
+[2026-05-13 00:03:03,156][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00453 (ms)
+[2026-05-13 00:03:03,157][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.35810 (ms)
+[2026-05-13 00:03:03,157][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.37169 (ms)
+[2026-05-13 00:03:03,158][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00715 (ms)
+[2026-05-13 00:03:03,158][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02956 (ms)
+[2026-05-13 00:03:03,158][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00644 (ms)
+[2026-05-13 00:03:03,158][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:03:03,159][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.20528 (ms)
+[2026-05-13 00:03:03,159][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04005 (ms)
+[2026-05-13 00:03:03,159][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:03,160][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00882 (ms)
+[2026-05-13 00:03:03,160][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00358 (ms)
+[2026-05-13 00:03:03,160][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01621 (ms)
+[2026-05-13 00:03:03,160][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:03,161][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:03,161][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03266 (ms)
+[2026-05-13 00:03:03,161][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02718 (ms)
+[2026-05-13 00:03:03,161][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00358 (ms)
+[2026-05-13 00:03:03,161][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00691 (ms)
+[2026-05-13 00:03:03,162][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:03,162][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03934 (ms)
+[2026-05-13 00:03:03,162][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.03529 (ms)
+[2026-05-13 00:03:03,162][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:03,163][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:03,163][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.96780 (ms)
+[2026-05-13 00:03:03,981][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00691 (ms)
+[2026-05-13 00:03:03,981][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00739 (ms)
+[2026-05-13 00:03:03,981][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:03:03,982][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:03:03,982][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.39554 (ms)
+[2026-05-13 00:03:03,983][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.37766 (ms)
+[2026-05-13 00:03:03,983][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:03:03,983][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02050 (ms)
+[2026-05-13 00:03:03,984][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00691 (ms)
+[2026-05-13 00:03:03,984][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:03,984][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04435 (ms)
+[2026-05-13 00:03:03,985][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03791 (ms)
+[2026-05-13 00:03:03,985][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:03,985][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01025 (ms)
+[2026-05-13 00:03:03,985][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:03:03,985][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01836 (ms)
+[2026-05-13 00:03:03,985][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:03,986][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:03,986][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03767 (ms)
+[2026-05-13 00:03:03,986][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03672 (ms)
+[2026-05-13 00:03:03,986][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:03,987][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00787 (ms)
+[2026-05-13 00:03:03,987][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:03,987][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01717 (ms)
+[2026-05-13 00:03:03,987][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:03,987][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:03,988][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01955 (ms)
+[2026-05-13 00:03:03,988][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.26328 (ms)
+[2026-05-13 00:03:03,990][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00429 (ms)
+[2026-05-13 00:03:03,991][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00358 (ms)
+[2026-05-13 00:03:03,991][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00834 (ms)
+[2026-05-13 00:03:03,992][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00429 (ms)
+[2026-05-13 00:03:03,992][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.38695 (ms)
+[2026-05-13 00:03:03,993][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.57626 (ms)
+[2026-05-13 00:03:03,993][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00501 (ms)
+[2026-05-13 00:03:03,994][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.05627 (ms)
+[2026-05-13 00:03:03,994][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:03:03,994][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:03,994][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04101 (ms)
+[2026-05-13 00:03:03,994][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03529 (ms)
+[2026-05-13 00:03:03,995][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:03,995][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00882 (ms)
+[2026-05-13 00:03:03,995][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:03,995][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01574 (ms)
+[2026-05-13 00:03:03,996][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:03,996][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:03,996][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03719 (ms)
+[2026-05-13 00:03:03,996][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04745 (ms)
+[2026-05-13 00:03:03,997][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:03:03,997][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:03:03,997][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:03,997][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01574 (ms)
+[2026-05-13 00:03:03,998][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:03,998][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:03,998][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:03,998][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.14669 (ms)
+[2026-05-13 00:03:04,195][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00715 (ms)
+[2026-05-13 00:03:04,195][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00691 (ms)
+[2026-05-13 00:03:04,195][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:03:04,195][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00525 (ms)
+[2026-05-13 00:03:04,198][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.92547 (ms)
+[2026-05-13 00:03:04,198][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.32163 (ms)
+[2026-05-13 00:03:04,199][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00930 (ms)
+[2026-05-13 00:03:04,199][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01359 (ms)
+[2026-05-13 00:03:04,199][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00596 (ms)
+[2026-05-13 00:03:04,199][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:04,200][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03695 (ms)
+[2026-05-13 00:03:04,200][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05627 (ms)
+[2026-05-13 00:03:04,200][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:04,200][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00834 (ms)
+[2026-05-13 00:03:04,201][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00477 (ms)
+[2026-05-13 00:03:04,201][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01168 (ms)
+[2026-05-13 00:03:04,201][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01574 (ms)
+[2026-05-13 00:03:04,202][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:03:04,202][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01144 (ms)
+[2026-05-13 00:03:04,203][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.83143 (ms)
+[2026-05-13 00:03:04,301][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00715 (ms)
+[2026-05-13 00:03:04,302][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00787 (ms)
+[2026-05-13 00:03:04,302][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:04,302][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00572 (ms)
+[2026-05-13 00:03:04,304][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 2.09284 (ms)
+[2026-05-13 00:03:04,305][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.29969 (ms)
+[2026-05-13 00:03:04,305][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:03:04,305][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01192 (ms)
+[2026-05-13 00:03:04,305][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00644 (ms)
+[2026-05-13 00:03:04,305][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:04,306][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03600 (ms)
+[2026-05-13 00:03:04,306][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02718 (ms)
+[2026-05-13 00:03:04,306][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:04,306][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01740 (ms)
+[2026-05-13 00:03:04,307][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:04,307][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.04435 (ms)
+[2026-05-13 00:03:04,307][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00906 (ms)
+[2026-05-13 00:03:04,308][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01192 (ms)
+[2026-05-13 00:03:04,308][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:03:04,309][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.45520 (ms)
+[2026-05-13 00:03:04,424][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00715 (ms)
+[2026-05-13 00:03:04,425][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00691 (ms)
+[2026-05-13 00:03:04,425][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:03:04,425][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01717 (ms)
+[2026-05-13 00:03:04,429][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 3.40176 (ms)
+[2026-05-13 00:03:04,430][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.44155 (ms)
+[2026-05-13 00:03:04,430][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00477 (ms)
+[2026-05-13 00:03:04,430][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01359 (ms)
+[2026-05-13 00:03:04,431][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:03:04,431][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:04,431][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05341 (ms)
+[2026-05-13 00:03:04,431][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02384 (ms)
+[2026-05-13 00:03:04,432][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:03:04,432][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00787 (ms)
+[2026-05-13 00:03:04,432][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:04,432][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01049 (ms)
+[2026-05-13 00:03:04,432][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:04,433][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:04,433][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00596 (ms)
+[2026-05-13 00:03:04,433][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 10.81491 (ms)
+[2026-05-13 00:03:04,434][__main__][INFO] - Completed seed 1/1 (seed=42)
+[2026-05-13 00:03:04,438][__main__][INFO] - Saved benchmark report: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/benchmark_results/ablation_no_cfg.json
+[2026-05-13 00:03:07,504][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 50
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.1
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 1
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+  batch_size_hamiltonians: 2
+  lambda_weight_sweep:
+  - 0.1
+  guidance_scale: 2.0
+  disable_gnn_encoder: true
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/diffusion_best.pt
+  device: cpu
+  n_test_hamiltonians: 100
+  n_seeds: 5
+  seed: 42
+  guidance_scale: 3.0
+  n_groups_max: 8
+  n_trials_latency: 10
+  fidelity_only: false
+  use_wandb: false
+  output_filename: benchmark_evaluation_results.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+
+[2026-05-13 00:03:08,977][pinn_trotter.pinn.evaluator][INFO] - make_evaluator: n_qubits=4 ≤ 8 → ExactFidelityEvaluator
+[2026-05-13 00:03:08,977][__main__][INFO] - Using evaluator: ExactFidelityEvaluator
+[2026-05-13 00:03:10,557][pinn_trotter.optimizer.closed_loop][INFO] - iter=0 loss=-1.1548e+00 fid=0.1024 depth=15.0 hv=172.49
+[2026-05-13 00:03:11,116][pinn_trotter.optimizer.closed_loop][INFO] - Checkpoint saved: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ckpt_iter_000000_fid0.1024_depth0009.pt
+[2026-05-13 00:03:11,117][__main__][INFO] - Training complete: 1 iterations in 2.0s | final_fid=0.1024 | HV=172.4941
+[2026-05-13 00:03:13,726][__main__][INFO] - Config:
+model:
+  n_fourier_features: 256
+  fourier_sigma: null
+  hidden_dim: 256
+  n_hidden_layers: 3
+  activation: tanh
+  use_layer_norm: true
+  norm_penalty_weight: 0.1
+  output_real_imag: true
+  init_std: 0.02
+  n_layers: 4
+  output_dim: 512
+  pooling: attention
+  node_feat_dim: 16
+  edge_feat_dim: 3
+  message_hidden_dim: 256
+  update_hidden_dim: 256
+  dropout: 0.1
+  T: 1000
+  beta_schedule: cosine
+  beta_start: 0.0001
+  beta_end: 0.02
+  guidance_scale: 3.0
+  pinn_guidance_scale: 2.0
+  p_cond_drop: 0.1
+  transition_matrix: uniform
+  condition_dim: 256
+  time_embed_dim: 128
+  grouping_transformer_layers: 4
+  order_transformer_layers: 2
+  timestep_mlp_layers: 3
+training:
+  n_samples: 500
+  n_qubits_distribution:
+    4: 0.6
+    6: 0.3
+    8: 0.1
+  n_qubits: null
+  J_range:
+  - 0.5
+  - 2.0
+  h_range:
+  - 0.1
+  - 0.5
+  t_final_range:
+  - 2.0
+  - 2.0
+  n_groups_max: 8
+  order_probs:
+  - 0.2
+  - 0.6
+  - 0.2
+  n_workers: 4
+  chunk_size: 100
+  output_path: data/processed/dataset_tfim.h5
+  random_seed: 42
+  optimizer:
+    name: adamw
+    lr: 0.0001
+    betas:
+    - 0.9
+    - 0.999
+    weight_decay: 0.01
+  scheduler:
+    name: cosine_warm_restarts
+    T_0: 500
+    T_mult: 2
+  max_epochs: 500
+  n_collocation_points: 1000
+  early_stop_patience: 10
+  early_stop_threshold: 1.0e-05
+  loss_weights:
+    pde: 1.0
+    ic: 10.0
+    circuit: 5.0
+    grouping: 1.0
+    timesteps: 0.5
+    orders: 0.3
+  warmstart_steps: 200
+  log_interval: 10
+  checkpoint_dir: experiments/closed_loop_checkpoints/
+  ema_decay: 0.9999
+  batch_size: 128
+  train_split: 0.9
+  val_split: 0.1
+  augment: true
+  gnn_pretrain_epochs: 200
+  gnn_pretrain_lr: 0.0003
+  gnn_pretrain_log_interval: 20
+  gnn_pretrain_use_strategy_features: true
+  save_interval: 10
+  wandb_project: pinn-trotter
+  device: auto
+  n_iterations: 100
+  n_samples_per_iter: 32
+  baseline_ema: 0.9
+  policy_lr: 1.0e-05
+  lambda_weights:
+  - 0.0
+  - 0.01
+  - 0.05
+  - 0.1
+  - 0.5
+  - 1.0
+  pareto_ref_point:
+  - 0.0
+  - 10000
+  checkpoint_interval: 100
+  max_checkpoints_keep: 3
+experiment:
+  name: tfim_4q_poc
+  hamiltonian: tfim
+  n_qubits: 4
+  J: 1.0
+  h: 0.5
+  boundary: periodic
+  t_total: 2.0
+benchmark:
+  model_ckpt: experiments/closed_loop_checkpoints/ablation_no_gnn_encoder_iter1_ckpt_iter_000000_fid0.1024_depth0009_smoke_cuda.pt
+  device: cuda
+  n_test_hamiltonians: 1
+  n_seeds: 1
+  seed: 42
+  guidance_scale: 3.0
+  n_groups_max: 8
+  n_trials_latency: 1
+  fidelity_only: false
+  use_wandb: false
+  output_filename: ablation_no_gnn_encoder.json
+  methods: ours,qiskit_4th,cirq,tket,pennylane,paulihedral
+  baseline_n_steps: 5
+  paulihedral_scheduler: depth
+  h_min: 0.1
+  h_max: 0.5
+  disable_gnn_encoder: true
+
+[2026-05-13 00:03:16,095][__main__][INFO] - Loaded model checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_no_gnn_encoder_iter1_ckpt_iter_000000_fid0.1024_depth0009_smoke_cuda.pt
+[2026-05-13 00:03:22,218][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01073 (ms)
+[2026-05-13 00:03:22,218][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01550 (ms)
+[2026-05-13 00:03:22,219][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00429 (ms)
+[2026-05-13 00:03:22,219][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01907 (ms)
+[2026-05-13 00:03:22,220][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.04141 (ms)
+[2026-05-13 00:03:22,222][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 1.06549 (ms)
+[2026-05-13 00:03:22,222][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00787 (ms)
+[2026-05-13 00:03:22,223][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02813 (ms)
+[2026-05-13 00:03:22,223][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01192 (ms)
+[2026-05-13 00:03:22,223][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:03:22,224][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04387 (ms)
+[2026-05-13 00:03:22,224][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03576 (ms)
+[2026-05-13 00:03:22,224][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00477 (ms)
+[2026-05-13 00:03:22,225][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01216 (ms)
+[2026-05-13 00:03:22,225][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00620 (ms)
+[2026-05-13 00:03:22,225][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02146 (ms)
+[2026-05-13 00:03:22,226][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01168 (ms)
+[2026-05-13 00:03:22,227][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01574 (ms)
+[2026-05-13 00:03:22,227][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04435 (ms)
+[2026-05-13 00:03:22,228][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02337 (ms)
+[2026-05-13 00:03:22,228][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:03:22,228][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01025 (ms)
+[2026-05-13 00:03:22,229][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00477 (ms)
+[2026-05-13 00:03:22,229][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01359 (ms)
+[2026-05-13 00:03:22,229][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00548 (ms)
+[2026-05-13 00:03:22,229][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00644 (ms)
+[2026-05-13 00:03:22,230][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.01025 (ms)
+[2026-05-13 00:03:22,230][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 436.21731 (ms)
+[2026-05-13 00:03:22,234][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00596 (ms)
+[2026-05-13 00:03:22,235][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01192 (ms)
+[2026-05-13 00:03:22,236][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00739 (ms)
+[2026-05-13 00:03:22,236][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01216 (ms)
+[2026-05-13 00:03:22,237][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.79274 (ms)
+[2026-05-13 00:03:22,238][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.22840 (ms)
+[2026-05-13 00:03:22,238][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:03:22,238][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01192 (ms)
+[2026-05-13 00:03:22,239][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00596 (ms)
+[2026-05-13 00:03:22,239][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00548 (ms)
+[2026-05-13 00:03:22,239][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.06294 (ms)
+[2026-05-13 00:03:22,240][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04959 (ms)
+[2026-05-13 00:03:22,240][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:03:22,241][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00620 (ms)
+[2026-05-13 00:03:22,241][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00906 (ms)
+[2026-05-13 00:03:22,241][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02313 (ms)
+[2026-05-13 00:03:22,242][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:03:22,242][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01049 (ms)
+[2026-05-13 00:03:22,243][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.02480 (ms)
+[2026-05-13 00:03:22,243][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01454 (ms)
+[2026-05-13 00:03:22,243][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:03:22,243][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00525 (ms)
+[2026-05-13 00:03:22,244][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00453 (ms)
+[2026-05-13 00:03:22,244][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.00906 (ms)
+[2026-05-13 00:03:22,244][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:03:22,244][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:22,245][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00620 (ms)
+[2026-05-13 00:03:22,245][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 12.78877 (ms)
+[2026-05-13 00:03:29,037][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00715 (ms)
+[2026-05-13 00:03:29,039][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01383 (ms)
+[2026-05-13 00:03:29,040][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.66423 (ms)
+[2026-05-13 00:03:29,041][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.46778 (ms)
+[2026-05-13 00:03:29,041][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00548 (ms)
+[2026-05-13 00:03:29,042][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 6.33788 (ms)
+[2026-05-13 00:03:29,054][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00381 (ms)
+[2026-05-13 00:03:29,054][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01192 (ms)
+[2026-05-13 00:03:29,054][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:03:29,055][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00525 (ms)
+[2026-05-13 00:03:29,055][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.28753 (ms)
+[2026-05-13 00:03:29,056][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.23556 (ms)
+[2026-05-13 00:03:29,056][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00381 (ms)
+[2026-05-13 00:03:29,056][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01788 (ms)
+[2026-05-13 00:03:29,056][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00525 (ms)
+[2026-05-13 00:03:29,056][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00954 (ms)
+[2026-05-13 00:03:29,057][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.09370 (ms)
+[2026-05-13 00:03:29,057][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.06270 (ms)
+[2026-05-13 00:03:29,057][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00978 (ms)
+[2026-05-13 00:03:29,058][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01717 (ms)
+[2026-05-13 00:03:29,058][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00358 (ms)
+[2026-05-13 00:03:29,058][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01574 (ms)
+[2026-05-13 00:03:29,058][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:29,058][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:29,059][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03242 (ms)
+[2026-05-13 00:03:29,059][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02503 (ms)
+[2026-05-13 00:03:29,059][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:03:29,059][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00644 (ms)
+[2026-05-13 00:03:29,059][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:29,060][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01502 (ms)
+[2026-05-13 00:03:29,060][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:29,060][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:29,060][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:29,061][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 8.43644 (ms)
+[2026-05-13 00:03:29,063][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00358 (ms)
+[2026-05-13 00:03:29,063][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01097 (ms)
+[2026-05-13 00:03:29,064][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:29,064][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:03:29,065][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.23198 (ms)
+[2026-05-13 00:03:29,065][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.21267 (ms)
+[2026-05-13 00:03:29,065][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:03:29,065][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01621 (ms)
+[2026-05-13 00:03:29,065][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00453 (ms)
+[2026-05-13 00:03:29,066][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:29,066][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03505 (ms)
+[2026-05-13 00:03:29,066][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03266 (ms)
+[2026-05-13 00:03:29,066][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:29,066][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00596 (ms)
+[2026-05-13 00:03:29,067][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00262 (ms)
+[2026-05-13 00:03:29,067][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01454 (ms)
+[2026-05-13 00:03:29,067][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:29,067][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:29,067][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03266 (ms)
+[2026-05-13 00:03:29,067][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02670 (ms)
+[2026-05-13 00:03:29,068][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00596 (ms)
+[2026-05-13 00:03:29,068][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01526 (ms)
+[2026-05-13 00:03:29,068][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00715 (ms)
+[2026-05-13 00:03:29,068][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03409 (ms)
+[2026-05-13 00:03:29,069][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00930 (ms)
+[2026-05-13 00:03:29,069][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01383 (ms)
+[2026-05-13 00:03:29,069][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:03:29,070][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 8.09050 (ms)
+[2026-05-13 00:03:29,634][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00811 (ms)
+[2026-05-13 00:03:29,635][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01311 (ms)
+[2026-05-13 00:03:29,635][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00644 (ms)
+[2026-05-13 00:03:29,635][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.01240 (ms)
+[2026-05-13 00:03:29,636][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.46396 (ms)
+[2026-05-13 00:03:29,637][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.33236 (ms)
+[2026-05-13 00:03:29,637][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:03:29,637][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01812 (ms)
+[2026-05-13 00:03:29,638][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00596 (ms)
+[2026-05-13 00:03:29,638][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00334 (ms)
+[2026-05-13 00:03:29,638][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04005 (ms)
+[2026-05-13 00:03:29,638][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03791 (ms)
+[2026-05-13 00:03:29,638][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00310 (ms)
+[2026-05-13 00:03:29,639][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01884 (ms)
+[2026-05-13 00:03:29,639][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00691 (ms)
+[2026-05-13 00:03:29,639][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03433 (ms)
+[2026-05-13 00:03:29,640][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01025 (ms)
+[2026-05-13 00:03:29,640][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:03:29,640][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03743 (ms)
+[2026-05-13 00:03:29,641][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03028 (ms)
+[2026-05-13 00:03:29,641][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00167 (ms)
+[2026-05-13 00:03:29,641][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00739 (ms)
+[2026-05-13 00:03:29,641][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00262 (ms)
+[2026-05-13 00:03:29,641][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01907 (ms)
+[2026-05-13 00:03:29,643][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:29,643][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:29,644][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:29,644][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 13.44562 (ms)
+[2026-05-13 00:03:29,647][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00405 (ms)
+[2026-05-13 00:03:29,647][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00381 (ms)
+[2026-05-13 00:03:29,647][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00596 (ms)
+[2026-05-13 00:03:29,648][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:03:29,648][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.28849 (ms)
+[2026-05-13 00:03:29,649][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.29254 (ms)
+[2026-05-13 00:03:29,649][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00262 (ms)
+[2026-05-13 00:03:29,649][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01550 (ms)
+[2026-05-13 00:03:29,650][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:03:29,650][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01192 (ms)
+[2026-05-13 00:03:29,650][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03743 (ms)
+[2026-05-13 00:03:29,650][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.04196 (ms)
+[2026-05-13 00:03:29,651][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00191 (ms)
+[2026-05-13 00:03:29,651][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00763 (ms)
+[2026-05-13 00:03:29,651][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:29,651][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01645 (ms)
+[2026-05-13 00:03:29,652][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01287 (ms)
+[2026-05-13 00:03:29,652][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01001 (ms)
+[2026-05-13 00:03:29,652][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.08321 (ms)
+[2026-05-13 00:03:29,653][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.06676 (ms)
+[2026-05-13 00:03:29,653][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:03:29,653][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00691 (ms)
+[2026-05-13 00:03:29,653][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:29,654][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01597 (ms)
+[2026-05-13 00:03:29,654][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:29,654][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00310 (ms)
+[2026-05-13 00:03:29,655][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:29,655][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.86958 (ms)
+[2026-05-13 00:03:30,122][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00715 (ms)
+[2026-05-13 00:03:30,123][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00763 (ms)
+[2026-05-13 00:03:30,127][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00715 (ms)
+[2026-05-13 00:03:30,128][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00906 (ms)
+[2026-05-13 00:03:30,128][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.31948 (ms)
+[2026-05-13 00:03:30,129][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.44084 (ms)
+[2026-05-13 00:03:30,130][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00906 (ms)
+[2026-05-13 00:03:30,130][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01788 (ms)
+[2026-05-13 00:03:30,130][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00620 (ms)
+[2026-05-13 00:03:30,130][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00334 (ms)
+[2026-05-13 00:03:30,131][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03958 (ms)
+[2026-05-13 00:03:30,131][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03695 (ms)
+[2026-05-13 00:03:30,131][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00620 (ms)
+[2026-05-13 00:03:30,131][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.02027 (ms)
+[2026-05-13 00:03:30,132][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00429 (ms)
+[2026-05-13 00:03:30,132][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02933 (ms)
+[2026-05-13 00:03:30,132][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:30,132][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:30,133][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03839 (ms)
+[2026-05-13 00:03:30,133][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03028 (ms)
+[2026-05-13 00:03:30,133][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:30,133][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00715 (ms)
+[2026-05-13 00:03:30,134][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:30,134][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.06628 (ms)
+[2026-05-13 00:03:30,134][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:03:30,134][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:30,135][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:03:30,135][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 14.50300 (ms)
+[2026-05-13 00:03:30,138][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00381 (ms)
+[2026-05-13 00:03:30,138][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00381 (ms)
+[2026-05-13 00:03:30,138][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:03:30,138][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00381 (ms)
+[2026-05-13 00:03:30,139][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.36550 (ms)
+[2026-05-13 00:03:30,140][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.47803 (ms)
+[2026-05-13 00:03:30,141][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:03:30,141][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03529 (ms)
+[2026-05-13 00:03:30,141][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:03:30,141][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:30,141][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05150 (ms)
+[2026-05-13 00:03:30,142][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05984 (ms)
+[2026-05-13 00:03:30,142][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:30,142][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00644 (ms)
+[2026-05-13 00:03:30,142][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:03:30,142][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01502 (ms)
+[2026-05-13 00:03:30,143][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:30,143][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:30,143][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04339 (ms)
+[2026-05-13 00:03:30,143][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02718 (ms)
+[2026-05-13 00:03:30,144][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:30,144][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00596 (ms)
+[2026-05-13 00:03:30,144][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:30,144][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01550 (ms)
+[2026-05-13 00:03:30,144][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:30,145][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:30,145][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:30,145][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 8.67605 (ms)
+[2026-05-13 00:03:30,928][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00715 (ms)
+[2026-05-13 00:03:30,929][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01216 (ms)
+[2026-05-13 00:03:30,929][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00620 (ms)
+[2026-05-13 00:03:30,929][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00501 (ms)
+[2026-05-13 00:03:30,932][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.75412 (ms)
+[2026-05-13 00:03:30,933][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.44012 (ms)
+[2026-05-13 00:03:30,933][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00477 (ms)
+[2026-05-13 00:03:30,933][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.04983 (ms)
+[2026-05-13 00:03:30,933][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:03:30,934][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:30,934][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.05269 (ms)
+[2026-05-13 00:03:30,934][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.05436 (ms)
+[2026-05-13 00:03:30,934][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00215 (ms)
+[2026-05-13 00:03:30,934][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00930 (ms)
+[2026-05-13 00:03:30,935][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00262 (ms)
+[2026-05-13 00:03:30,935][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01645 (ms)
+[2026-05-13 00:03:30,935][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01073 (ms)
+[2026-05-13 00:03:30,935][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:30,936][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03648 (ms)
+[2026-05-13 00:03:30,936][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03004 (ms)
+[2026-05-13 00:03:30,936][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:30,936][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00739 (ms)
+[2026-05-13 00:03:30,937][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00739 (ms)
+[2026-05-13 00:03:30,937][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01550 (ms)
+[2026-05-13 00:03:30,937][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00429 (ms)
+[2026-05-13 00:03:30,937][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:30,938][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:30,938][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 11.33275 (ms)
+[2026-05-13 00:03:30,940][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00477 (ms)
+[2026-05-13 00:03:30,940][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00334 (ms)
+[2026-05-13 00:03:30,941][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:30,941][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00381 (ms)
+[2026-05-13 00:03:30,941][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 0.37670 (ms)
+[2026-05-13 00:03:30,942][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.40722 (ms)
+[2026-05-13 00:03:30,942][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00286 (ms)
+[2026-05-13 00:03:30,942][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02670 (ms)
+[2026-05-13 00:03:30,943][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01073 (ms)
+[2026-05-13 00:03:30,943][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00787 (ms)
+[2026-05-13 00:03:30,943][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.04435 (ms)
+[2026-05-13 00:03:30,944][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.03195 (ms)
+[2026-05-13 00:03:30,944][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:30,944][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00787 (ms)
+[2026-05-13 00:03:30,944][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:30,945][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01454 (ms)
+[2026-05-13 00:03:30,945][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:30,945][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:30,945][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.06747 (ms)
+[2026-05-13 00:03:30,946][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02813 (ms)
+[2026-05-13 00:03:30,946][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00238 (ms)
+[2026-05-13 00:03:30,946][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00691 (ms)
+[2026-05-13 00:03:30,946][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:30,947][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01383 (ms)
+[2026-05-13 00:03:30,947][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01121 (ms)
+[2026-05-13 00:03:30,947][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:30,947][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00477 (ms)
+[2026-05-13 00:03:30,948][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 8.88515 (ms)
+[2026-05-13 00:03:31,154][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00811 (ms)
+[2026-05-13 00:03:31,154][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00691 (ms)
+[2026-05-13 00:03:31,155][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:03:31,155][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00477 (ms)
+[2026-05-13 00:03:31,157][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.71661 (ms)
+[2026-05-13 00:03:31,158][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.70047 (ms)
+[2026-05-13 00:03:31,158][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00358 (ms)
+[2026-05-13 00:03:31,159][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01240 (ms)
+[2026-05-13 00:03:31,159][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00596 (ms)
+[2026-05-13 00:03:31,159][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00358 (ms)
+[2026-05-13 00:03:31,159][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03386 (ms)
+[2026-05-13 00:03:31,160][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.08535 (ms)
+[2026-05-13 00:03:31,160][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00978 (ms)
+[2026-05-13 00:03:31,160][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01526 (ms)
+[2026-05-13 00:03:31,161][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00739 (ms)
+[2026-05-13 00:03:31,161][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.02813 (ms)
+[2026-05-13 00:03:31,161][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00787 (ms)
+[2026-05-13 00:03:31,162][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00477 (ms)
+[2026-05-13 00:03:31,162][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.03600 (ms)
+[2026-05-13 00:03:31,162][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 10.33592 (ms)
+[2026-05-13 00:03:31,286][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00668 (ms)
+[2026-05-13 00:03:31,287][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.00691 (ms)
+[2026-05-13 00:03:31,287][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00334 (ms)
+[2026-05-13 00:03:31,287][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00501 (ms)
+[2026-05-13 00:03:31,289][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.81031 (ms)
+[2026-05-13 00:03:31,290][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.27823 (ms)
+[2026-05-13 00:03:31,290][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:03:31,290][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01645 (ms)
+[2026-05-13 00:03:31,291][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00572 (ms)
+[2026-05-13 00:03:31,291][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:31,291][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03624 (ms)
+[2026-05-13 00:03:31,292][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02360 (ms)
+[2026-05-13 00:03:31,292][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:31,292][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.01597 (ms)
+[2026-05-13 00:03:31,292][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00334 (ms)
+[2026-05-13 00:03:31,292][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01192 (ms)
+[2026-05-13 00:03:31,293][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:31,293][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:31,293][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00501 (ms)
+[2026-05-13 00:03:31,294][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.26042 (ms)
+[2026-05-13 00:03:31,422][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00739 (ms)
+[2026-05-13 00:03:31,423][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.01144 (ms)
+[2026-05-13 00:03:31,423][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00262 (ms)
+[2026-05-13 00:03:31,424][qiskit.passmanager.base_tasks][INFO] - Pass: UnitarySynthesis - 0.00453 (ms)
+[2026-05-13 00:03:31,426][qiskit.passmanager.base_tasks][INFO] - Pass: HighLevelSynthesis - 1.88994 (ms)
+[2026-05-13 00:03:31,426][qiskit.passmanager.base_tasks][INFO] - Pass: BasisTranslator - 0.27108 (ms)
+[2026-05-13 00:03:31,427][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00405 (ms)
+[2026-05-13 00:03:31,427][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.03219 (ms)
+[2026-05-13 00:03:31,427][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.01287 (ms)
+[2026-05-13 00:03:31,428][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:31,428][qiskit.passmanager.base_tasks][INFO] - Pass: Optimize1qGatesDecomposition - 0.03409 (ms)
+[2026-05-13 00:03:31,429][qiskit.passmanager.base_tasks][INFO] - Pass: InverseCancellation - 0.02408 (ms)
+[2026-05-13 00:03:31,429][qiskit.passmanager.base_tasks][INFO] - Pass: ContractIdleWiresInControlFlow - 0.00286 (ms)
+[2026-05-13 00:03:31,429][qiskit.passmanager.base_tasks][INFO] - Pass: GatesInBasis - 0.00811 (ms)
+[2026-05-13 00:03:31,429][qiskit.passmanager.base_tasks][INFO] - Pass: Size - 0.00310 (ms)
+[2026-05-13 00:03:31,430][qiskit.passmanager.base_tasks][INFO] - Pass: Depth - 0.01121 (ms)
+[2026-05-13 00:03:31,430][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00405 (ms)
+[2026-05-13 00:03:31,430][qiskit.passmanager.base_tasks][INFO] - Pass: FixedPoint - 0.00381 (ms)
+[2026-05-13 00:03:31,430][qiskit.passmanager.base_tasks][INFO] - Pass: ContainsInstruction - 0.00525 (ms)
+[2026-05-13 00:03:31,431][qiskit.compiler.transpiler][INFO] - Total Transpile Time - 9.96900 (ms)
+[2026-05-13 00:03:31,431][__main__][INFO] - Completed seed 1/1 (seed=42)
+[2026-05-13 00:03:31,435][__main__][INFO] - Saved benchmark report: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/benchmark_results/ablation_no_gnn_encoder.json
+
+=== Running ablation: full_model ===
+Reference configuration without ablation.
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/04_closed_loop_finetune.py training.n_iterations=1 +training.batch_size_hamiltonians=2 +training.lambda_weight_sweep=[0.1] +training.guidance_scale=2.0 experiment.n_qubits=4 experiment.t_total=2.0 model.T=50
+Renamed checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_full_model_iter1_ckpt_iter_000000_fid0.2414_depth0013_smoke_cuda.pt
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/05_benchmark_evaluation.py benchmark.n_test_hamiltonians=1 benchmark.n_seeds=1 benchmark.n_trials_latency=1 benchmark.use_wandb=false benchmark.device=cuda benchmark.output_filename=ablation_full_model.json benchmark.model_ckpt=experiments/closed_loop_checkpoints/ablation_full_model_iter1_ckpt_iter_000000_fid0.2414_depth0013_smoke_cuda.pt
+
+=== Running ablation: no_pinn_guidance ===
+Disable PINN-guided reward signal in closed-loop training.
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/04_closed_loop_finetune.py training.n_iterations=1 +training.batch_size_hamiltonians=2 +training.lambda_weight_sweep=[0.1] +training.guidance_scale=2.0 experiment.n_qubits=4 experiment.t_total=2.0 model.T=50 +training.disable_pinn_guidance=true
+Renamed checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_no_pinn_guidance_iter1_ckpt_iter_000000_fid0.0000_depth0029_smoke_cuda.pt
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/05_benchmark_evaluation.py benchmark.n_test_hamiltonians=1 benchmark.n_seeds=1 benchmark.n_trials_latency=1 benchmark.use_wandb=false benchmark.device=cuda benchmark.output_filename=ablation_no_pinn_guidance.json benchmark.model_ckpt=experiments/closed_loop_checkpoints/ablation_no_pinn_guidance_iter1_ckpt_iter_000000_fid0.0000_depth0029_smoke_cuda.pt
+
+=== Running ablation: no_cfg ===
+Disable classifier-free guidance by removing condition dropout.
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/04_closed_loop_finetune.py training.n_iterations=1 +training.batch_size_hamiltonians=2 +training.lambda_weight_sweep=[0.1] +training.guidance_scale=2.0 experiment.n_qubits=4 experiment.t_total=2.0 model.T=50 model.p_cond_drop=0.0 training.guidance_scale=1.0
+Renamed checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_no_cfg_iter1_ckpt_iter_000000_fid0.2369_depth0008_smoke_cuda.pt
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/05_benchmark_evaluation.py benchmark.n_test_hamiltonians=1 benchmark.n_seeds=1 benchmark.n_trials_latency=1 benchmark.use_wandb=false benchmark.device=cuda benchmark.output_filename=ablation_no_cfg.json benchmark.model_ckpt=experiments/closed_loop_checkpoints/ablation_no_cfg_iter1_ckpt_iter_000000_fid0.2369_depth0008_smoke_cuda.pt benchmark.guidance_scale=1.0
+
+=== Running ablation: no_gnn_encoder ===
+Replace GNN condition vectors with zeros during train/eval.
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/04_closed_loop_finetune.py training.n_iterations=1 +training.batch_size_hamiltonians=2 +training.lambda_weight_sweep=[0.1] +training.guidance_scale=2.0 experiment.n_qubits=4 experiment.t_total=2.0 model.T=50 +training.disable_gnn_encoder=true
+Renamed checkpoint: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/closed_loop_checkpoints/ablation_no_gnn_encoder_iter1_ckpt_iter_000000_fid0.1024_depth0009_smoke_cuda.pt
+$ /home/ga4ss/miniconda3/envs/quantum/bin/python /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/05_benchmark_evaluation.py benchmark.n_test_hamiltonians=1 benchmark.n_seeds=1 benchmark.n_trials_latency=1 benchmark.use_wandb=false benchmark.device=cuda benchmark.output_filename=ablation_no_gnn_encoder.json benchmark.model_ckpt=experiments/closed_loop_checkpoints/ablation_no_gnn_encoder_iter1_ckpt_iter_000000_fid0.1024_depth0009_smoke_cuda.pt +benchmark.disable_gnn_encoder=true
+
+Saved ablation summary: /mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/benchmark_results/ablation_summary.json

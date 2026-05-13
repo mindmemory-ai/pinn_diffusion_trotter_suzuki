@@ -30,51 +30,77 @@ def plot_pareto_front(data: dict[str, Any], output_dir: str | Path) -> tuple[Pat
     """Plot Pareto front: fidelity vs circuit depth.
 
     Data source: benchmark_evaluation_results.json
-    Shows: Ours vs Qiskit-4th baseline on Pareto plane.
+    Shows: Ours and all framework baselines on Pareto plane.
     """
-    summary = data["sources"]["benchmark_evaluation_results.json"]["summary"]["methods"]
+    bench = data["sources"]["benchmark_evaluation_results.json"]
+    summary = bench["summary"]["methods"]
+    per_seed = bench.get("per_seed", [])
 
     fig, ax = plt.subplots(figsize=FIG_SINGLE)
 
-    # Ours: scatter individual samples if available, else mean point
-    ours = summary["ours"]
-    qiskit = summary["qiskit_4th"]
+    method_order = [
+        ("ours", "Ours"),
+        ("qiskit_4th", "Qiskit-4th"),
+        ("cirq", "Cirq"),
+        ("tket", "TKET"),
+        ("pennylane", "PennyLane"),
+        ("paulihedral", "Paulihedral"),
+    ]
+    color_key = {"qiskit_4th": "qiskit4"}
+    marker_key = {"qiskit_4th": "qiskit4"}
 
-    # Plot mean points
-    ax.scatter(
-        ours["depth"]["mean"],
-        ours["fidelity"]["mean"],
-        color=COLORS["ours"],
-        marker=MARKERS["ours"],
-        s=100,
-        label="Ours (mean)",
-        zorder=3,
-    )
-    ax.scatter(
-        qiskit["depth"]["mean"],
-        qiskit["fidelity"]["mean"],
-        color=COLORS["qiskit4"],
-        marker=MARKERS["qiskit4"],
-        s=100,
-        label="Qiskit-4th",
-        zorder=3,
-    )
+    for method, label in method_order:
+        if method not in summary:
+            continue
+        metric = summary[method]
+        x_mean = float(metric["depth"]["mean"])
+        y_mean = float(metric["fidelity"]["mean"])
+        x_std = float(metric["depth"]["std"])
+        y_std = float(metric["fidelity"]["std"])
+        c_key = color_key.get(method, method)
 
-    # Error bars
-    ax.errorbar(
-        ours["depth"]["mean"],
-        ours["fidelity"]["mean"],
-        xerr=ours["depth"]["std"],
-        yerr=ours["fidelity"]["std"],
-        fmt="none",
-        color=COLORS["ours"],
-        alpha=0.5,
-        capsize=4,
-    )
+        # Per-seed trajectory (if available), used as a lightweight "curve" view.
+        seed_points = []
+        for seed_payload in per_seed:
+            m = seed_payload.get("methods", {}).get(method)
+            if m is None:
+                continue
+            seed_points.append(
+                (
+                    float(m["depth"]["mean"]),
+                    float(m["fidelity"]["mean"]),
+                )
+            )
+        if len(seed_points) >= 2:
+            seed_points = sorted(seed_points, key=lambda p: p[0])
+            xs = [p[0] for p in seed_points]
+            ys = [p[1] for p in seed_points]
+            ax.plot(xs, ys, color=COLORS.get(c_key, COLORS["neutral"]), alpha=0.4, linewidth=1.2)
+
+        ax.scatter(
+            x_mean,
+            y_mean,
+            color=COLORS.get(c_key, COLORS["neutral"]),
+            marker=MARKERS.get(marker_key.get(method, method), MARKERS["baseline"]),
+            s=90,
+            label=label,
+            zorder=3,
+        )
+        ax.errorbar(
+            x_mean,
+            y_mean,
+            xerr=x_std,
+            yerr=y_std,
+            fmt="none",
+            color=COLORS.get(c_key, COLORS["neutral"]),
+            alpha=0.45,
+            capsize=3,
+        )
 
     ax.set_xlabel("Circuit Depth")
     ax.set_ylabel("Fidelity")
     ax.set_title("Pareto Front: Fidelity vs Circuit Depth")
+    ax.set_xscale("log")
     ax.legend()
     ax.grid(True, alpha=0.3)
 
@@ -89,7 +115,7 @@ def plot_pinn_accuracy(data: dict[str, Any], output_dir: str | Path) -> tuple[Pa
     """Plot PINN validation: proxy error and PDE residual.
 
     Data source: pinn_checkpoints_phase3e2/pinn_pretrain_report_4q.json
-    Shows: Mean proxy error and PDE residual with acceptance thresholds.
+    Shows: Mean proxy error, PDE residual, and optional external benchmark panel.
     """
     # Load PINN report from alternative path
     import json
@@ -100,7 +126,7 @@ def plot_pinn_accuracy(data: dict[str, Any], output_dir: str | Path) -> tuple[Pa
     with open(pinn_report_path) as f:
         pinn_data = json.load(f)
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=FIG_DOUBLE)
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(16, 4.5))
 
     # Left: PDE residual
     pde_residuals = pinn_data["pde_residuals"]
@@ -124,7 +150,43 @@ def plot_pinn_accuracy(data: dict[str, Any], output_dir: str | Path) -> tuple[Pa
     ax2.legend()
     ax2.grid(True, alpha=0.3, axis="y")
 
-    fig.suptitle("PINN Evaluator Validation (M2 Milestone)", y=1.02)
+    # Right: Optional external test panel (prefer latest GPU benchmark report)
+    benchmark_candidates = [
+        Path("experiments/benchmark_results/benchmark_evaluation_results_paulihedral_gpu.json"),
+        Path("experiments/benchmark_results/benchmark_evaluation_results.json"),
+    ]
+    benchmark_path = next((p for p in benchmark_candidates if p.exists()), None)
+    if benchmark_path is not None:
+        with open(benchmark_path) as f:
+            benchmark = json.load(f)
+        summary = benchmark.get("summary", {}).get("methods", {})
+        method_label_pairs = [
+            ("ours", "Ours"),
+            ("qiskit_4th", "Qiskit-4th"),
+            ("paulihedral", "Paulihedral"),
+        ]
+        methods = [m for m, _ in method_label_pairs if m in summary]
+        labels = [lab for m, lab in method_label_pairs if m in summary]
+        if methods:
+            vals = [float(summary[m]["fidelity"]["mean"]) for m in methods]
+            stds = [float(summary[m]["fidelity"]["std"]) for m in methods]
+            colors = [COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods]
+            x = np.arange(len(methods))
+            ax3.bar(x, vals, yerr=stds, capsize=4, color=colors, alpha=0.8)
+            ax3.set_xticks(x)
+            ax3.set_xticklabels(labels, rotation=15, ha="right")
+            ax3.set_ylim([0.0, 1.05])
+            ax3.set_ylabel("Fidelity")
+            ax3.set_title("External Test Set (Benchmark)")
+            ax3.grid(True, alpha=0.3, axis="y")
+        else:
+            ax3.text(0.5, 0.5, "No benchmark methods found", ha="center", va="center", color="gray")
+            ax3.set_axis_off()
+    else:
+        ax3.text(0.5, 0.5, "Benchmark result not found", ha="center", va="center", color="gray")
+        ax3.set_axis_off()
+
+    fig.suptitle("PINN Evaluator Validation (M2 Milestone + External Test)", y=1.04)
     fig.tight_layout()
 
     return save_figure(fig, "fig2_pinn_accuracy", output_dir)
@@ -183,8 +245,16 @@ def plot_method_comparison(data: dict[str, Any], output_dir: str | Path) -> tupl
     """
     summary = data["sources"]["benchmark_evaluation_results.json"]["summary"]["methods"]
 
-    methods = ["ours", "qiskit_4th", "cirq", "tket", "pennylane"]
-    labels = ["Ours", "Qiskit-4th", "Cirq", "TKET", "PennyLane"]
+    method_label_pairs = [
+        ("ours", "Ours"),
+        ("qiskit_4th", "Qiskit-4th"),
+        ("cirq", "Cirq"),
+        ("tket", "TKET"),
+        ("pennylane", "PennyLane"),
+        ("paulihedral", "Paulihedral"),
+    ]
+    methods = [m for m, _ in method_label_pairs if m in summary]
+    labels = [lab for m, lab in method_label_pairs if m in summary]
 
     fidelities = [summary[m]["fidelity"]["mean"] for m in methods]
     depths = [summary[m]["depth"]["mean"] for m in methods]
@@ -196,7 +266,12 @@ def plot_method_comparison(data: dict[str, Any], output_dir: str | Path) -> tupl
     width = 0.6
 
     # Fidelity
-    bars1 = ax1.bar(x, fidelities, width, color=[COLORS.get(m, COLORS["neutral"]) for m in methods])
+    bars1 = ax1.bar(
+        x,
+        fidelities,
+        width,
+        color=[COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods],
+    )
     ax1.set_ylabel("Fidelity")
     ax1.set_title("Fidelity Comparison")
     ax1.set_xticks(x)
@@ -205,7 +280,12 @@ def plot_method_comparison(data: dict[str, Any], output_dir: str | Path) -> tupl
     ax1.grid(True, alpha=0.3, axis="y")
 
     # Depth
-    bars2 = ax2.bar(x, depths, width, color=[COLORS.get(m, COLORS["neutral"]) for m in methods])
+    bars2 = ax2.bar(
+        x,
+        depths,
+        width,
+        color=[COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods],
+    )
     ax2.set_ylabel("Circuit Depth")
     ax2.set_title("Circuit Depth Comparison")
     ax2.set_xticks(x)
@@ -213,7 +293,12 @@ def plot_method_comparison(data: dict[str, Any], output_dir: str | Path) -> tupl
     ax2.grid(True, alpha=0.3, axis="y")
 
     # Latency (log scale)
-    bars3 = ax3.bar(x, latencies, width, color=[COLORS.get(m, COLORS["neutral"]) for m in methods])
+    bars3 = ax3.bar(
+        x,
+        latencies,
+        width,
+        color=[COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods],
+    )
     ax3.set_ylabel("Latency (s)")
     ax3.set_title("Latency Comparison")
     ax3.set_xticks(x)

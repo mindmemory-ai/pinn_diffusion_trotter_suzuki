@@ -1,22 +1,506 @@
 {
   "profiles": [
     "full_model",
-    "no_cfg"
+    "no_pinn_guidance",
+    "no_cfg",
+    "no_gnn_encoder"
   ],
-  "train_iters": 1,
-  "n_test_hamiltonians": 1,
-  "n_seeds": 1,
-  "latency_trials": 1,
+  "train_iters": 1000,
+  "n_test_hamiltonians": 100,
+  "n_seeds": 5,
+  "latency_trials": 10,
   "results": {
     "full_model": {
       "note": "Reference configuration without ablation.",
-      "status": "dry_run",
-      "output_file": "ablation_full_model.json"
+      "checkpoint": "experiments/closed_loop_checkpoints/ablation_full_model_iter1000_ckpt_iter_000999_fid0.1417_depth0008_paper55_align_cuda.pt",
+      "summary": {
+        "methods": {
+          "ours": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.2879563097932938,
+              "std": 0.26923456024031384
+            },
+            "depth": {
+              "mean": 28.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 16.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 4.564421098759739,
+              "std": 0.008931262565421899
+            }
+          },
+          "qiskit_4th": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9999949217468367,
+              "std": 9.435195455722805e-06
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 3.0732680133951366e-05,
+              "std": 3.226897261332756e-06
+            }
+          },
+          "cirq": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646325
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.07583539341994765,
+              "std": 0.0023428002022614415
+            }
+          },
+          "tket": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646323
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.00810668395999528,
+              "std": 0.0008154586122004543
+            }
+          },
+          "pennylane": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9543269165339577,
+              "std": 0.05265596074841335
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.036826189760031415,
+              "std": 0.0006701241002065743
+            }
+          },
+          "paulihedral": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9603674642811726,
+              "std": 0.028816259090401756
+            },
+            "depth": {
+              "mean": 48.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 40.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.11155021988004592,
+              "std": 0.010101510686632668
+            }
+          }
+        }
+      },
+      "output_file": "experiments/benchmark_results/ablation_full_model.json"
+    },
+    "no_pinn_guidance": {
+      "note": "Disable PINN-guided reward signal in closed-loop training.",
+      "checkpoint": "experiments/closed_loop_checkpoints/ablation_no_pinn_guidance_iter1000_ckpt_iter_000999_fid0.0000_depth0008_paper55_align_cuda.pt",
+      "summary": {
+        "methods": {
+          "ours": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.2964815857390543,
+              "std": 0.2597947557039765
+            },
+            "depth": {
+              "mean": 15.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 8.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 4.548661223919553,
+              "std": 0.012159453346549172
+            }
+          },
+          "qiskit_4th": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9999949217468367,
+              "std": 9.435195455722805e-06
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 3.0347259744303302e-05,
+              "std": 5.532198712240898e-06
+            }
+          },
+          "cirq": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646325
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.07688097429985646,
+              "std": 0.003629495809934094
+            }
+          },
+          "tket": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646323
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.007941381879718393,
+              "std": 0.0006629734449661491
+            }
+          },
+          "pennylane": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9543269165339577,
+              "std": 0.05265596074841335
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.039194502900209045,
+              "std": 0.0023153840641788144
+            }
+          },
+          "paulihedral": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9603674642811726,
+              "std": 0.028816259090401756
+            },
+            "depth": {
+              "mean": 48.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 40.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.10615642441938689,
+              "std": 0.002426216829298482
+            }
+          }
+        }
+      },
+      "output_file": "experiments/benchmark_results/ablation_no_pinn_guidance.json"
     },
     "no_cfg": {
       "note": "Disable classifier-free guidance by removing condition dropout.",
-      "status": "dry_run",
-      "output_file": "ablation_no_cfg.json"
+      "checkpoint": "experiments/closed_loop_checkpoints/ablation_no_cfg_iter1000_ckpt_iter_000999_fid0.3417_depth0008_paper55_align_cuda.pt",
+      "summary": {
+        "methods": {
+          "ours": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.5829883747279154,
+              "std": 0.2963622715923178
+            },
+            "depth": {
+              "mean": 13.98,
+              "std": 2.06194083329275
+            },
+            "cx_count": {
+              "mean": 8.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 4.564150404540196,
+              "std": 0.013755258836441587
+            }
+          },
+          "qiskit_4th": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9999949217468367,
+              "std": 9.435195455722805e-06
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 3.620199997385498e-05,
+              "std": 1.1385789422320108e-05
+            }
+          },
+          "cirq": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646325
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.07360737326038361,
+              "std": 0.0009437588877361345
+            }
+          },
+          "tket": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646323
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.007833513300138293,
+              "std": 0.0003710474967664282
+            }
+          },
+          "pennylane": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9543269165339577,
+              "std": 0.05265596074841335
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.037287881279626164,
+              "std": 0.00018701497302447246
+            }
+          },
+          "paulihedral": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9603674642811726,
+              "std": 0.028816259090401756
+            },
+            "depth": {
+              "mean": 48.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 40.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.10488541794038611,
+              "std": 0.0024811927069107913
+            }
+          }
+        }
+      },
+      "output_file": "experiments/benchmark_results/ablation_no_cfg.json"
+    },
+    "no_gnn_encoder": {
+      "note": "Replace GNN condition vectors with zeros during train/eval.",
+      "checkpoint": "experiments/closed_loop_checkpoints/ablation_no_gnn_encoder_iter1000_ckpt_iter_000999_fid0.2396_depth0008_paper55_align_cuda.pt",
+      "summary": {
+        "methods": {
+          "ours": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.29775246344180684,
+              "std": 0.26147844056798036
+            },
+            "depth": {
+              "mean": 14.982,
+              "std": 0.2994595131232267
+            },
+            "cx_count": {
+              "mean": 8.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 4.405287534739837,
+              "std": 0.15072637370251377
+            }
+          },
+          "qiskit_4th": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9999949217468367,
+              "std": 9.435195455722805e-06
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 2.832937992934603e-05,
+              "std": 2.6974417059534954e-06
+            }
+          },
+          "cirq": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646325
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.07452574421971804,
+              "std": 0.004348953709057772
+            }
+          },
+          "tket": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9627967473400281,
+              "std": 0.02559691582646323
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.007811977119999938,
+              "std": 0.0006072956093271879
+            }
+          },
+          "pennylane": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9543269165339577,
+              "std": 0.05265596074841335
+            },
+            "depth": {
+              "mean": 132.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 72.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.0375830301798851,
+              "std": 0.0028223022650625982
+            }
+          },
+          "paulihedral": {
+            "n_samples": 500,
+            "fidelity": {
+              "mean": 0.9603674642811726,
+              "std": 0.028816259090401756
+            },
+            "depth": {
+              "mean": 48.0,
+              "std": 0.0
+            },
+            "cx_count": {
+              "mean": 40.0,
+              "std": 0.0
+            },
+            "latency": {
+              "mean": 0.10434802965981363,
+              "std": 0.004895399141847285
+            }
+          }
+        }
+      },
+      "output_file": "experiments/benchmark_results/ablation_no_gnn_encoder.json"
     }
   }
 }

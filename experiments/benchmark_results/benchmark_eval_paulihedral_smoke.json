@@ -1,0 +1,282 @@
+{
+  "config": {
+    "model": {
+      "n_fourier_features": 256,
+      "fourier_sigma": null,
+      "hidden_dim": 256,
+      "n_hidden_layers": 3,
+      "activation": "tanh",
+      "use_layer_norm": true,
+      "norm_penalty_weight": 0.1,
+      "output_real_imag": true,
+      "init_std": 0.02,
+      "n_layers": 4,
+      "output_dim": 512,
+      "pooling": "attention",
+      "node_feat_dim": 16,
+      "edge_feat_dim": 3,
+      "message_hidden_dim": 256,
+      "update_hidden_dim": 256,
+      "dropout": 0.1,
+      "T": 1000,
+      "beta_schedule": "cosine",
+      "beta_start": 0.0001,
+      "beta_end": 0.02,
+      "guidance_scale": 3.0,
+      "pinn_guidance_scale": 2.0,
+      "p_cond_drop": 0.1,
+      "transition_matrix": "uniform",
+      "condition_dim": 256,
+      "time_embed_dim": 128,
+      "grouping_transformer_layers": 4,
+      "order_transformer_layers": 2,
+      "timestep_mlp_layers": 3
+    },
+    "training": {
+      "n_samples": 500,
+      "n_qubits_distribution": {
+        "4": 0.6,
+        "6": 0.3,
+        "8": 0.1
+      },
+      "n_qubits": null,
+      "J_range": [
+        0.5,
+        2.0
+      ],
+      "h_range": [
+        0.1,
+        0.5
+      ],
+      "t_final_range": [
+        2.0,
+        2.0
+      ],
+      "n_groups_max": 8,
+      "order_probs": [
+        0.2,
+        0.6,
+        0.2
+      ],
+      "n_workers": 4,
+      "chunk_size": 100,
+      "output_path": "data/processed/dataset_tfim.h5",
+      "random_seed": 42,
+      "optimizer": {
+        "name": "adamw",
+        "lr": 0.0001,
+        "betas": [
+          0.9,
+          0.999
+        ],
+        "weight_decay": 0.01
+      },
+      "scheduler": {
+        "name": "cosine_warm_restarts",
+        "T_0": 500,
+        "T_mult": 2
+      },
+      "max_epochs": 500,
+      "n_collocation_points": 1000,
+      "early_stop_patience": 10,
+      "early_stop_threshold": 1e-05,
+      "loss_weights": {
+        "pde": 1.0,
+        "ic": 10.0,
+        "circuit": 5.0,
+        "grouping": 1.0,
+        "timesteps": 0.5,
+        "orders": 0.3
+      },
+      "warmstart_steps": 200,
+      "log_interval": 10,
+      "checkpoint_dir": "experiments/closed_loop_checkpoints/",
+      "ema_decay": 0.9999,
+      "batch_size": 128,
+      "train_split": 0.9,
+      "val_split": 0.1,
+      "augment": true,
+      "gnn_pretrain_epochs": 200,
+      "gnn_pretrain_lr": 0.0003,
+      "gnn_pretrain_log_interval": 20,
+      "gnn_pretrain_use_strategy_features": true,
+      "save_interval": 10,
+      "wandb_project": "pinn-trotter",
+      "device": "auto",
+      "n_iterations": 100,
+      "n_samples_per_iter": 32,
+      "baseline_ema": 0.9,
+      "policy_lr": 1e-05,
+      "lambda_weights": [
+        0.0,
+        0.01,
+        0.05,
+        0.1,
+        0.5,
+        1.0
+      ],
+      "pareto_ref_point": [
+        0.0,
+        10000
+      ],
+      "checkpoint_interval": 100,
+      "max_checkpoints_keep": 3
+    },
+    "experiment": {
+      "name": "tfim_4q_poc",
+      "hamiltonian": "tfim",
+      "n_qubits": 4,
+      "J": 1.0,
+      "h": 0.5,
+      "boundary": "periodic",
+      "t_total": 2.0
+    },
+    "benchmark": {
+      "model_ckpt": "experiments/closed_loop_checkpoints/diffusion_best.pt",
+      "device": "cpu",
+      "n_test_hamiltonians": 1,
+      "n_seeds": 1,
+      "seed": 42,
+      "guidance_scale": 3.0,
+      "n_groups_max": 8,
+      "n_trials_latency": 1,
+      "fidelity_only": false,
+      "use_wandb": false,
+      "output_filename": "benchmark_eval_paulihedral_smoke.json",
+      "methods": [
+        "paulihedral",
+        "qiskit_4th",
+        "ours"
+      ],
+      "baseline_n_steps": 5,
+      "paulihedral_scheduler": "depth",
+      "h_min": 0.1,
+      "h_max": 0.5
+    }
+  },
+  "summary": {
+    "methods": {
+      "paulihedral": {
+        "n_samples": 1,
+        "fidelity": {
+          "mean": 0.9806031716966452,
+          "std": 0.0
+        },
+        "depth": {
+          "mean": 48.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 40.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 0.10308546800024487,
+          "std": 0.0
+        }
+      },
+      "qiskit_4th": {
+        "n_samples": 1,
+        "fidelity": {
+          "mean": 0.999995702317895,
+          "std": 0.0
+        },
+        "depth": {
+          "mean": 132.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 72.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 4.368699956103228e-05,
+          "std": 0.0
+        }
+      },
+      "ours": {
+        "n_samples": 1,
+        "fidelity": {
+          "mean": 0.852920478601222,
+          "std": 0.0
+        },
+        "depth": {
+          "mean": 21.0,
+          "std": 0.0
+        },
+        "cx_count": {
+          "mean": 10.0,
+          "std": 0.0
+        },
+        "latency": {
+          "mean": 2.7965003669996804,
+          "std": 0.0
+        }
+      }
+    }
+  },
+  "per_seed": [
+    {
+      "seed": 42,
+      "methods": {
+        "paulihedral": {
+          "n_samples": 1,
+          "fidelity": {
+            "mean": 0.9806031716966452,
+            "std": 0.0
+          },
+          "depth": {
+            "mean": 48.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 40.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 0.10308546800024487,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "n_samples": 1,
+          "fidelity": {
+            "mean": 0.999995702317895,
+            "std": 0.0
+          },
+          "depth": {
+            "mean": 132.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 72.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 4.368699956103228e-05,
+            "std": 0.0
+          }
+        },
+        "ours": {
+          "n_samples": 1,
+          "fidelity": {
+            "mean": 0.852920478601222,
+            "std": 0.0
+          },
+          "depth": {
+            "mean": 21.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 10.0,
+            "std": 0.0
+          },
+          "latency": {
+            "mean": 2.7965003669996804,
+            "std": 0.0
+          }
+        }
+      }
+    }
+  ]
+}

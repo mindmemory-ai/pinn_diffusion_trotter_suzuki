@@ -143,9 +143,9 @@ def _safe_wandb_log(payload: dict[str, float]) -> None:
 
 def _parse_methods(raw_methods) -> list[str]:
     """Normalize benchmark methods config to a validated list."""
-    allowed = {"ours", "qiskit_4th", "cirq", "tket", "pennylane"}
+    allowed = {"ours", "qiskit_4th", "cirq", "tket", "pennylane", "paulihedral"}
     if raw_methods is None:
-        methods = ["ours", "qiskit_4th", "cirq", "tket", "pennylane"]
+        methods = ["ours", "qiskit_4th", "cirq", "tket", "pennylane", "paulihedral"]
     elif isinstance(raw_methods, str):
         methods = [m.strip() for m in raw_methods.split(",") if m.strip()]
     else:
@@ -239,12 +239,17 @@ def main(cfg: DictConfig) -> None:
 
     qiskit_baseline = QiskitTrotterBaseline()
 
-    # External Trotter baselines (cirq/tket/pennylane) — instantiated once per run
+    # External Trotter baselines (cirq/tket/pennylane/paulihedral) — instantiated once per run
     baseline_n_steps = int(bench_cfg.get("baseline_n_steps", 5))
-    external_baselines = {
-        name: cls(n_steps=baseline_n_steps)
-        for name, cls in BASELINE_REGISTRY.items()
-    }
+    external_baselines = {}
+    for name, cls in BASELINE_REGISTRY.items():
+        if name == "paulihedral":
+            external_baselines[name] = cls(
+                n_steps=baseline_n_steps,
+                scheduler=str(bench_cfg.get("paulihedral_scheduler", "depth")),
+            )
+        else:
+            external_baselines[name] = cls(n_steps=baseline_n_steps)
 
     aggregate_values: dict[str, dict[str, list[float]]] = {
         m: {"fidelity": [], "depth": [], "cx_count": [], "latency": []}
@@ -281,9 +286,13 @@ def main(cfg: DictConfig) -> None:
                     res = adapter.evaluate(hamiltonian, t_total)
                     fidelity_values.append(float(res["fidelity"]))
                     if not fidelity_only:
-                        strategy = res["strategy"]
-                        depth_values.append(float(transpiled_depth(strategy, hamiltonian)))
-                        cx_values.append(float(cx_count(strategy, hamiltonian)))
+                        if "depth" in res and "cx_count" in res:
+                            depth_values.append(float(res["depth"]))
+                            cx_values.append(float(res["cx_count"]))
+                        else:
+                            strategy = res["strategy"]
+                            depth_values.append(float(transpiled_depth(strategy, hamiltonian)))
+                            cx_values.append(float(cx_count(strategy, hamiltonian)))
                     continue
                 if method == "qiskit_4th":
                     res = qiskit_baseline.evaluate(

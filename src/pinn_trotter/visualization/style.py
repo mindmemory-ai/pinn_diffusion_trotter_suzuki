@@ -14,6 +14,7 @@ COLORS: dict[str, str] = {
     "cirq": "#E69F00",
     "tket": "#CC79A7",
     "pennylane": "#D55E00",
+    "paulihedral": "#56B4E9",
     "baseline": "#6C757D",
     "neutral": "#6C757D",
 }
@@ -24,6 +25,7 @@ MARKERS: dict[str, str] = {
     "cirq": "s",
     "tket": "D",
     "pennylane": "v",
+    "paulihedral": "P",
     "baseline": "X",
 }
 

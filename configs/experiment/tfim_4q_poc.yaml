@@ -22,7 +22,7 @@ training:
 # Benchmark / acceptance-test defaults (5-D-2)
 benchmark:
   model_ckpt: "experiments/closed_loop_checkpoints/diffusion_best.pt"
-  device: "cpu"
+  device: "cuda"
   n_test_hamiltonians: 100
   n_seeds: 5
   seed: 42
@@ -32,8 +32,9 @@ benchmark:
   fidelity_only: false
   use_wandb: false
   output_filename: "benchmark_evaluation_results.json"
-  methods: "ours,qiskit_4th,cirq,tket,pennylane"
+  methods: "ours,qiskit_4th,cirq,tket,pennylane,paulihedral"
   baseline_n_steps: 5  # n_steps for cirq/tket/pennylane Trotter baselines
+  paulihedral_scheduler: "depth"  # paulihedral.parallel_bl scheduler: depth or gate_count
   # Restrict transverse field to weak-field regime where single-pass Trotter achieves >0.85
   # Physics: for h>0.5, [H_ZZ, H_X] becomes large enough that K=8 max-group strategies
   # cannot exceed 0.85 fidelity at t_total=2.0; tested upper bound is h_max=0.5
