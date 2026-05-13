@@ -11,10 +11,17 @@ import numpy as np
 
 # Figure key -> candidate result files (searched in order).
 _FIGURE_SOURCE_MAP: dict[str, list[str]] = {
-    "pareto": ["benchmark_evaluation_results.json"],
+    # Prefer GPU artefact when present: includes Paulihedral and matches primary TFIM table / body numbers.
+    "pareto": [
+        "benchmark_evaluation_results_paulihedral_gpu.json",
+        "benchmark_evaluation_results.json",
+    ],
     "pinn": ["pinn_pretrain_results.json", "pinn_metrics.json"],
     "training": ["closed_loop_training_log.json", "benchmark_evaluation_results.json"],
-    "comparison": ["benchmark_evaluation_results.json"],
+    "comparison": [
+        "benchmark_evaluation_results_paulihedral_gpu.json",
+        "benchmark_evaluation_results.json",
+    ],
     "scaling": ["heisenberg_scan.json"],
     "graph": ["graph_examples.json"],
     "ablation": ["ablation_summary.json"],

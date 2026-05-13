@@ -21,6 +21,24 @@ from pinn_trotter.visualization.style import (
     save_figure,
 )
 
+_BENCHMARK_JSON_PREFERENCE: tuple[str, ...] = (
+    "benchmark_evaluation_results_paulihedral_gpu.json",
+    "benchmark_evaluation_results.json",
+)
+
+
+def _preferred_benchmark_payload(sources: dict[str, Any]) -> dict[str, Any]:
+    """Pick benchmark JSON (Paulihedral-inclusive artefact preferred)."""
+    for key in _BENCHMARK_JSON_PREFERENCE:
+        payload = sources.get(key)
+        if payload is not None and isinstance(payload, dict) and "summary" in payload:
+            return payload
+    raise KeyError(
+        "No benchmark evaluation JSON in sources (expected one of: "
+        + ", ".join(_BENCHMARK_JSON_PREFERENCE)
+        + ")"
+    )
+
 
 # ---------------------------------------------------------------------------
 # 9-B-1: Pareto front (fidelity vs depth)
@@ -32,7 +50,7 @@ def plot_pareto_front(data: dict[str, Any], output_dir: str | Path) -> tuple[Pat
     Data source: benchmark_evaluation_results.json
     Shows: Ours and all framework baselines on Pareto plane.
     """
-    bench = data["sources"]["benchmark_evaluation_results.json"]
+    bench = _preferred_benchmark_payload(data["sources"])
     summary = bench["summary"]["methods"]
     per_seed = bench.get("per_seed", [])
 
@@ -243,7 +261,8 @@ def plot_method_comparison(data: dict[str, Any], output_dir: str | Path) -> tupl
     Data source: benchmark_evaluation_results.json
     Shows: Bar chart comparing Ours vs Qiskit-4th/Cirq/TKET/PennyLane.
     """
-    summary = data["sources"]["benchmark_evaluation_results.json"]["summary"]["methods"]
+    bench = _preferred_benchmark_payload(data["sources"])
+    summary = bench["summary"]["methods"]
 
     method_label_pairs = [
         ("ours", "Ours"),
@@ -330,22 +349,19 @@ def plot_ablation_study(data: dict[str, Any], output_dir: str | Path) -> tuple[P
     else:
         ablation = data["sources"].get("ablation_summary.json", {}).get("results", {})
 
-    profiles = [
-        "full_model",
-        "no_pinn_guidance",
-        "no_cfg",
-        "no_structured_matrix",
-        "no_gnn_encoder",
-        "no_gumbel_estimator",
+    profile_label_pairs = [
+        ("full_model", "Full Model"),
+        ("no_pinn_guidance", "No PINN\nGuidance"),
+        ("no_cfg", "No CFG"),
+        ("no_structured_matrix", "No Structured\nMatrix"),
+        ("no_gnn_encoder", "No GNN\nEncoder"),
+        ("no_gumbel_estimator", "No Gumbel\nEstimator"),
     ]
-    labels = [
-        "Full Model",
-        "No PINN\nGuidance",
-        "No CFG",
-        "No Structured\nMatrix",
-        "No GNN\nEncoder",
-        "No Gumbel\nEstimator",
-    ]
+    pairs = [(p, lab) for p, lab in profile_label_pairs if p in ablation]
+    if not pairs:
+        raise ValueError("ablation summary contains none of the expected profiles")
+    profiles = [p for p, _ in pairs]
+    labels = [lab for _, lab in pairs]
 
     fidelities = [ablation[p]["summary"]["methods"]["ours"]["fidelity"]["mean"] for p in profiles]
     stds = [ablation[p]["summary"]["methods"]["ours"]["fidelity"]["std"] for p in profiles]
@@ -360,7 +376,7 @@ def plot_ablation_study(data: dict[str, Any], output_dir: str | Path) -> tuple[P
     bars[0].set_alpha(1.0)
 
     ax.set_ylabel("Mean Fidelity")
-    ax.set_title("Ablation Study: Component Contribution (100 iterations)")
+    ax.set_title("Ablation Study: Component Contribution")
     ax.set_xticks(x)
     ax.set_xticklabels(labels, rotation=0, ha="center", fontsize=9)
     ax.set_ylim([0, max(fidelities) * 1.2])
