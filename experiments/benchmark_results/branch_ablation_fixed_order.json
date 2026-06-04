@@ -1,0 +1,5546 @@
+{
+  "config": {
+    "n_test_hamiltonians": 20,
+    "n_candidates": 50,
+    "fidelity_thresholds": [
+      0.9,
+      0.95,
+      0.99
+    ],
+    "baseline_n_steps": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      10
+    ],
+    "trotter_order": 4,
+    "baseline_methods": [
+      "qiskit_4th",
+      "paulihedral_4th"
+    ],
+    "model_ckpt": "experiments/closed_loop_checkpoints/diffusion_best_20260603_005153_HV9995.5852.pt",
+    "guidance_scale": 3.0,
+    "disable_gnn_encoder": false,
+    "fixed_order": true,
+    "uniform_time": false,
+    "seed": 42
+  },
+  "summary": {
+    "thresholds": {
+      "0.9": {
+        "ours": {
+          "reachable": 11,
+          "miss": 9,
+          "depth": {
+            "mean": 243.1818181818182,
+            "std": 193.76500208514915
+          },
+          "fidelity": {
+            "mean": 0.9544995061527022,
+            "std": 0.04195495936056833
+          },
+          "cx_count": {
+            "mean": 111.27272727272727,
+            "std": 87.46645165598784
+          }
+        },
+        "qiskit_4th": {
+          "reachable": 20,
+          "miss": 0,
+          "depth": {
+            "mean": 1319.95,
+            "std": 2080.8839341731677
+          },
+          "fidelity": {
+            "mean": 0.9763186673978966,
+            "std": 0.02829544424477333
+          },
+          "cx_count": {
+            "mean": 674.3,
+            "std": 1125.3543930691342
+          }
+        },
+        "depth_reduction_vs_qiskit_4th": 5.427831775700935,
+        "cx_reduction_vs_qiskit_4th": 6.059885620915033,
+        "paulihedral_4th": {
+          "reachable": 16,
+          "miss": 4,
+          "depth": {
+            "mean": 616.8125,
+            "std": 883.2020733352872
+          },
+          "fidelity": {
+            "mean": 0.9410554706981971,
+            "std": 0.031380277195593415
+          },
+          "cx_count": {
+            "mean": 191.5,
+            "std": 270.905426302243
+          }
+        },
+        "depth_reduction_vs_paulihedral_4th": 2.53642523364486,
+        "cx_reduction_vs_paulihedral_4th": 1.720996732026144
+      },
+      "0.95": {
+        "ours": {
+          "reachable": 8,
+          "miss": 12,
+          "depth": {
+            "mean": 326.875,
+            "std": 207.36347165062605
+          },
+          "fidelity": {
+            "mean": 0.9882033593303725,
+            "std": 0.016272899465240367
+          },
+          "cx_count": {
+            "mean": 143.75,
+            "std": 91.19998629385861
+          }
+        },
+        "qiskit_4th": {
+          "reachable": 20,
+          "miss": 0,
+          "depth": {
+            "mean": 1359.95,
+            "std": 2064.5919566587486
+          },
+          "fidelity": {
+            "mean": 0.9907071910231398,
+            "std": 0.01212030587803085
+          },
+          "cx_count": {
+            "mean": 692.8,
+            "std": 1117.6807057473973
+          }
+        },
+        "depth_reduction_vs_qiskit_4th": 4.160458891013384,
+        "cx_reduction_vs_qiskit_4th": 4.819478260869565,
+        "paulihedral_4th": {
+          "reachable": 13,
+          "miss": 7,
+          "depth": {
+            "mean": 294.38461538461536,
+            "std": 510.09026930557764
+          },
+          "fidelity": {
+            "mean": 0.9668532144761317,
+            "std": 0.014993722491548825
+          },
+          "cx_count": {
+            "mean": 102.15384615384616,
+            "std": 183.80334229565372
+          }
+        },
+        "depth_reduction_vs_paulihedral_4th": 0.9006030298573319,
+        "cx_reduction_vs_paulihedral_4th": 0.7106354515050167
+      },
+      "0.99": {
+        "ours": {
+          "reachable": 7,
+          "miss": 13,
+          "depth": {
+            "mean": 369.0,
+            "std": 187.2851149603574
+          },
+          "fidelity": {
+            "mean": 0.997799167902179,
+            "std": 0.003603942976959694
+          },
+          "cx_count": {
+            "mean": 161.42857142857142,
+            "std": 83.91638209356663
+          }
+        },
+        "qiskit_4th": {
+          "reachable": 20,
+          "miss": 0,
+          "depth": {
+            "mean": 1720.45,
+            "std": 2833.827931879421
+          },
+          "fidelity": {
+            "mean": 0.9982674386318287,
+            "std": 0.0022375690991208435
+          },
+          "cx_count": {
+            "mean": 892.3,
+            "std": 1567.7977261113756
+          }
+        },
+        "depth_reduction_vs_qiskit_4th": 4.662466124661247,
+        "cx_reduction_vs_qiskit_4th": 5.527522123893806,
+        "paulihedral_4th": {
+          "reachable": 8,
+          "miss": 12,
+          "depth": {
+            "mean": 201.0,
+            "std": 17.4928556845359
+          },
+          "fidelity": {
+            "mean": 0.994030026072833,
+            "std": 0.002709201909768189
+          },
+          "cx_count": {
+            "mean": 70.0,
+            "std": 10.392304845413264
+          }
+        },
+        "depth_reduction_vs_paulihedral_4th": 0.5447154471544715,
+        "cx_reduction_vs_paulihedral_4th": 0.4336283185840708
+      }
+    }
+  },
+  "ours_elapsed_s": 2018.9131288528442,
+  "baselines_elapsed_s": 150.8126561641693,
+  "ours_results": [
+    {
+      "hamiltonian_idx": 0,
+      "n_qubits": 6,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 0.9040753841361454,
+          "depth": 134,
+          "cx_count": 78
+        },
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.7742872990160353,
+          "depth": 83,
+          "cx_count": 58
+        },
+        {
+          "fidelity": 0.6058235744160333,
+          "depth": 91,
+          "cx_count": 60
+        },
+        {
+          "fidelity": 0.6540624972961571,
+          "depth": 91,
+          "cx_count": 50
+        },
+        {
+          "fidelity": 0.751934125989648,
+          "depth": 139,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.8183533785591774,
+          "depth": 116,
+          "cx_count": 86
+        },
+        {
+          "fidelity": 0.6723442621098412,
+          "depth": 147,
+          "cx_count": 76
+        },
+        {
+          "fidelity": 0.5996191792584794,
+          "depth": 174,
+          "cx_count": 96
+        },
+        {
+          "fidelity": 0.8614281136572036,
+          "depth": 121,
+          "cx_count": 68
+        },
+        {
+          "fidelity": 0.6384687727578705,
+          "depth": 111,
+          "cx_count": 58
+        },
+        {
+          "fidelity": 0.5650027457106062,
+          "depth": 181,
+          "cx_count": 94
+        },
+        {
+          "fidelity": 0.7403742271236927,
+          "depth": 139,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.8522399927196349,
+          "depth": 114,
+          "cx_count": 68
+        },
+        {
+          "fidelity": 0.7246692446325843,
+          "depth": 111,
+          "cx_count": 88
+        },
+        {
+          "fidelity": 0.778055822882833,
+          "depth": 144,
+          "cx_count": 86
+        },
+        {
+          "fidelity": 0.6265085011554744,
+          "depth": 109,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.6387619528343192,
+          "depth": 79,
+          "cx_count": 60
+        },
+        {
+          "fidelity": 0.6579387235844021,
+          "depth": 143,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.8051567444872577,
+          "depth": 104,
+          "cx_count": 70
+        },
+        {
+          "fidelity": 0.8496680613405327,
+          "depth": 111,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.6365279205961063,
+          "depth": 114,
+          "cx_count": 88
+        },
+        {
+          "fidelity": 0.7077312419872728,
+          "depth": 91,
+          "cx_count": 50
+        },
+        {
+          "fidelity": 0.7620439867638132,
+          "depth": 171,
+          "cx_count": 94
+        },
+        {
+          "fidelity": 0.664419447857231,
+          "depth": 171,
+          "cx_count": 94
+        },
+        {
+          "fidelity": 0.7978901965064508,
+          "depth": 160,
+          "cx_count": 104
+        },
+        {
+          "fidelity": 0.8222004424363076,
+          "depth": 116,
+          "cx_count": 60
+        },
+        {
+          "fidelity": 0.7898291058381001,
+          "depth": 133,
+          "cx_count": 96
+        },
+        {
+          "fidelity": 0.7867177505192269,
+          "depth": 116,
+          "cx_count": 86
+        },
+        {
+          "fidelity": 0.6986727517541887,
+          "depth": 88,
+          "cx_count": 58
+        },
+        {
+          "fidelity": 0.7315792964910232,
+          "depth": 151,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.7300673020389324,
+          "depth": 206,
+          "cx_count": 104
+        },
+        {
+          "fidelity": 0.854415417558992,
+          "depth": 148,
+          "cx_count": 86
+        },
+        {
+          "fidelity": 0.6054441587771939,
+          "depth": 169,
+          "cx_count": 86
+        },
+        {
+          "fidelity": 0.6513684048809194,
+          "depth": 139,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.7370524644016263,
+          "depth": 101,
+          "cx_count": 60
+        },
+        {
+          "fidelity": 0.6924429190856214,
+          "depth": 79,
+          "cx_count": 42
+        },
+        {
+          "fidelity": 0.8726274316288621,
+          "depth": 150,
+          "cx_count": 76
+        },
+        {
+          "fidelity": 0.9040753841361454,
+          "depth": 134,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.6902524817079624,
+          "depth": 108,
+          "cx_count": 68
+        },
+        {
+          "fidelity": 0.6500380352074584,
+          "depth": 166,
+          "cx_count": 96
+        },
+        {
+          "fidelity": 0.6866028687343214,
+          "depth": 174,
+          "cx_count": 94
+        },
+        {
+          "fidelity": 0.8004598394980923,
+          "depth": 174,
+          "cx_count": 96
+        },
+        {
+          "fidelity": 0.82417952962404,
+          "depth": 111,
+          "cx_count": 68
+        },
+        {
+          "fidelity": 0.7469604329526122,
+          "depth": 116,
+          "cx_count": 60
+        },
+        {
+          "fidelity": 0.5933927722619876,
+          "depth": 114,
+          "cx_count": 76
+        },
+        {
+          "fidelity": 0.8354927419964542,
+          "depth": 145,
+          "cx_count": 78
+        },
+        {
+          "fidelity": 0.6906390175915519,
+          "depth": 79,
+          "cx_count": 42
+        },
+        {
+          "fidelity": 0.8716989878338932,
+          "depth": 116,
+          "cx_count": 70
+        },
+        {
+          "fidelity": 0.6383068666532119,
+          "depth": 91,
+          "cx_count": 42
+        },
+        {
+          "fidelity": 0.708448584138094,
+          "depth": 175,
+          "cx_count": 86
+        },
+        {
+          "fidelity": 0.7756267565922643,
+          "depth": 111,
+          "cx_count": 78
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 1,
+      "n_qubits": 4,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 1.0,
+          "depth": 492,
+          "cx_count": 186
+        },
+        "0.95": {
+          "fidelity": 1.0,
+          "depth": 492,
+          "cx_count": 186
+        },
+        "0.99": {
+          "fidelity": 1.0,
+          "depth": 492,
+          "cx_count": 186
+        }
+      },
+      "candidates": [
+        {
+          "fidelity": 0.12142146599469324,
+          "depth": 554,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.4825921953848349,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.27090435357928067,
+          "depth": 443,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.36973802914218923,
+          "depth": 483,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.25133851673162966,
+          "depth": 423,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.328295754976049,
+          "depth": 473,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.13274035989652805,
+          "depth": 464,
+          "cx_count": 192
+        },
+        {
+          "fidelity": 0.3566940855446109,
+          "depth": 454,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.15299394220657883,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.5507741855424839,
+          "depth": 411,
+          "cx_count": 168
+        },
+        {
+          "fidelity": 0.045089968908243995,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.46246896537292437,
+          "depth": 426,
+          "cx_count": 174
+        },
+        {
+          "fidelity": 0.228959700286718,
+          "depth": 511,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.013054379623486718,
+          "depth": 529,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.3691713370004266,
+          "depth": 469,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.040908171907053065,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.05750385832258496,
+          "depth": 485,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.06046563831524352,
+          "depth": 519,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.18023643990553742,
+          "depth": 411,
+          "cx_count": 166
+        },
+        {
+          "fidelity": 0.450822789983508,
+          "depth": 458,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.08029179184662405,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 492,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.14931086739037408,
+          "depth": 464,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.46128824786069217,
+          "depth": 516,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.02586493579342898,
+          "depth": 480,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.15523528104410492,
+          "depth": 511,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.22003641264349277,
+          "depth": 514,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.03380016319309504,
+          "depth": 481,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.34294218851022173,
+          "depth": 501,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.15515986716540303,
+          "depth": 411,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.1059851081163028,
+          "depth": 476,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.07862273676521656,
+          "depth": 499,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.7224437199540004,
+          "depth": 481,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.07802019599646463,
+          "depth": 513,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.10351909383733854,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.2517447297630096,
+          "depth": 461,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.11254739672063002,
+          "depth": 499,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.03145288175112749,
+          "depth": 489,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.21484051464003745,
+          "depth": 442,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.0790270507849964,
+          "depth": 494,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 546,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.010867820922026256,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.35556442462552507,
+          "depth": 444,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.21454223523928875,
+          "depth": 396,
+          "cx_count": 196
+        },
+        {
+          "fidelity": 0.1424153585595117,
+          "depth": 498,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.34693018805732784,
+          "depth": 481,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 506,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.26638161454043474,
+          "depth": 456,
+          "cx_count": 196
+        },
+        {
+          "fidelity": 0.5373703026089468,
+          "depth": 425,
+          "cx_count": 166
+        },
+        {
+          "fidelity": 0.015432755439420843,
+          "depth": 536,
+          "cx_count": 204
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 2,
+      "n_qubits": 6,
+      "n_terms": 14,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.009019211490590156,
+          "depth": 1359,
+          "cx_count": 894
+        },
+        {
+          "fidelity": 0.012478956856860193,
+          "depth": 1435,
+          "cx_count": 926
+        },
+        {
+          "fidelity": 0.006628576929467696,
+          "depth": 1359,
+          "cx_count": 886
+        },
+        {
+          "fidelity": 0.015257301887063647,
+          "depth": 1348,
+          "cx_count": 868
+        },
+        {
+          "fidelity": 0.008271329510290887,
+          "depth": 1364,
+          "cx_count": 880
+        },
+        {
+          "fidelity": 0.0077944075261463025,
+          "depth": 1352,
+          "cx_count": 846
+        },
+        {
+          "fidelity": 0.0014977128747492867,
+          "depth": 1361,
+          "cx_count": 854
+        },
+        {
+          "fidelity": 0.027770364151788546,
+          "depth": 1326,
+          "cx_count": 826
+        },
+        {
+          "fidelity": 0.00803312313370115,
+          "depth": 1424,
+          "cx_count": 880
+        },
+        {
+          "fidelity": 0.0015888542596606905,
+          "depth": 1284,
+          "cx_count": 822
+        },
+        {
+          "fidelity": 0.039068434678476364,
+          "depth": 1400,
+          "cx_count": 886
+        },
+        {
+          "fidelity": 0.14479065535229563,
+          "depth": 1319,
+          "cx_count": 856
+        },
+        {
+          "fidelity": 0.0007775985178859362,
+          "depth": 1399,
+          "cx_count": 894
+        },
+        {
+          "fidelity": 0.008548370720474851,
+          "depth": 1283,
+          "cx_count": 824
+        },
+        {
+          "fidelity": 0.0025337245127803917,
+          "depth": 1411,
+          "cx_count": 878
+        },
+        {
+          "fidelity": 0.00019588509537268523,
+          "depth": 1449,
+          "cx_count": 918
+        },
+        {
+          "fidelity": 0.009729578652503007,
+          "depth": 1297,
+          "cx_count": 836
+        },
+        {
+          "fidelity": 0.012455933576426775,
+          "depth": 1381,
+          "cx_count": 878
+        },
+        {
+          "fidelity": 0.0005514820804520459,
+          "depth": 1293,
+          "cx_count": 876
+        },
+        {
+          "fidelity": 0.0014882303937778373,
+          "depth": 1401,
+          "cx_count": 888
+        },
+        {
+          "fidelity": 0.00093288893137336,
+          "depth": 1384,
+          "cx_count": 870
+        },
+        {
+          "fidelity": 0.006690311320680114,
+          "depth": 1278,
+          "cx_count": 868
+        },
+        {
+          "fidelity": 0.018189851640695316,
+          "depth": 1409,
+          "cx_count": 934
+        },
+        {
+          "fidelity": 0.005014618000540982,
+          "depth": 1340,
+          "cx_count": 896
+        },
+        {
+          "fidelity": 0.022543198689355656,
+          "depth": 1400,
+          "cx_count": 926
+        },
+        {
+          "fidelity": 0.009676149857539871,
+          "depth": 1384,
+          "cx_count": 840
+        },
+        {
+          "fidelity": 0.016337125377546086,
+          "depth": 1360,
+          "cx_count": 886
+        },
+        {
+          "fidelity": 0.0033880723740224114,
+          "depth": 1379,
+          "cx_count": 894
+        },
+        {
+          "fidelity": 0.007664536243226303,
+          "depth": 1381,
+          "cx_count": 866
+        },
+        {
+          "fidelity": 0.02120830581453405,
+          "depth": 1470,
+          "cx_count": 918
+        },
+        {
+          "fidelity": 0.0013071017022574182,
+          "depth": 1429,
+          "cx_count": 904
+        },
+        {
+          "fidelity": 0.023925842699361335,
+          "depth": 1303,
+          "cx_count": 840
+        },
+        {
+          "fidelity": 0.01940113283437104,
+          "depth": 1360,
+          "cx_count": 886
+        },
+        {
+          "fidelity": 0.024600393625472533,
+          "depth": 1388,
+          "cx_count": 894
+        },
+        {
+          "fidelity": 0.010223085928929765,
+          "depth": 1391,
+          "cx_count": 886
+        },
+        {
+          "fidelity": 0.001047427235241298,
+          "depth": 1389,
+          "cx_count": 894
+        },
+        {
+          "fidelity": 0.0013199453534628411,
+          "depth": 1321,
+          "cx_count": 854
+        },
+        {
+          "fidelity": 0.0694113419851362,
+          "depth": 1319,
+          "cx_count": 840
+        },
+        {
+          "fidelity": 0.019486431014248382,
+          "depth": 1352,
+          "cx_count": 846
+        },
+        {
+          "fidelity": 0.005068611256066092,
+          "depth": 1399,
+          "cx_count": 934
+        },
+        {
+          "fidelity": 0.021665857261773173,
+          "depth": 1359,
+          "cx_count": 878
+        },
+        {
+          "fidelity": 0.010667806704922149,
+          "depth": 1499,
+          "cx_count": 934
+        },
+        {
+          "fidelity": 0.06104669344456263,
+          "depth": 1409,
+          "cx_count": 934
+        },
+        {
+          "fidelity": 0.01870277450374141,
+          "depth": 1429,
+          "cx_count": 904
+        },
+        {
+          "fidelity": 0.000620431321146359,
+          "depth": 1314,
+          "cx_count": 838
+        },
+        {
+          "fidelity": 0.0032004725924947653,
+          "depth": 1331,
+          "cx_count": 862
+        },
+        {
+          "fidelity": 0.005402875420958437,
+          "depth": 1380,
+          "cx_count": 926
+        },
+        {
+          "fidelity": 0.00013764610951301132,
+          "depth": 1299,
+          "cx_count": 894
+        },
+        {
+          "fidelity": 0.0027933851853289625,
+          "depth": 1361,
+          "cx_count": 866
+        },
+        {
+          "fidelity": 0.0026883514941910404,
+          "depth": 1419,
+          "cx_count": 904
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 3,
+      "n_qubits": 4,
+      "n_terms": 8,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.7684660454875156,
+          "depth": 84,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.5414809709039642,
+          "depth": 114,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.7609353277741894,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7764334055141326,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.784378203421438,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.7404295513852637,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7752095565888164,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8390066794429861,
+          "depth": 140,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7144681824695679,
+          "depth": 111,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.5998686459431432,
+          "depth": 91,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.6979870548170114,
+          "depth": 91,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.6258910373123657,
+          "depth": 121,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7574594097808475,
+          "depth": 88,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.7988556624095631,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.7429200365387625,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.5424056971180943,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7540002125012107,
+          "depth": 106,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7851749405323815,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7920627497599476,
+          "depth": 86,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.6192417596919335,
+          "depth": 79,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.796394692462757,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8269992945668143,
+          "depth": 79,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.8637421181882344,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6756787891450395,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.7495872166664848,
+          "depth": 114,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.759215329061794,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6907170659365174,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7133414516362664,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7574028062465911,
+          "depth": 86,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7936324826767486,
+          "depth": 136,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.7047535511402298,
+          "depth": 106,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8298474397218499,
+          "depth": 108,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.659331086096562,
+          "depth": 91,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7057427825978249,
+          "depth": 110,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6986007676402337,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.769386967561717,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.5490446951378999,
+          "depth": 86,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7027961233903355,
+          "depth": 138,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7160365100364423,
+          "depth": 143,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7178136410881369,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8303619468482469,
+          "depth": 91,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.6671377708910424,
+          "depth": 101,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7820530661735301,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.5917155564398285,
+          "depth": 109,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.8051359010012571,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8494864062608617,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8070510063420243,
+          "depth": 136,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7311441832184016,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7020252529327694,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.6987043899243931,
+          "depth": 54,
+          "cx_count": 36
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 4,
+      "n_qubits": 4,
+      "n_terms": 8,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 0.9817320125744214,
+          "depth": 61,
+          "cx_count": 36
+        },
+        "0.95": {
+          "fidelity": 0.9817320125744214,
+          "depth": 61,
+          "cx_count": 36
+        },
+        "0.99": {
+          "fidelity": 0.9940513326831655,
+          "depth": 86,
+          "cx_count": 44
+        }
+      },
+      "candidates": [
+        {
+          "fidelity": 0.9497777750191486,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9620691900477848,
+          "depth": 84,
+          "cx_count": 48
+        },
+        {
+          "fidelity": 0.9519222457991129,
+          "depth": 84,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9940513326831655,
+          "depth": 86,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.8317243301408935,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.6323458750160316,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.954188269926432,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9540171866401511,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9270332283320905,
+          "depth": 101,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9460315508795621,
+          "depth": 79,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.9899758782882118,
+          "depth": 84,
+          "cx_count": 48
+        },
+        {
+          "fidelity": 0.9687747845830663,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9554636517959725,
+          "depth": 140,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9481848798468943,
+          "depth": 81,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9555070553243761,
+          "depth": 138,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9562437904798473,
+          "depth": 88,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9227028442396392,
+          "depth": 84,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9473159815767391,
+          "depth": 86,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.9230735578605662,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7865947826045673,
+          "depth": 134,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.9902016313442938,
+          "depth": 116,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9543161319960853,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.949890972592,
+          "depth": 110,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9790398711444459,
+          "depth": 84,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.925851214315596,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9655629609484274,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9817320125744214,
+          "depth": 61,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9432434807900332,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9467397552147725,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9518191136614557,
+          "depth": 81,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.9863284259718978,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.938363667997525,
+          "depth": 81,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9623987376767307,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9213176874774871,
+          "depth": 81,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.950833851872741,
+          "depth": 86,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9482889410185354,
+          "depth": 86,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.956240227281498,
+          "depth": 81,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.9335189436314767,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.9448572307932713,
+          "depth": 109,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.9439485109968675,
+          "depth": 116,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9259209887497192,
+          "depth": 91,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9593434027690964,
+          "depth": 86,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8928605275738469,
+          "depth": 136,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9532417336736861,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9544853111258232,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9767701196593455,
+          "depth": 121,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9892955583109772,
+          "depth": 121,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9447401584386338,
+          "depth": 86,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9032974444733847,
+          "depth": 114,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.9359860830301605,
+          "depth": 111,
+          "cx_count": 46
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 5,
+      "n_qubits": 4,
+      "n_terms": 8,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 0.9355290017759881,
+          "depth": 83,
+          "cx_count": 36
+        },
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.6357658577206992,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8242415530081428,
+          "depth": 88,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.6277515707049167,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6895506219078209,
+          "depth": 84,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7996156056384436,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6335828558452945,
+          "depth": 61,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.8244448205638185,
+          "depth": 133,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.6672067604311082,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8353295183730485,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7896690226522817,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8592958190398883,
+          "depth": 54,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.54231100317758,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7870168843429716,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.5368945007706687,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8332193993990147,
+          "depth": 146,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6753579512749064,
+          "depth": 54,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.6597212621920172,
+          "depth": 84,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8155114012249951,
+          "depth": 116,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6350921635913022,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8108260691588659,
+          "depth": 95,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7667988846323105,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.5226849486039501,
+          "depth": 132,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.7468241782419072,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8342530021633464,
+          "depth": 114,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.7049147703542743,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8240919840481472,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.6344608790917989,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.7504970740864806,
+          "depth": 136,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.7759333826311492,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7873375927137644,
+          "depth": 91,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.8300605692042757,
+          "depth": 81,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.9127823415008315,
+          "depth": 105,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6789817932348523,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9355290017759881,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7329878531065693,
+          "depth": 121,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.773243720927496,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.7900526324430123,
+          "depth": 136,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6383316531093463,
+          "depth": 144,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7377605492262646,
+          "depth": 136,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6697608242864088,
+          "depth": 131,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7467565206200927,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.5924112358483046,
+          "depth": 81,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.8469814382486315,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7839395075617337,
+          "depth": 86,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.8157277678049362,
+          "depth": 146,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8210551784176389,
+          "depth": 81,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8351363296385244,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.8023239817489746,
+          "depth": 110,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.628439421107645,
+          "depth": 54,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.8238473115869394,
+          "depth": 109,
+          "cx_count": 54
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 6,
+      "n_qubits": 4,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.0393555289828524,
+          "depth": 514,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.07966026710939765,
+          "depth": 484,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.15317862314768727,
+          "depth": 514,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.019851085505428797,
+          "depth": 489,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.11047642672753372,
+          "depth": 501,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.06885609779142542,
+          "depth": 506,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.02774605173388797,
+          "depth": 436,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.12448895245990767,
+          "depth": 521,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.4677243526590956,
+          "depth": 446,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.09850000702735956,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.10698051250560882,
+          "depth": 376,
+          "cx_count": 168
+        },
+        {
+          "fidelity": 0.09337780483906949,
+          "depth": 484,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.3946102791880137,
+          "depth": 466,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.3174072299448325,
+          "depth": 413,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.04617845549126108,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.5205038175765099,
+          "depth": 373,
+          "cx_count": 178
+        },
+        {
+          "fidelity": 0.5739488241714839,
+          "depth": 476,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.03163555439418258,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.0881211481656447,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.025022667761429664,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.5044205515774679,
+          "depth": 457,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.13329853492000215,
+          "depth": 421,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.2968194682563315,
+          "depth": 504,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.0991049406959146,
+          "depth": 494,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.0036232760092383565,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.06207845287192906,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.04773834638757141,
+          "depth": 475,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.09077189131748234,
+          "depth": 476,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.15789573137255022,
+          "depth": 496,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.1365846034752367,
+          "depth": 454,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.3092172326796861,
+          "depth": 406,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.3209263998192544,
+          "depth": 473,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.2588318585002219,
+          "depth": 446,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.1521589750603037,
+          "depth": 489,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.27922398995942516,
+          "depth": 514,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.492929189690502,
+          "depth": 493,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.28102866573878904,
+          "depth": 442,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.041471760554801146,
+          "depth": 523,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.07245026436386236,
+          "depth": 514,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.06739434180465903,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.3006274001834971,
+          "depth": 519,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.21684010170344134,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.07892973485911738,
+          "depth": 514,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.09256966062016014,
+          "depth": 482,
+          "cx_count": 168
+        },
+        {
+          "fidelity": 0.0007837445312445635,
+          "depth": 493,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.17093531100128445,
+          "depth": 463,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.06644274477647458,
+          "depth": 503,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.26962456944120144,
+          "depth": 433,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.05864576534577509,
+          "depth": 516,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.1626298297214642,
+          "depth": 466,
+          "cx_count": 184
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 7,
+      "n_qubits": 4,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 0.9056635640759256,
+          "depth": 305,
+          "cx_count": 152
+        },
+        "0.95": {
+          "fidelity": 1.0,
+          "depth": 504,
+          "cx_count": 204
+        },
+        "0.99": {
+          "fidelity": 1.0,
+          "depth": 504,
+          "cx_count": 204
+        }
+      },
+      "candidates": [
+        {
+          "fidelity": 0.660442609856813,
+          "depth": 406,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.5340563886593415,
+          "depth": 476,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.4956839101773981,
+          "depth": 486,
+          "cx_count": 196
+        },
+        {
+          "fidelity": 0.3539253894381897,
+          "depth": 426,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.16236102146273476,
+          "depth": 524,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.24079456285871487,
+          "depth": 514,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.4633984477801217,
+          "depth": 509,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.49590054645938886,
+          "depth": 320,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.3466698775350169,
+          "depth": 414,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.24625923606280264,
+          "depth": 494,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.5739045361923947,
+          "depth": 492,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.4272921311102463,
+          "depth": 456,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.3813184080511297,
+          "depth": 483,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.9056635640759256,
+          "depth": 305,
+          "cx_count": 152
+        },
+        {
+          "fidelity": 0.6749208938444969,
+          "depth": 495,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.6286112105484161,
+          "depth": 499,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.7865690638741227,
+          "depth": 461,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.43808134940324467,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.9354455689073425,
+          "depth": 465,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.5136654153174034,
+          "depth": 423,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.22193441836189745,
+          "depth": 544,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.1896442042157598,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.6192192230612008,
+          "depth": 502,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 504,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.1825907064886476,
+          "depth": 445,
+          "cx_count": 168
+        },
+        {
+          "fidelity": 0.5129817215625706,
+          "depth": 484,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.13595558219157403,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.4836699106530165,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.22688562415627764,
+          "depth": 464,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.25995748576917854,
+          "depth": 493,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.5677123674496724,
+          "depth": 420,
+          "cx_count": 166
+        },
+        {
+          "fidelity": 0.14563818643995827,
+          "depth": 536,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.4057530987500532,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.49376463019808325,
+          "depth": 521,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.5634058152523398,
+          "depth": 405,
+          "cx_count": 168
+        },
+        {
+          "fidelity": 0.6015764755598317,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.3778054373861057,
+          "depth": 419,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.6199053165383277,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.8948159225948162,
+          "depth": 357,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.18074372269762662,
+          "depth": 484,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.35310553124887745,
+          "depth": 451,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.7510249367958438,
+          "depth": 461,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.6525597342019533,
+          "depth": 302,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 0.5629920549251212,
+          "depth": 464,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.3771672713492868,
+          "depth": 395,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.6432545554052999,
+          "depth": 378,
+          "cx_count": 178
+        },
+        {
+          "fidelity": 0.6086425244811844,
+          "depth": 426,
+          "cx_count": 166
+        },
+        {
+          "fidelity": 0.1958664411869061,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.6315376450376866,
+          "depth": 446,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.42592101964962337,
+          "depth": 514,
+          "cx_count": 202
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 8,
+      "n_qubits": 4,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.20524605735934004,
+          "depth": 970,
+          "cx_count": 436
+        },
+        {
+          "fidelity": 0.0067714825758592246,
+          "depth": 975,
+          "cx_count": 464
+        },
+        {
+          "fidelity": 0.0042685165871057355,
+          "depth": 885,
+          "cx_count": 418
+        },
+        {
+          "fidelity": 0.013161775430054614,
+          "depth": 914,
+          "cx_count": 444
+        },
+        {
+          "fidelity": 0.043014263075162006,
+          "depth": 916,
+          "cx_count": 454
+        },
+        {
+          "fidelity": 0.07319382709386883,
+          "depth": 904,
+          "cx_count": 442
+        },
+        {
+          "fidelity": 0.029362543371652807,
+          "depth": 1009,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.050993240120647966,
+          "depth": 954,
+          "cx_count": 460
+        },
+        {
+          "fidelity": 0.0002453207536166571,
+          "depth": 1025,
+          "cx_count": 464
+        },
+        {
+          "fidelity": 0.04622058999814525,
+          "depth": 900,
+          "cx_count": 444
+        },
+        {
+          "fidelity": 0.015476684326016819,
+          "depth": 1039,
+          "cx_count": 482
+        },
+        {
+          "fidelity": 0.0016680481009141693,
+          "depth": 984,
+          "cx_count": 490
+        },
+        {
+          "fidelity": 0.0007096658634023562,
+          "depth": 959,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.017323417297845516,
+          "depth": 1000,
+          "cx_count": 490
+        },
+        {
+          "fidelity": 0.043803083819059035,
+          "depth": 946,
+          "cx_count": 464
+        },
+        {
+          "fidelity": 0.21418331522289666,
+          "depth": 999,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.015940732059850492,
+          "depth": 1030,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.10259556287192059,
+          "depth": 930,
+          "cx_count": 426
+        },
+        {
+          "fidelity": 0.014317616821436875,
+          "depth": 999,
+          "cx_count": 454
+        },
+        {
+          "fidelity": 0.19592689391523052,
+          "depth": 960,
+          "cx_count": 434
+        },
+        {
+          "fidelity": 0.01427101406994539,
+          "depth": 966,
+          "cx_count": 464
+        },
+        {
+          "fidelity": 0.019233596096903227,
+          "depth": 943,
+          "cx_count": 460
+        },
+        {
+          "fidelity": 0.004083817089841155,
+          "depth": 999,
+          "cx_count": 426
+        },
+        {
+          "fidelity": 0.29757052239337733,
+          "depth": 970,
+          "cx_count": 444
+        },
+        {
+          "fidelity": 0.011679336124308642,
+          "depth": 979,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.0028573349787660825,
+          "depth": 969,
+          "cx_count": 470
+        },
+        {
+          "fidelity": 0.021820906521996707,
+          "depth": 1013,
+          "cx_count": 470
+        },
+        {
+          "fidelity": 0.17496781857561935,
+          "depth": 919,
+          "cx_count": 460
+        },
+        {
+          "fidelity": 0.11798011224067148,
+          "depth": 1029,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.0305287207045321,
+          "depth": 980,
+          "cx_count": 444
+        },
+        {
+          "fidelity": 0.0016888022590795808,
+          "depth": 905,
+          "cx_count": 396
+        },
+        {
+          "fidelity": 0.1595817125761167,
+          "depth": 890,
+          "cx_count": 414
+        },
+        {
+          "fidelity": 0.2446899670402651,
+          "depth": 1003,
+          "cx_count": 460
+        },
+        {
+          "fidelity": 0.0016882394408600048,
+          "depth": 1049,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.049000115755351646,
+          "depth": 950,
+          "cx_count": 460
+        },
+        {
+          "fidelity": 0.04786641631245624,
+          "depth": 1000,
+          "cx_count": 474
+        },
+        {
+          "fidelity": 0.028721307569223233,
+          "depth": 964,
+          "cx_count": 454
+        },
+        {
+          "fidelity": 0.056568227863633365,
+          "depth": 915,
+          "cx_count": 418
+        },
+        {
+          "fidelity": 0.045778349362606205,
+          "depth": 979,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.13257605826377936,
+          "depth": 970,
+          "cx_count": 460
+        },
+        {
+          "fidelity": 0.027804954874232384,
+          "depth": 910,
+          "cx_count": 426
+        },
+        {
+          "fidelity": 0.23520600061111735,
+          "depth": 930,
+          "cx_count": 434
+        },
+        {
+          "fidelity": 0.024824157493272717,
+          "depth": 989,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.013931951789876806,
+          "depth": 880,
+          "cx_count": 444
+        },
+        {
+          "fidelity": 0.16901852395405773,
+          "depth": 1010,
+          "cx_count": 460
+        },
+        {
+          "fidelity": 0.04948018313974257,
+          "depth": 940,
+          "cx_count": 444
+        },
+        {
+          "fidelity": 0.013778099132196586,
+          "depth": 960,
+          "cx_count": 444
+        },
+        {
+          "fidelity": 0.17198909216934458,
+          "depth": 939,
+          "cx_count": 480
+        },
+        {
+          "fidelity": 0.21086986578087427,
+          "depth": 984,
+          "cx_count": 452
+        },
+        {
+          "fidelity": 0.17548807197650337,
+          "depth": 920,
+          "cx_count": 444
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 9,
+      "n_qubits": 4,
+      "n_terms": 8,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.6266998116436787,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7027107048821595,
+          "depth": 114,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.5767055963834828,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7807900992630712,
+          "depth": 121,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.771486979869977,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7134241053650863,
+          "depth": 104,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7130948893221999,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7232385009585642,
+          "depth": 84,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.8247831357235734,
+          "depth": 113,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8031798272761571,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7849958461810935,
+          "depth": 111,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7249142558424392,
+          "depth": 141,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8265796300801447,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8296740997046645,
+          "depth": 108,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7038131332689778,
+          "depth": 144,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6830915708534879,
+          "depth": 56,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.6780324700963719,
+          "depth": 81,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.6729544442261636,
+          "depth": 86,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7413547231539906,
+          "depth": 81,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6400216235469701,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6288725415905076,
+          "depth": 111,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8233513769183118,
+          "depth": 90,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.8166059079642085,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7731568006458888,
+          "depth": 144,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7548605749616776,
+          "depth": 121,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.6603705262108276,
+          "depth": 86,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.6735198060921679,
+          "depth": 79,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.5072560321973347,
+          "depth": 86,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.7695764333325684,
+          "depth": 146,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6712943352695429,
+          "depth": 108,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6348588318465627,
+          "depth": 116,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7404153998193157,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7372947391265766,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6784676466096378,
+          "depth": 74,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.75103910392239,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7910915782031467,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7202299593164686,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7443424166989502,
+          "depth": 54,
+          "cx_count": 26
+        },
+        {
+          "fidelity": 0.6909476474776169,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8335984878153923,
+          "depth": 81,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.667726319821907,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.6881043571542096,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6712271593115993,
+          "depth": 56,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.6742638288604241,
+          "depth": 86,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.8007387614035428,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.6166744034245024,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7689248716144447,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.5988917713183974,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6736075369050443,
+          "depth": 86,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.8247748309445525,
+          "depth": 86,
+          "cx_count": 46
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 10,
+      "n_qubits": 4,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.03620554832981284,
+          "depth": 833,
+          "cx_count": 394
+        },
+        {
+          "fidelity": 0.004710600322854116,
+          "depth": 850,
+          "cx_count": 414
+        },
+        {
+          "fidelity": 0.059422556670586574,
+          "depth": 782,
+          "cx_count": 410
+        },
+        {
+          "fidelity": 0.06048753149922693,
+          "depth": 825,
+          "cx_count": 410
+        },
+        {
+          "fidelity": 0.17140452996131247,
+          "depth": 775,
+          "cx_count": 372
+        },
+        {
+          "fidelity": 0.050537576755356764,
+          "depth": 745,
+          "cx_count": 374
+        },
+        {
+          "fidelity": 0.0019692234245895714,
+          "depth": 780,
+          "cx_count": 374
+        },
+        {
+          "fidelity": 0.015151865669929094,
+          "depth": 780,
+          "cx_count": 364
+        },
+        {
+          "fidelity": 0.21311323810306654,
+          "depth": 741,
+          "cx_count": 338
+        },
+        {
+          "fidelity": 0.11773361806155828,
+          "depth": 840,
+          "cx_count": 402
+        },
+        {
+          "fidelity": 0.02095596264644773,
+          "depth": 802,
+          "cx_count": 410
+        },
+        {
+          "fidelity": 0.2307245208032523,
+          "depth": 855,
+          "cx_count": 422
+        },
+        {
+          "fidelity": 0.0015050035866561787,
+          "depth": 805,
+          "cx_count": 374
+        },
+        {
+          "fidelity": 0.0006669044712066649,
+          "depth": 805,
+          "cx_count": 392
+        },
+        {
+          "fidelity": 0.23303570508087623,
+          "depth": 835,
+          "cx_count": 410
+        },
+        {
+          "fidelity": 0.1312184626939401,
+          "depth": 809,
+          "cx_count": 392
+        },
+        {
+          "fidelity": 0.10654450461702766,
+          "depth": 799,
+          "cx_count": 384
+        },
+        {
+          "fidelity": 0.08773898734312417,
+          "depth": 720,
+          "cx_count": 356
+        },
+        {
+          "fidelity": 0.021880353291390348,
+          "depth": 785,
+          "cx_count": 366
+        },
+        {
+          "fidelity": 0.11138990686483423,
+          "depth": 845,
+          "cx_count": 402
+        },
+        {
+          "fidelity": 0.15162522081643048,
+          "depth": 814,
+          "cx_count": 402
+        },
+        {
+          "fidelity": 0.16240512608651628,
+          "depth": 775,
+          "cx_count": 386
+        },
+        {
+          "fidelity": 0.003233631172095225,
+          "depth": 760,
+          "cx_count": 358
+        },
+        {
+          "fidelity": 0.09820929737276993,
+          "depth": 811,
+          "cx_count": 402
+        },
+        {
+          "fidelity": 0.4135276689921379,
+          "depth": 744,
+          "cx_count": 354
+        },
+        {
+          "fidelity": 0.00799284432168701,
+          "depth": 774,
+          "cx_count": 366
+        },
+        {
+          "fidelity": 0.13251726970627228,
+          "depth": 718,
+          "cx_count": 326
+        },
+        {
+          "fidelity": 0.08218295036283547,
+          "depth": 815,
+          "cx_count": 386
+        },
+        {
+          "fidelity": 0.2584466119238809,
+          "depth": 814,
+          "cx_count": 386
+        },
+        {
+          "fidelity": 0.006398781084768793,
+          "depth": 780,
+          "cx_count": 372
+        },
+        {
+          "fidelity": 0.05619119627112812,
+          "depth": 835,
+          "cx_count": 402
+        },
+        {
+          "fidelity": 0.05540371737475101,
+          "depth": 745,
+          "cx_count": 366
+        },
+        {
+          "fidelity": 0.24455622154533463,
+          "depth": 765,
+          "cx_count": 392
+        },
+        {
+          "fidelity": 0.022750637010295196,
+          "depth": 800,
+          "cx_count": 394
+        },
+        {
+          "fidelity": 0.08318385548170329,
+          "depth": 788,
+          "cx_count": 372
+        },
+        {
+          "fidelity": 0.019479827375959404,
+          "depth": 788,
+          "cx_count": 346
+        },
+        {
+          "fidelity": 0.09151388856525337,
+          "depth": 800,
+          "cx_count": 376
+        },
+        {
+          "fidelity": 0.10131387203204847,
+          "depth": 855,
+          "cx_count": 430
+        },
+        {
+          "fidelity": 0.02418218218121913,
+          "depth": 794,
+          "cx_count": 394
+        },
+        {
+          "fidelity": 0.09921474521820248,
+          "depth": 750,
+          "cx_count": 354
+        },
+        {
+          "fidelity": 0.1930148827864283,
+          "depth": 860,
+          "cx_count": 410
+        },
+        {
+          "fidelity": 0.13955734346690163,
+          "depth": 795,
+          "cx_count": 386
+        },
+        {
+          "fidelity": 0.08146744673548295,
+          "depth": 815,
+          "cx_count": 402
+        },
+        {
+          "fidelity": 0.04349022808626317,
+          "depth": 825,
+          "cx_count": 392
+        },
+        {
+          "fidelity": 0.04776281720732931,
+          "depth": 780,
+          "cx_count": 372
+        },
+        {
+          "fidelity": 0.05947128684884904,
+          "depth": 839,
+          "cx_count": 422
+        },
+        {
+          "fidelity": 0.18295693812667435,
+          "depth": 815,
+          "cx_count": 402
+        },
+        {
+          "fidelity": 0.07874403912643935,
+          "depth": 689,
+          "cx_count": 342
+        },
+        {
+          "fidelity": 0.10510654825097622,
+          "depth": 769,
+          "cx_count": 354
+        },
+        {
+          "fidelity": 0.06610621945580353,
+          "depth": 815,
+          "cx_count": 402
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 11,
+      "n_qubits": 4,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 1.0,
+          "depth": 378,
+          "cx_count": 186
+        },
+        "0.95": {
+          "fidelity": 1.0,
+          "depth": 378,
+          "cx_count": 186
+        },
+        "0.99": {
+          "fidelity": 1.0,
+          "depth": 378,
+          "cx_count": 186
+        }
+      },
+      "candidates": [
+        {
+          "fidelity": 0.34869807123640384,
+          "depth": 486,
+          "cx_count": 196
+        },
+        {
+          "fidelity": 0.19015526930011853,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.16417596503963014,
+          "depth": 413,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.06338828413169831,
+          "depth": 506,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.10783764713422572,
+          "depth": 494,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.06173272889834473,
+          "depth": 473,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.09417397520662309,
+          "depth": 420,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.03920232606308848,
+          "depth": 513,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.17710133926085614,
+          "depth": 454,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.046721271643663985,
+          "depth": 514,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.3298547322146985,
+          "depth": 536,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.06079378997919951,
+          "depth": 471,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.42202367299570626,
+          "depth": 281,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.13274512353618567,
+          "depth": 489,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.07060304007413662,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.02558816208823167,
+          "depth": 486,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.1458943693153713,
+          "depth": 449,
+          "cx_count": 192
+        },
+        {
+          "fidelity": 0.14852116040679503,
+          "depth": 373,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.10462634312386855,
+          "depth": 506,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.11391461392325064,
+          "depth": 504,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.015765506502041324,
+          "depth": 410,
+          "cx_count": 158
+        },
+        {
+          "fidelity": 0.19135499408446063,
+          "depth": 461,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.43099835704260375,
+          "depth": 458,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.20973858176150015,
+          "depth": 445,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.0019612221935110976,
+          "depth": 456,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.07454872337915121,
+          "depth": 439,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.45491424538764574,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.05778512712338258,
+          "depth": 511,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.19179530768959846,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.32464809096380576,
+          "depth": 501,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.20363713090399432,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.03083289156111367,
+          "depth": 481,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.37569368443618933,
+          "depth": 426,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.22587070254629674,
+          "depth": 524,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.0775865977560245,
+          "depth": 471,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.09087961507382593,
+          "depth": 516,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.1770911630033266,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.2954492044301351,
+          "depth": 413,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.00028756142346238433,
+          "depth": 416,
+          "cx_count": 168
+        },
+        {
+          "fidelity": 0.1024404448244039,
+          "depth": 466,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.0446562875157721,
+          "depth": 449,
+          "cx_count": 192
+        },
+        {
+          "fidelity": 0.24799086345397756,
+          "depth": 467,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.2613553941718639,
+          "depth": 396,
+          "cx_count": 178
+        },
+        {
+          "fidelity": 0.09540599214141385,
+          "depth": 503,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.1845265333315044,
+          "depth": 464,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.10798858642919514,
+          "depth": 481,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.43749513832585246,
+          "depth": 496,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.026361985119174196,
+          "depth": 445,
+          "cx_count": 158
+        },
+        {
+          "fidelity": 0.16556740221335914,
+          "depth": 374,
+          "cx_count": 192
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 378,
+          "cx_count": 186
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 12,
+      "n_qubits": 4,
+      "n_terms": 12,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 1.0,
+          "depth": 472,
+          "cx_count": 168
+        },
+        "0.95": {
+          "fidelity": 1.0,
+          "depth": 472,
+          "cx_count": 168
+        },
+        "0.99": {
+          "fidelity": 1.0,
+          "depth": 472,
+          "cx_count": 168
+        }
+      },
+      "candidates": [
+        {
+          "fidelity": 0.15847720841304105,
+          "depth": 492,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.4519313615353341,
+          "depth": 345,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.4154085206891026,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.8422591957551815,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.7227196327257482,
+          "depth": 445,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.1693953460575572,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 472,
+          "cx_count": 168
+        },
+        {
+          "fidelity": 0.24678457547207483,
+          "depth": 454,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.3699241753194395,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.37104038338744544,
+          "depth": 456,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.39715000607343326,
+          "depth": 440,
+          "cx_count": 178
+        },
+        {
+          "fidelity": 0.6658784169089725,
+          "depth": 519,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.46421738502335247,
+          "depth": 436,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.5818897265837312,
+          "depth": 366,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.7340587137402099,
+          "depth": 403,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.14890470736430633,
+          "depth": 448,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.4288201127031947,
+          "depth": 496,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.20891832440187116,
+          "depth": 448,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.08585203134889224,
+          "depth": 534,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.06116907276606825,
+          "depth": 504,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.3268063428107524,
+          "depth": 406,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.07813485652864294,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.20219527284855962,
+          "depth": 526,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.38171903483261627,
+          "depth": 488,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.10859586950127438,
+          "depth": 443,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.11695120729176178,
+          "depth": 481,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.2280553598081677,
+          "depth": 481,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 546,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.1970409166585454,
+          "depth": 489,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.19344418306870959,
+          "depth": 431,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.7095472894590023,
+          "depth": 491,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.150803461464627,
+          "depth": 503,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.31538909974529983,
+          "depth": 516,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.016700548379925993,
+          "depth": 479,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.35458302688773513,
+          "depth": 475,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.1796420011814089,
+          "depth": 504,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.6853383846029509,
+          "depth": 451,
+          "cx_count": 176
+        },
+        {
+          "fidelity": 0.28137347232936466,
+          "depth": 521,
+          "cx_count": 194
+        },
+        {
+          "fidelity": 0.10483719513061238,
+          "depth": 437,
+          "cx_count": 202
+        },
+        {
+          "fidelity": 0.15330427219168202,
+          "depth": 503,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.26411898375595605,
+          "depth": 469,
+          "cx_count": 184
+        },
+        {
+          "fidelity": 0.13494746379148453,
+          "depth": 453,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.012508552944196272,
+          "depth": 494,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.13566521706440676,
+          "depth": 524,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.4266507796909513,
+          "depth": 485,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.26298260648980676,
+          "depth": 433,
+          "cx_count": 186
+        },
+        {
+          "fidelity": 0.0029558067479006976,
+          "depth": 494,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.16190413960515948,
+          "depth": 544,
+          "cx_count": 212
+        },
+        {
+          "fidelity": 0.602757083220015,
+          "depth": 536,
+          "cx_count": 204
+        },
+        {
+          "fidelity": 0.37262893070623243,
+          "depth": 514,
+          "cx_count": 212
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 13,
+      "n_qubits": 4,
+      "n_terms": 8,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 0.9629545383746535,
+          "depth": 49,
+          "cx_count": 28
+        },
+        "0.95": {
+          "fidelity": 0.9629545383746535,
+          "depth": 49,
+          "cx_count": 28
+        },
+        "0.99": {
+          "fidelity": 0.9905428426320877,
+          "depth": 83,
+          "cx_count": 44
+        }
+      },
+      "candidates": [
+        {
+          "fidelity": 0.9516350324881739,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.9352022985490233,
+          "depth": 81,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.953529124080047,
+          "depth": 91,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9629585458980174,
+          "depth": 83,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9661406014209833,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.969232115643777,
+          "depth": 81,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9282756309324748,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9830745960316807,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9273290297067008,
+          "depth": 88,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9399557696733831,
+          "depth": 86,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.9664329620031609,
+          "depth": 109,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.9372637537514359,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8793342484659636,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9463692771447845,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9905428426320877,
+          "depth": 83,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.9427525060524735,
+          "depth": 96,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9194795369137995,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9876865300293544,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9678675150828664,
+          "depth": 141,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9735872425450931,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.9839662829657231,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.927533837293376,
+          "depth": 86,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.9345587772352358,
+          "depth": 114,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.9255125718543932,
+          "depth": 114,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.9250899017375463,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.9928357082753221,
+          "depth": 116,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9652351301961064,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9846011343737769,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9869921425200667,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.9491114294270351,
+          "depth": 104,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.9618798573795266,
+          "depth": 88,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.9337916717594555,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9496446916385362,
+          "depth": 136,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9843175896543751,
+          "depth": 61,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.973407750623737,
+          "depth": 93,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.9547132638650009,
+          "depth": 121,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9659610761382352,
+          "depth": 140,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9616030359781611,
+          "depth": 61,
+          "cx_count": 26
+        },
+        {
+          "fidelity": 0.9629545383746535,
+          "depth": 49,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.9552067678065872,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9884446209156409,
+          "depth": 84,
+          "cx_count": 48
+        },
+        {
+          "fidelity": 0.941441570062327,
+          "depth": 116,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9834935751136827,
+          "depth": 84,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.9351988353487825,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9526555831093657,
+          "depth": 86,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.967784980020256,
+          "depth": 86,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.9296785500228006,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.9662167965247016,
+          "depth": 79,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9655890005652915,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.965721201361139,
+          "depth": 108,
+          "cx_count": 54
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 14,
+      "n_qubits": 4,
+      "n_terms": 8,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 0.9006067567209862,
+          "depth": 79,
+          "cx_count": 28
+        },
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.6587064415572995,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.36431076074175917,
+          "depth": 86,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.4926283786502867,
+          "depth": 110,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.5882548049650692,
+          "depth": 84,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8530082907709374,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.6529463948614225,
+          "depth": 144,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8373239634415919,
+          "depth": 84,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.5083793190256352,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6787035522047471,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7545483762235701,
+          "depth": 86,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8176247369432184,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.6093201662550116,
+          "depth": 81,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8915086568601215,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.5154994237995681,
+          "depth": 106,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8907251708112912,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.9006067567209862,
+          "depth": 79,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.6957252344836645,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7519383289767584,
+          "depth": 83,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.501767096974611,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6528287048310825,
+          "depth": 91,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.5014058583464011,
+          "depth": 114,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.4816968779391705,
+          "depth": 86,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.6497190253434677,
+          "depth": 114,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.68229294331201,
+          "depth": 106,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8098555927906943,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.9046983893908136,
+          "depth": 114,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7294868822871831,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8689237961389219,
+          "depth": 98,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.781488631866228,
+          "depth": 115,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.5255778796971791,
+          "depth": 134,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6442259132639048,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8224087196613362,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.4942515672012255,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7294214024826826,
+          "depth": 113,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.685846336187857,
+          "depth": 104,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7234285864671988,
+          "depth": 84,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.7314436154959122,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.5049042780715265,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6993497420965579,
+          "depth": 84,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.5934833024885832,
+          "depth": 81,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6848920178377733,
+          "depth": 76,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7111888144093905,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8536662139185534,
+          "depth": 106,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.781123555722039,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.5371597612450691,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8291734256186113,
+          "depth": 84,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.7402323874633208,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6156054416788573,
+          "depth": 136,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.7424824864085409,
+          "depth": 121,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.6153977865604406,
+          "depth": 141,
+          "cx_count": 64
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 15,
+      "n_qubits": 6,
+      "n_terms": 18,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 1.0,
+          "depth": 568,
+          "cx_count": 298
+        },
+        "0.95": {
+          "fidelity": 1.0,
+          "depth": 568,
+          "cx_count": 298
+        },
+        "0.99": {
+          "fidelity": 1.0,
+          "depth": 568,
+          "cx_count": 298
+        }
+      },
+      "candidates": [
+        {
+          "fidelity": 0.4753875012621864,
+          "depth": 556,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.08462380912248453,
+          "depth": 606,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.02558377792689241,
+          "depth": 576,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.013406348516737946,
+          "depth": 552,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.17441510420682918,
+          "depth": 499,
+          "cx_count": 278
+        },
+        {
+          "fidelity": 0.028589237932167638,
+          "depth": 769,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.03762308321444825,
+          "depth": 565,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.0008258414491414601,
+          "depth": 479,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.030224797832821833,
+          "depth": 679,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.013498890821001377,
+          "depth": 598,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.1407987054758053,
+          "depth": 495,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.10079247334552263,
+          "depth": 460,
+          "cx_count": 278
+        },
+        {
+          "fidelity": 0.033323410163498136,
+          "depth": 583,
+          "cx_count": 280
+        },
+        {
+          "fidelity": 0.0002862465380367888,
+          "depth": 737,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.027824715259936062,
+          "depth": 721,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.11199447243740294,
+          "depth": 811,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.13288619174052757,
+          "depth": 628,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.054483191500222586,
+          "depth": 620,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.04944384963020147,
+          "depth": 706,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.013879478800340387,
+          "depth": 775,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.0018016481632996825,
+          "depth": 651,
+          "cx_count": 294
+        },
+        {
+          "fidelity": 0.04986533027518079,
+          "depth": 696,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.010466891745885828,
+          "depth": 673,
+          "cx_count": 312
+        },
+        {
+          "fidelity": 0.018456243173774086,
+          "depth": 565,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.07837663423346847,
+          "depth": 626,
+          "cx_count": 298
+        },
+        {
+          "fidelity": 0.04844225330944054,
+          "depth": 781,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.018255723078719453,
+          "depth": 627,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.0009052345954125228,
+          "depth": 747,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.06726718444300442,
+          "depth": 826,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.05223603592421239,
+          "depth": 726,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.011690903207781668,
+          "depth": 761,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.37943623215116773,
+          "depth": 455,
+          "cx_count": 270
+        },
+        {
+          "fidelity": 0.04336638107970711,
+          "depth": 729,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.030143089692015075,
+          "depth": 570,
+          "cx_count": 286
+        },
+        {
+          "fidelity": 0.014824891135879354,
+          "depth": 734,
+          "cx_count": 312
+        },
+        {
+          "fidelity": 1.0,
+          "depth": 568,
+          "cx_count": 298
+        },
+        {
+          "fidelity": 0.011573420162445967,
+          "depth": 531,
+          "cx_count": 278
+        },
+        {
+          "fidelity": 0.04770409568043876,
+          "depth": 689,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.01123012647012046,
+          "depth": 764,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.035287342643703846,
+          "depth": 626,
+          "cx_count": 278
+        },
+        {
+          "fidelity": 0.03653553069243786,
+          "depth": 744,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.056316690083247155,
+          "depth": 689,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.02288023980438484,
+          "depth": 814,
+          "cx_count": 332
+        },
+        {
+          "fidelity": 0.01739043083553095,
+          "depth": 379,
+          "cx_count": 260
+        },
+        {
+          "fidelity": 0.004877486797293528,
+          "depth": 769,
+          "cx_count": 322
+        },
+        {
+          "fidelity": 0.022184916558085396,
+          "depth": 727,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.022065799813807598,
+          "depth": 814,
+          "cx_count": 332
+        },
+        {
+          "fidelity": 0.06636659805055498,
+          "depth": 766,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.21674948898536686,
+          "depth": 530,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.07273986603427392,
+          "depth": 669,
+          "cx_count": 304
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 16,
+      "n_qubits": 4,
+      "n_terms": 8,
+      "thresholds": {
+        "0.9": {
+          "fidelity": 0.9089333100216046,
+          "depth": 54,
+          "cx_count": 28
+        },
+        "0.95": {
+          "fidelity": 0.9609403236939049,
+          "depth": 91,
+          "cx_count": 44
+        },
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.8456242301850283,
+          "depth": 141,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7728485284068185,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.5608098982615463,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.827144352462842,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7134263592457781,
+          "depth": 116,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7956584018226859,
+          "depth": 116,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8562388684200961,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8541363075601741,
+          "depth": 131,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8184742662431017,
+          "depth": 61,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.7874274331423352,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.8818259215554505,
+          "depth": 79,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.7996205499424585,
+          "depth": 109,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.7914102759828139,
+          "depth": 116,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.6881277414228575,
+          "depth": 88,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.7103897059220059,
+          "depth": 139,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.8960892204226012,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8242729987951888,
+          "depth": 136,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.9514805775472874,
+          "depth": 113,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.6736154076852288,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8364734827697752,
+          "depth": 113,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7221402017680012,
+          "depth": 121,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9122016769444535,
+          "depth": 84,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.8371922684545089,
+          "depth": 141,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.8917811299251291,
+          "depth": 84,
+          "cx_count": 38
+        },
+        {
+          "fidelity": 0.7626138391435472,
+          "depth": 106,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9257841699101005,
+          "depth": 143,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7008184021035848,
+          "depth": 86,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.6955515585473662,
+          "depth": 111,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.9609403236939049,
+          "depth": 91,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.7610241412627066,
+          "depth": 113,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8563268169459742,
+          "depth": 83,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.879917598460641,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7607920851078046,
+          "depth": 139,
+          "cx_count": 64
+        },
+        {
+          "fidelity": 0.7298044395371288,
+          "depth": 91,
+          "cx_count": 36
+        },
+        {
+          "fidelity": 0.9089333100216046,
+          "depth": 54,
+          "cx_count": 28
+        },
+        {
+          "fidelity": 0.46750192540150937,
+          "depth": 114,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7780957471348112,
+          "depth": 114,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.7796527025209675,
+          "depth": 109,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.8418334127765129,
+          "depth": 136,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.666536396470635,
+          "depth": 83,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.6038770060052754,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.89424011210613,
+          "depth": 109,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.6677054649637918,
+          "depth": 114,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.7482935295118758,
+          "depth": 79,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.8195327881353335,
+          "depth": 88,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.7536898583724269,
+          "depth": 114,
+          "cx_count": 56
+        },
+        {
+          "fidelity": 0.8486772076253812,
+          "depth": 116,
+          "cx_count": 46
+        },
+        {
+          "fidelity": 0.6761030582019238,
+          "depth": 81,
+          "cx_count": 44
+        },
+        {
+          "fidelity": 0.8467504865607413,
+          "depth": 113,
+          "cx_count": 54
+        },
+        {
+          "fidelity": 0.6944841683223753,
+          "depth": 79,
+          "cx_count": 46
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 17,
+      "n_qubits": 4,
+      "n_terms": 4,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.08871355978131547,
+          "depth": 214,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.0005091228822882354,
+          "depth": 199,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.11975631209279353,
+          "depth": 209,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.0012856975981603827,
+          "depth": 159,
+          "cx_count": 52
+        },
+        {
+          "fidelity": 0.004090293207850697,
+          "depth": 189,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.12008617488029408,
+          "depth": 194,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.40460755136392057,
+          "depth": 189,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 1.0173097227842553e-05,
+          "depth": 189,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.15314045015143504,
+          "depth": 159,
+          "cx_count": 52
+        },
+        {
+          "fidelity": 0.14569351713454576,
+          "depth": 199,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.05802702439258608,
+          "depth": 199,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.0031339946255489444,
+          "depth": 196,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.000586703480419437,
+          "depth": 159,
+          "cx_count": 52
+        },
+        {
+          "fidelity": 0.151887075784278,
+          "depth": 189,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.46945092136070127,
+          "depth": 189,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.28655192051381373,
+          "depth": 189,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.0013923729734086113,
+          "depth": 159,
+          "cx_count": 52
+        },
+        {
+          "fidelity": 0.0012686293132071146,
+          "depth": 209,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.013361014254058548,
+          "depth": 194,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.08189167770936408,
+          "depth": 199,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.15040320968584783,
+          "depth": 205,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.455824719261146,
+          "depth": 189,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.14548930155314013,
+          "depth": 199,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.10147615749521843,
+          "depth": 151,
+          "cx_count": 42
+        },
+        {
+          "fidelity": 0.15040320968584783,
+          "depth": 205,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.0014135580841926436,
+          "depth": 189,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.0006968071789398795,
+          "depth": 159,
+          "cx_count": 52
+        },
+        {
+          "fidelity": 0.491460057257531,
+          "depth": 189,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.002598255702295967,
+          "depth": 209,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.0001766400888084861,
+          "depth": 199,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.11923424208073392,
+          "depth": 191,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.030933751388903488,
+          "depth": 196,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.15040320968584783,
+          "depth": 205,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.0014645853903425818,
+          "depth": 159,
+          "cx_count": 52
+        },
+        {
+          "fidelity": 0.2776900273107312,
+          "depth": 214,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.06882025610813287,
+          "depth": 199,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.15153451261164405,
+          "depth": 159,
+          "cx_count": 52
+        },
+        {
+          "fidelity": 0.015752735646113826,
+          "depth": 189,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.03620663596074316,
+          "depth": 209,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.105122757853,
+          "depth": 214,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.16853207366776235,
+          "depth": 151,
+          "cx_count": 42
+        },
+        {
+          "fidelity": 0.007668368587093218,
+          "depth": 209,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.007451876514314081,
+          "depth": 196,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.0001646991971408735,
+          "depth": 214,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.5446997949201263,
+          "depth": 189,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.004602233958623307,
+          "depth": 189,
+          "cx_count": 62
+        },
+        {
+          "fidelity": 0.5025184144180068,
+          "depth": 189,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.001460281374275745,
+          "depth": 214,
+          "cx_count": 72
+        },
+        {
+          "fidelity": 0.12029941239375141,
+          "depth": 209,
+          "cx_count": 82
+        },
+        {
+          "fidelity": 0.207498263224713,
+          "depth": 189,
+          "cx_count": 72
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 18,
+      "n_qubits": 6,
+      "n_terms": 18,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.0045535179321141836,
+          "depth": 836,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.1898533441429181,
+          "depth": 623,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.013935789621158967,
+          "depth": 414,
+          "cx_count": 252
+        },
+        {
+          "fidelity": 0.0223756608974354,
+          "depth": 471,
+          "cx_count": 268
+        },
+        {
+          "fidelity": 0.3068338862789224,
+          "depth": 641,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.015492091845397417,
+          "depth": 782,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.08367868993967166,
+          "depth": 602,
+          "cx_count": 286
+        },
+        {
+          "fidelity": 0.0076039721346120815,
+          "depth": 791,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.11123978133033718,
+          "depth": 634,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.047858032185701976,
+          "depth": 735,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.026226725177485363,
+          "depth": 615,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.028197038075798736,
+          "depth": 834,
+          "cx_count": 332
+        },
+        {
+          "fidelity": 0.04844152337906756,
+          "depth": 751,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.1629714729233235,
+          "depth": 749,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.04781486892979197,
+          "depth": 666,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.06117586699977778,
+          "depth": 726,
+          "cx_count": 332
+        },
+        {
+          "fidelity": 0.0814732232833998,
+          "depth": 628,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.05227071301131866,
+          "depth": 683,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.0982067191392726,
+          "depth": 627,
+          "cx_count": 278
+        },
+        {
+          "fidelity": 0.27778158193062913,
+          "depth": 671,
+          "cx_count": 270
+        },
+        {
+          "fidelity": 0.03825144745974459,
+          "depth": 561,
+          "cx_count": 278
+        },
+        {
+          "fidelity": 0.08673037228336854,
+          "depth": 739,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.05482285963828902,
+          "depth": 661,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.14088515575223792,
+          "depth": 567,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.08444544661297594,
+          "depth": 781,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.06586545948227733,
+          "depth": 796,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.17047614638452485,
+          "depth": 640,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.04015013674241673,
+          "depth": 704,
+          "cx_count": 322
+        },
+        {
+          "fidelity": 0.018255252607932707,
+          "depth": 701,
+          "cx_count": 270
+        },
+        {
+          "fidelity": 0.15671393482410906,
+          "depth": 667,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.2243375102785704,
+          "depth": 651,
+          "cx_count": 304
+        },
+        {
+          "fidelity": 0.025312463064784345,
+          "depth": 826,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.07738608934526624,
+          "depth": 710,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.18206510461899947,
+          "depth": 708,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.0012930803112270195,
+          "depth": 631,
+          "cx_count": 268
+        },
+        {
+          "fidelity": 0.024668159652310874,
+          "depth": 816,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.16307674556416046,
+          "depth": 804,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.027445923084128222,
+          "depth": 724,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.46809128125002014,
+          "depth": 771,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.19407838066944585,
+          "depth": 791,
+          "cx_count": 314
+        },
+        {
+          "fidelity": 0.03869255566587692,
+          "depth": 785,
+          "cx_count": 306
+        },
+        {
+          "fidelity": 0.15221049695377176,
+          "depth": 726,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.05240839990844033,
+          "depth": 789,
+          "cx_count": 322
+        },
+        {
+          "fidelity": 0.051148143252505024,
+          "depth": 620,
+          "cx_count": 288
+        },
+        {
+          "fidelity": 0.00300690030948075,
+          "depth": 736,
+          "cx_count": 332
+        },
+        {
+          "fidelity": 0.004447118859775996,
+          "depth": 836,
+          "cx_count": 324
+        },
+        {
+          "fidelity": 0.034062849137397946,
+          "depth": 809,
+          "cx_count": 322
+        },
+        {
+          "fidelity": 0.0009256923395400156,
+          "depth": 751,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.09420408559294625,
+          "depth": 729,
+          "cx_count": 296
+        },
+        {
+          "fidelity": 0.024607131345010767,
+          "depth": 813,
+          "cx_count": 306
+        }
+      ]
+    },
+    {
+      "hamiltonian_idx": 19,
+      "n_qubits": 4,
+      "n_terms": 6,
+      "thresholds": {
+        "0.9": null,
+        "0.95": null,
+        "0.99": null
+      },
+      "candidates": [
+        {
+          "fidelity": 0.23400653702080124,
+          "depth": 360,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.0021791255275268925,
+          "depth": 380,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.5443854389244083,
+          "depth": 335,
+          "cx_count": 180
+        },
+        {
+          "fidelity": 0.03387274823522068,
+          "depth": 338,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.36102818324866187,
+          "depth": 330,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.002275011428954041,
+          "depth": 330,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.42072839305080767,
+          "depth": 339,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 0.0010256552605380268,
+          "depth": 338,
+          "cx_count": 162
+        },
+        {
+          "fidelity": 0.22277816866313097,
+          "depth": 342,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.07072357396712844,
+          "depth": 338,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.23695817546511408,
+          "depth": 300,
+          "cx_count": 140
+        },
+        {
+          "fidelity": 0.31380356668947273,
+          "depth": 360,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.025504738016408575,
+          "depth": 343,
+          "cx_count": 150
+        },
+        {
+          "fidelity": 0.0016767826948889358,
+          "depth": 338,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.0290417860001246,
+          "depth": 333,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 0.00046442344403640784,
+          "depth": 398,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.08608257857539513,
+          "depth": 340,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.0654831500715611,
+          "depth": 351,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 1.0235167660001685e-05,
+          "depth": 289,
+          "cx_count": 122
+        },
+        {
+          "fidelity": 0.0009490891454039121,
+          "depth": 333,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 9.498805474579681e-05,
+          "depth": 288,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 0.013402091519510913,
+          "depth": 340,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.0226066481766611,
+          "depth": 340,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.001597742797112118,
+          "depth": 262,
+          "cx_count": 122
+        },
+        {
+          "fidelity": 0.0013606697912783676,
+          "depth": 332,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.06872422288437119,
+          "depth": 332,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.0025758753013149773,
+          "depth": 330,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.0019835469381759164,
+          "depth": 380,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.0011966339173162903,
+          "depth": 378,
+          "cx_count": 162
+        },
+        {
+          "fidelity": 0.008061613311164074,
+          "depth": 332,
+          "cx_count": 150
+        },
+        {
+          "fidelity": 0.00033855633269324166,
+          "depth": 398,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.0004735395292580935,
+          "depth": 338,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.007980436369941333,
+          "depth": 337,
+          "cx_count": 180
+        },
+        {
+          "fidelity": 0.008071512430142777,
+          "depth": 337,
+          "cx_count": 180
+        },
+        {
+          "fidelity": 0.002239072167772559,
+          "depth": 380,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.000989930838219138,
+          "depth": 301,
+          "cx_count": 150
+        },
+        {
+          "fidelity": 0.0011793651104078202,
+          "depth": 367,
+          "cx_count": 170
+        },
+        {
+          "fidelity": 0.001191059307646562,
+          "depth": 310,
+          "cx_count": 150
+        },
+        {
+          "fidelity": 0.7020826937494895,
+          "depth": 348,
+          "cx_count": 152
+        },
+        {
+          "fidelity": 0.0030849690667986438,
+          "depth": 338,
+          "cx_count": 162
+        },
+        {
+          "fidelity": 0.0023194327535761986,
+          "depth": 288,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 0.01838396403750976,
+          "depth": 340,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.015421194243976257,
+          "depth": 343,
+          "cx_count": 150
+        },
+        {
+          "fidelity": 0.0004986342330623401,
+          "depth": 308,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.013046434078634388,
+          "depth": 338,
+          "cx_count": 162
+        },
+        {
+          "fidelity": 6.0640400025020184e-05,
+          "depth": 301,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 0.00092762385321366,
+          "depth": 362,
+          "cx_count": 142
+        },
+        {
+          "fidelity": 0.005658027727751084,
+          "depth": 342,
+          "cx_count": 160
+        },
+        {
+          "fidelity": 0.5443854389244083,
+          "depth": 335,
+          "cx_count": 180
+        },
+        {
+          "fidelity": 0.021747714271881765,
+          "depth": 351,
+          "cx_count": 142
+        }
+      ]
+    }
+  ]
+}

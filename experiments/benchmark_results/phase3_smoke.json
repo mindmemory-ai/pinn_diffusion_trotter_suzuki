@@ -1,0 +1,101 @@
+{
+  "config": {
+    "n_test_hamiltonians": 3,
+    "n_candidates": 2,
+    "fidelity_thresholds": [
+      0.9,
+      0.95
+    ],
+    "baseline_n_steps": [
+      1,
+      2,
+      3
+    ],
+    "trotter_order": 4,
+    "baseline_methods": [
+      "qiskit_4th"
+    ],
+    "model_ckpt": "experiments/closed_loop_checkpoints/diffusion_best.pt",
+    "guidance_scale": 3.0,
+    "disable_gnn_encoder": false,
+    "seed": 42
+  },
+  "summary": {
+    "thresholds": {
+      "0.9": {
+        "ours": {
+          "reachable": 1,
+          "miss": 2,
+          "depth": {
+            "mean": 60.0,
+            "std": 0.0
+          },
+          "fidelity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 24.0,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "reachable": 2,
+          "miss": 1,
+          "depth": {
+            "mean": 570.5,
+            "std": 1.5
+          },
+          "fidelity": {
+            "mean": 0.9890661481672915,
+            "std": 0.010933851832708508
+          },
+          "cx_count": {
+            "mean": 277.0,
+            "std": 55.0
+          }
+        },
+        "depth_reduction_vs_qiskit_4th": 9.508333333333333,
+        "cx_reduction_vs_qiskit_4th": 11.541666666666666
+      },
+      "0.95": {
+        "ours": {
+          "reachable": 1,
+          "miss": 2,
+          "depth": {
+            "mean": 60.0,
+            "std": 0.0
+          },
+          "fidelity": {
+            "mean": 1.0,
+            "std": 0.0
+          },
+          "cx_count": {
+            "mean": 24.0,
+            "std": 0.0
+          }
+        },
+        "qiskit_4th": {
+          "reachable": 2,
+          "miss": 1,
+          "depth": {
+            "mean": 570.5,
+            "std": 1.5
+          },
+          "fidelity": {
+            "mean": 0.9890661481672915,
+            "std": 0.010933851832708508
+          },
+          "cx_count": {
+            "mean": 277.0,
+            "std": 55.0
+          }
+        },
+        "depth_reduction_vs_qiskit_4th": 9.508333333333333,
+        "cx_reduction_vs_qiskit_4th": 11.541666666666666
+      }
+    }
+  },
+  "ours_elapsed_s": 8.722502708435059,
+  "baselines_elapsed_s": 2.347172737121582
+}

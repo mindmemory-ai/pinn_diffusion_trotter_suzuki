@@ -84,15 +84,17 @@ class CirqTrotterBaseline:
 
     name = "cirq"
 
-    def __init__(self, n_steps: int = 5) -> None:
+    def __init__(self, n_steps: int = 5, order: int = 4) -> None:
         self.n_steps = int(n_steps)
+        if order not in (1, 2, 4):
+            raise ValueError(f"CirqTrotterBaseline: order must be 1, 2, or 4, got {order}")
+        self.order = int(order)
 
     def evaluate(self, hamiltonian, t_total: float) -> dict[str, Any]:
         import cirq
 
         n = int(hamiltonian.n_qubits)
         qubits = cirq.LineQubit.range(n)
-        psi0 = _default_psi0(n)
 
         # Build cirq PauliStrings from our HamiltonianGraph
         pauli_strings = []
@@ -107,23 +109,10 @@ class CirqTrotterBaseline:
                 ps = cirq.PauliString(*ops, coefficient=float(c))
                 pauli_strings.append(ps)
 
-        # Suzuki 4th-order coefficients (Yoshida)
-        s_p = 1.0 / (4.0 - 4.0 ** (1.0 / 3.0))
-        s_3 = 1.0 - 4.0 * s_p
-        sub = [s_p, s_p, s_3, s_p, s_p]
-
-        def _step_circuit(tau: float) -> "cirq.Circuit":
+        def _s1_step(tau: float) -> "cirq.Circuit":
             """One first-order step: product of single PauliString exponentials."""
             ops = []
             for ps in pauli_strings:
-                # exp(-i τ Σ c_j P_j) factorized: exp(-i τ c_j P_j)
-                # cirq.PauliStringPhasor has half_turns sign convention:
-                #   PauliStringPhasor(ps, exponent_neg) => exp(-i π exp_neg ps / 2)
-                # We need exp(-i τ ps); set exp = 2τ/π so factor = 2τ/π * π/2 = τ.
-                # Sign: use exponent_neg = 2τ * c_j / π  (ps has coefficient absorbed)
-                # Cirq absorbs `coefficient` into ps; we want exp(-i τ * c * P).
-                # PauliStringPhasor(ps_unit, exponent_neg=2*τ*c/π)
-                # where ps_unit is ps with its coefficient stripped to ±1.
                 coeff = float(ps.coefficient.real)
                 ps_unit = ps / coeff
                 ops.append(
@@ -131,26 +120,52 @@ class CirqTrotterBaseline:
                 )
             return cirq.Circuit(ops)
 
-        def _suzuki4_step(tau: float) -> "cirq.Circuit":
+        def _s2_step(tau: float) -> "cirq.Circuit":
+            """Symmetric 2nd-order Trotter step (Strang splitting)."""
             c = cirq.Circuit()
-            for s in sub:
-                c += _step_circuit(s * tau)
+            half = tau / 2.0
+            for ps in pauli_strings:
+                coeff = float(ps.coefficient.real)
+                c.append(
+                    cirq.PauliStringPhasor(ps / coeff, exponent_neg=(2 * half * coeff) / np.pi)
+                )
+            for ps in reversed(pauli_strings):
+                coeff = float(ps.coefficient.real)
+                c.append(
+                    cirq.PauliStringPhasor(ps / coeff, exponent_neg=(2 * half * coeff) / np.pi)
+                )
             return c
 
         dt = float(t_total) / self.n_steps
         circuit = cirq.Circuit()
-        for _ in range(self.n_steps):
-            circuit += _suzuki4_step(dt)
+
+        if self.order == 1:
+            for _ in range(self.n_steps):
+                circuit += _s1_step(dt)
+        elif self.order == 2:
+            for _ in range(self.n_steps):
+                circuit += _s2_step(dt)
+        else:
+            # Suzuki 4th-order coefficients (Yoshida 1990)
+            s_p = 1.0 / (4.0 - 4.0 ** (1.0 / 3.0))
+            s_3 = 1.0 - 4.0 * s_p
+            sub = [s_p, s_p, s_3, s_p, s_p]
+
+            def _suzuki4_step(tau: float) -> "cirq.Circuit":
+                c = cirq.Circuit()
+                for s in sub:
+                    c += _s2_step(s * tau)
+                return c
+
+            for _ in range(self.n_steps):
+                circuit += _suzuki4_step(dt)
 
         # Simulate
         sim = cirq.Simulator(dtype=np.complex128)
         result = sim.simulate(circuit, qubit_order=qubits)
-        # Cirq's state vector is in big-endian (qubit 0 = most-significant),
-        # matching our psi convention; check against direct mat product if mismatch.
         psi_trotter = np.asarray(result.final_state_vector, dtype=complex)
 
         psi_exact = _exact_state(hamiltonian, t_total)
-        # Try both endianness; use the one that gives larger overlap.
         f_native = abs(np.vdot(psi_exact, psi_trotter)) ** 2 / (
             np.linalg.norm(psi_exact) ** 2 * np.linalg.norm(psi_trotter) ** 2
         )
@@ -160,7 +175,7 @@ class CirqTrotterBaseline:
         )
         fidelity = float(np.clip(max(f_native, f_swap), 0.0, 1.0))
 
-        strategy = _make_proxy_strategy(hamiltonian, t_total, 4, self.n_steps, "cirq")
+        strategy = _make_proxy_strategy(hamiltonian, t_total, self.order, self.n_steps, "cirq")
 
         return {
             "fidelity": fidelity,
@@ -185,8 +200,11 @@ class TketTrotterBaseline:
 
     name = "tket"
 
-    def __init__(self, n_steps: int = 5) -> None:
+    def __init__(self, n_steps: int = 5, order: int = 4) -> None:
         self.n_steps = int(n_steps)
+        if order not in (1, 2, 4):
+            raise ValueError(f"TketTrotterBaseline: order must be 1, 2, or 4, got {order}")
+        self.order = int(order)
 
     def evaluate(self, hamiltonian, t_total: float) -> dict[str, Any]:
         from pytket.circuit import Circuit, PauliExpBox
@@ -209,17 +227,32 @@ class TketTrotterBaseline:
                 terms.append((PauliExpBox(paulis, pe_t), list(range(n))))
             return terms
 
-        # Suzuki 4th-order
-        s_p = 1.0 / (4.0 - 4.0 ** (1.0 / 3.0))
-        s_3 = 1.0 - 4.0 * s_p
-        sub = [s_p, s_p, s_3, s_p, s_p]
-
         dt = float(t_total) / self.n_steps
         c = Circuit(n)
-        for _ in range(self.n_steps):
-            for s in sub:
-                for box, qubits in _pauli_terms(s * dt):
+
+        if self.order == 1:
+            for _ in range(self.n_steps):
+                for box, qubits in _pauli_terms(dt):
                     c.add_pauliexpbox(box, qubits)
+        elif self.order == 2:
+            for _ in range(self.n_steps):
+                half = dt / 2.0
+                for box, qubits in _pauli_terms(half):
+                    c.add_pauliexpbox(box, qubits)
+                for box, qubits in reversed(_pauli_terms(half)):
+                    c.add_pauliexpbox(box, qubits)
+        else:
+            # Suzuki 4th-order (Yoshida 1990): S4(t) = S2(p₁t)@S2(p₂t)@S2(p₃t)@S2(p₄t)@S2(p₅t)
+            s_p = 1.0 / (4.0 - 4.0 ** (1.0 / 3.0))
+            s_3 = 1.0 - 4.0 * s_p
+            sub = [s_p, s_p, s_3, s_p, s_p]
+            for _ in range(self.n_steps):
+                for s in sub:
+                    half = (s * dt) / 2.0
+                    for box, qubits in _pauli_terms(half):
+                        c.add_pauliexpbox(box, qubits)
+                    for box, qubits in reversed(_pauli_terms(half)):
+                        c.add_pauliexpbox(box, qubits)
 
         # Simulate with pytket's built-in statevector method
         try:
@@ -245,7 +278,7 @@ class TketTrotterBaseline:
         )
         fidelity = float(np.clip(max(f_native, f_swap), 0.0, 1.0))
 
-        strategy = _make_proxy_strategy(hamiltonian, t_total, 4, self.n_steps, "tket")
+        strategy = _make_proxy_strategy(hamiltonian, t_total, self.order, self.n_steps, "tket")
         return {
             "fidelity": fidelity,
             "strategy": strategy,
@@ -264,8 +297,11 @@ class PennyLaneTrotterBaseline:
 
     name = "pennylane"
 
-    def __init__(self, n_steps: int = 5) -> None:
+    def __init__(self, n_steps: int = 5, order: int = 4) -> None:
         self.n_steps = int(n_steps)
+        if order not in (1, 2, 4):
+            raise ValueError(f"PennyLaneTrotterBaseline: order must be 1, 2, or 4, got {order}")
+        self.order = int(order)
 
     def evaluate(self, hamiltonian, t_total: float) -> dict[str, Any]:
         import pennylane as qml
@@ -296,7 +332,7 @@ class PennyLaneTrotterBaseline:
 
         @qml.qnode(dev)
         def circuit():
-            qml.TrotterProduct(H_pl, time=float(t_total), n=self.n_steps, order=4)
+            qml.TrotterProduct(H_pl, time=float(t_total), n=self.n_steps, order=self.order)
             return qml.state()
 
         psi_trotter = np.asarray(circuit(), dtype=complex)
@@ -311,7 +347,7 @@ class PennyLaneTrotterBaseline:
         )
         fidelity = float(np.clip(max(f_native, f_swap), 0.0, 1.0))
 
-        strategy = _make_proxy_strategy(hamiltonian, t_total, 4, self.n_steps, "pennylane")
+        strategy = _make_proxy_strategy(hamiltonian, t_total, self.order, self.n_steps, "pennylane")
         return {
             "fidelity": fidelity,
             "strategy": strategy,
@@ -453,6 +489,208 @@ class PaulihedralBaseline:
         )
 
 
+class PaulihedralSuzuki4Baseline(PaulihedralBaseline):
+    """Paulihedral scheduling wrapped in 4th-order Suzuki-Trotter packaging.
+
+    Uses Paulihedral's ``depth_oriented_scheduling`` for term reordering,
+    then groups scheduled blocks and applies ``SuzukiTrotter(order=4)``
+    so the comparison with other fourth-order baselines is fair.
+    """
+
+    name = "paulihedral_4th"
+    order = 4
+
+    def _build_qiskit_circuit(self, hamiltonian, t_total: float):
+        from qiskit import QuantumCircuit
+        from qiskit.circuit.library import PauliEvolutionGate
+        from qiskit.quantum_info import SparsePauliOp
+        from qiskit.synthesis.evolution import SuzukiTrotter
+        import paulihedral.parallel_bl as pb
+
+        n = int(hamiltonian.n_qubits)
+        terms = [
+            _PaulihedralTerm(s[::-1], float(c))
+            for s, c in zip(hamiltonian.pauli_strings, hamiltonian.coefficients)
+        ]
+
+        # Use Paulihedral to find depth-optimized block structure.
+        raw_blocks = [[term] for term in terms]
+        if self.scheduler == "depth":
+            layers = pb.depth_oriented_scheduling(raw_blocks, maxiter=1)
+        else:
+            layers = pb.gate_count_oriented_scheduling(raw_blocks)
+
+        # Collect scheduled blocks (each block = commuting terms that can run in parallel).
+        scheduled_blocks: list[list[_PaulihedralTerm]] = []
+        for layer in layers:
+            for block in layer:
+                if block:
+                    scheduled_blocks.append(block)
+
+        dt = float(t_total) / self.n_steps
+        qc = QuantumCircuit(n)
+
+        for _ in range(self.n_steps):
+            for block in scheduled_blocks:
+                pauli_strs = [t.ps for t in block]
+                coeffs = [t.coeff for t in block]
+                op = SparsePauliOp(pauli_strs, coeffs)
+                qc.append(
+                    PauliEvolutionGate(
+                        op,
+                        time=dt,
+                        synthesis=SuzukiTrotter(order=4, reps=1),
+                    ),
+                    list(range(n)),
+                )
+        return qc
+
+    def evaluate(self, hamiltonian, t_total: float) -> dict[str, Any]:
+        try:
+            import paulihedral.parallel_bl as _  # noqa: F401
+        except ImportError as exc:
+            raise ImportError(
+                "paulihedral is unavailable. Install paulihedral to use this baseline."
+            ) from exc
+
+        from qiskit.quantum_info import Statevector
+
+        n = int(hamiltonian.n_qubits)
+        circuit = self._build_qiskit_circuit(hamiltonian, t_total)
+
+        psi_0 = _default_psi0(n)
+        psi_exact = _exact_state(hamiltonian, t_total)
+        psi_trotter_le = Statevector(self._swap_endian(psi_0, n)).evolve(circuit).data
+        psi_trotter = self._swap_endian(np.asarray(psi_trotter_le, dtype=complex), n)
+        fidelity = float(
+            np.clip(
+                abs(np.vdot(psi_exact, psi_trotter)) ** 2
+                / (np.linalg.norm(psi_exact) ** 2 * np.linalg.norm(psi_trotter) ** 2),
+                0.0,
+                1.0,
+            )
+        )
+        depth, cx = self._depth_and_cx(circuit)
+
+        strategy = _make_proxy_strategy(
+            hamiltonian=hamiltonian,
+            t_total=t_total,
+            order=4,
+            n_steps=self.n_steps,
+            tag="paulihedral_4th",
+        )
+        strategy.metadata.update(
+            {"framework": "paulihedral", "scheduler": self.scheduler, "order": 4}
+        )
+        return {
+            "fidelity": fidelity,
+            "strategy": strategy,
+            "circuit": circuit,
+            "n_steps": self.n_steps,
+            "depth": depth,
+            "cx_count": cx,
+        }
+
+
+class QiskitGroupCommutingBaseline:
+    """Qiskit group_commuting baseline — the teacher for our training data.
+
+    Uses ``SparsePauliOp.group_commuting()`` to partition terms into commuting
+    groups, then applies each group sequentially with n_steps repetitions.
+    This is the exact heuristic our diffusion model was trained to improve upon.
+    """
+
+    name = "qiskit_group_commuting"
+
+    def __init__(self, n_steps: int = 5, order: int = 1) -> None:
+        self.n_steps = int(n_steps)
+        self.order = int(order)
+        if self.n_steps <= 0:
+            raise ValueError("QiskitGroupCommutingBaseline requires n_steps > 0")
+
+    @staticmethod
+    def _depth_and_cx(circuit) -> tuple[int, int]:
+        from qiskit import transpile
+
+        transpiled = transpile(
+            circuit,
+            basis_gates=["h", "cx", "rz", "x"],
+            optimization_level=1,
+        )
+        return int(transpiled.depth()), int(transpiled.count_ops().get("cx", 0))
+
+    def _build_qiskit_circuit(self, hamiltonian, t_total: float):
+        from qiskit import QuantumCircuit
+        from qiskit.circuit.library import PauliEvolutionGate
+        from qiskit.quantum_info import SparsePauliOp
+
+        n = int(hamiltonian.n_qubits)
+        # Build full sparse op and group into commuting subsets
+        labels = [s[::-1] for s in hamiltonian.pauli_strings]  # Qiskit little-endian
+        coeffs = [float(c) for c in hamiltonian.coefficients]
+        full_op = SparsePauliOp(labels, coeffs)
+
+        # group_commuting returns a list of SparsePauliOp, each containing
+        # mutually commuting terms that can be applied simultaneously
+        commuting_groups = full_op.group_commuting()
+
+        dt = float(t_total) / self.n_steps
+
+        qc = QuantumCircuit(n)
+        for _ in range(self.n_steps):
+            for group_op in commuting_groups:
+                qc.append(PauliEvolutionGate(group_op, time=dt), list(range(n)))
+        return qc
+
+    def evaluate(self, hamiltonian, t_total: float) -> dict[str, Any]:
+        from qiskit.quantum_info import Statevector
+
+        n = int(hamiltonian.n_qubits)
+        circuit = self._build_qiskit_circuit(hamiltonian, t_total)
+
+        psi_0 = _default_psi0(n)
+        psi_exact = _exact_state(hamiltonian, t_total)
+
+        # PaulihedralBaseline defines _swap_endian — reuse it
+        tmp_baseline = PaulihedralBaseline(n_steps=1)
+        psi_trotter_le = Statevector(tmp_baseline._swap_endian(psi_0, n)).evolve(circuit).data
+        psi_trotter = tmp_baseline._swap_endian(
+            np.asarray(psi_trotter_le, dtype=complex), n
+        )
+        fidelity = float(
+            np.clip(
+                abs(np.vdot(psi_exact, psi_trotter)) ** 2
+                / (np.linalg.norm(psi_exact) ** 2 * np.linalg.norm(psi_trotter) ** 2),
+                0.0,
+                1.0,
+            )
+        )
+        depth, cx = self._depth_and_cx(circuit)
+
+        strategy = _make_proxy_strategy(
+            hamiltonian=hamiltonian,
+            t_total=t_total,
+            order=1,
+            n_steps=self.n_steps,
+            tag="qiskit_group_commuting",
+        )
+        strategy.metadata.update(
+            {
+                "framework": "qiskit",
+                "method": "group_commuting",
+                "n_groups": len(circuit.data) // self.n_steps if self.n_steps > 0 else 0,
+            }
+        )
+        return {
+            "fidelity": fidelity,
+            "strategy": strategy,
+            "circuit": circuit,
+            "n_steps": self.n_steps,
+            "depth": depth,
+            "cx_count": cx,
+        }
+
+
 # ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
@@ -463,4 +701,6 @@ BASELINE_REGISTRY: dict[str, type] = {
     "tket": TketTrotterBaseline,
     "pennylane": PennyLaneTrotterBaseline,
     "paulihedral": PaulihedralBaseline,
+    "paulihedral_4th": PaulihedralSuzuki4Baseline,
+    "qiskit_group_commuting": QiskitGroupCommutingBaseline,
 }

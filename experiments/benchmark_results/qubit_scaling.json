@@ -1,0 +1,65 @@
+{
+  "config": {
+    "source": "/mnt/d/workspace/pinn_diffusion_trotter_suzuki/experiments/benchmark_results/fidelity_matched_all_baselines_per_candidate.json"
+  },
+  "per_qubit": {
+    "4": {
+      "n_hamiltonians": 21,
+      "thresholds": {
+        "0.9": {
+          "reachable": 15,
+          "total": 21,
+          "fidelity_mean": 0.9494636111249346,
+          "fidelity_std": 0.041409435208482163,
+          "depth_mean": 35.93333333333333,
+          "depth_std": 17.631285325302354
+        },
+        "0.95": {
+          "reachable": 13,
+          "total": 21,
+          "fidelity_mean": 0.9858075389688434,
+          "fidelity_std": 0.018297555966985016,
+          "depth_mean": 47.61538461538461,
+          "depth_std": 28.848512724064868
+        },
+        "0.99": {
+          "reachable": 8,
+          "total": 21,
+          "fidelity_mean": 0.998760944670936,
+          "fidelity_std": 0.003278232261352722,
+          "depth_mean": 52.125,
+          "depth_std": 20.642416888533184
+        }
+      }
+    },
+    "6": {
+      "n_hamiltonians": 8,
+      "thresholds": {
+        "0.9": {
+          "reachable": 2,
+          "total": 8,
+          "fidelity_mean": 0.9688871033332853,
+          "fidelity_std": 0.03111289666671463,
+          "depth_mean": 119.5,
+          "depth_std": 22.5
+        },
+        "0.95": {
+          "reachable": 1,
+          "total": 8,
+          "fidelity_mean": 1.0,
+          "fidelity_std": 0.0,
+          "depth_mean": 97.0,
+          "depth_std": 0.0
+        },
+        "0.99": {
+          "reachable": 1,
+          "total": 8,
+          "fidelity_mean": 1.0,
+          "fidelity_std": 0.0,
+          "depth_mean": 97.0,
+          "depth_std": 0.0
+        }
+      }
+    }
+  }
+}

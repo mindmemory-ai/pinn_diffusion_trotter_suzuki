@@ -1,0 +1,18 @@
+{
+  "config": {
+    "n_hamiltonians": 15,
+    "n_candidates": 100,
+    "seed": 42,
+    "guidance_scale": 3.0
+  },
+  "summary": {
+    "jaccard_mean": 0.7416536435828679,
+    "jaccard_std": 0.05280987051284335,
+    "n_unique_mean": 74.4,
+    "n_unique_std": 32.051625023806,
+    "order_entropy_mean": 0.899791145006693,
+    "order_entropy_std": 0.11575753789089499,
+    "time_cv_mean": 0.48684392837613616,
+    "time_cv_std": 0.08470431017531448
+  }
+}

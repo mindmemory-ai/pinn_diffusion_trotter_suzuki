@@ -1,14 +1,18 @@
-"""Paper figure generation for PINN-Trotter project.
+"""Paper figure generation for PINN-Trotter Phase 4 revision.
 
-Implements all 9 figures required for the paper (阶段 9-B-1 ~ 9-B-9).
+Implements 7 figures: 5 core + 2 optional.
+All data is loaded directly from JSON files in experiments/benchmark_results/.
 """
 
 from __future__ import annotations
 
+import json
+import warnings
 from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import numpy as np
 
 from pinn_trotter.visualization.style import (
@@ -21,617 +25,681 @@ from pinn_trotter.visualization.style import (
     save_figure,
 )
 
-_BENCHMARK_JSON_PREFERENCE: tuple[str, ...] = (
-    "benchmark_evaluation_results_paulihedral_gpu.json",
-    "benchmark_evaluation_results.json",
-)
+# ---------------------------------------------------------------------------
+# Constants
+# ---------------------------------------------------------------------------
 
+RESULTS_DIR = Path("experiments/benchmark_results")
 
-def _preferred_benchmark_payload(sources: dict[str, Any]) -> dict[str, Any]:
-    """Pick benchmark JSON (Paulihedral-inclusive artefact preferred)."""
-    for key in _BENCHMARK_JSON_PREFERENCE:
-        payload = sources.get(key)
-        if payload is not None and isinstance(payload, dict) and "summary" in payload:
-            return payload
-    raise KeyError(
-        "No benchmark evaluation JSON in sources (expected one of: "
-        + ", ".join(_BENCHMARK_JSON_PREFERENCE)
-        + ")"
-    )
+THRESHOLDS = ["0.9", "0.95", "0.99"]
+THRESHOLD_FLOATS = [0.90, 0.95, 0.99]
+
+METHOD_LABELS: dict[str, str] = {
+    "ours": "P-GONE (Ours)",
+    "qiskit_4th": "Qiskit-4th",
+    "cirq": "Cirq",
+    "tket": "TKET",
+    "pennylane": "PennyLane",
+    "paulihedral": "Paulihedral",
+    "paulihedral_4th": "Paulihedral+4th*",
+    "qiskit_group_commuting": "Qiskit GC",
+}
+
+METHOD_COLORS: dict[str, str] = {
+    "ours": COLORS["ours"],
+    "qiskit_4th": COLORS["qiskit4"],
+    "cirq": COLORS["cirq"],
+    "tket": COLORS["tket"],
+    "pennylane": COLORS["pennylane"],
+    "paulihedral": COLORS["paulihedral"],
+    "paulihedral_4th": "#F0E442",
+    "qiskit_group_commuting": "#009E73",
+}
+
+BASELINE_METHODS = ["qiskit_4th", "cirq", "tket", "pennylane", "paulihedral"]
+FIG1_METHODS = ["ours", "qiskit_group_commuting", "paulihedral", "paulihedral_4th", "pennylane", "qiskit_4th", "cirq", "tket"]
 
 
 # ---------------------------------------------------------------------------
-# 9-B-1: Pareto front (fidelity vs depth)
+# Helpers
 # ---------------------------------------------------------------------------
 
-def plot_pareto_front(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot Pareto front: fidelity vs circuit depth.
+def _load_json(name: str) -> dict[str, Any]:
+    """Load a JSON file from the benchmark results directory."""
+    path = RESULTS_DIR / name
+    if not path.exists():
+        raise FileNotFoundError(f"Result file not found: {path}")
+    with open(path) as f:
+        return json.load(f)
 
-    Data source: benchmark_evaluation_results.json
-    Shows: Ours and all framework baselines on Pareto plane.
+
+def _get_method_label(method: str) -> str:
+    """Return display label for a method key."""
+    return METHOD_LABELS.get(method, method)
+
+
+def _get_method_color(method: str) -> str:
+    """Return color for a method key."""
+    return METHOD_COLORS.get(method, COLORS["neutral"])
+
+
+def _safe_mean_std(metric_dict: dict | None, key: str = "depth") -> tuple[float, float]:
+    """Extract (mean, std) from a nested metric dict. Returns (0, 0) on failure."""
+    if metric_dict is None:
+        return 0.0, 0.0
+    inner = metric_dict.get(key, {})
+    if isinstance(inner, dict):
+        return float(inner.get("mean", 0)), float(inner.get("std", 0))
+    return 0.0, 0.0
+
+
+def _get_ours_depth_for_threshold(summary: dict, threshold: str) -> float:
+    """Return ours depth mean at a threshold."""
+    t_data = summary.get("thresholds", {}).get(threshold, {})
+    ours = t_data.get("ours", {})
+    if ours is None:
+        return 0.0
+    return float(ours.get("depth", {}).get("mean", 0))
+
+
+# ---------------------------------------------------------------------------
+# Figure 1: Fidelity-matched circuit depth (CORE)
+# ---------------------------------------------------------------------------
+
+def plot_fidelity_matched_depth(
+    data: dict[str, Any], output_dir: str | Path
+) -> tuple[Path, Path]:
+    """Grouped bar chart: circuit depth for ours vs baselines at 3 fidelity thresholds.
+
+    Uses fidelity_matched_all_baselines_20260604.json (unified 8-baseline, 30 Hams × 100 candidates).
     """
-    bench = _preferred_benchmark_payload(data["sources"])
-    summary = bench["summary"]["methods"]
-    per_seed = bench.get("per_seed", [])
+    d_all = _load_json("fidelity_matched_all_baselines_20260604.json")
 
-    fig, ax = plt.subplots(figsize=FIG_SINGLE)
+    # All 8 baselines in a single unified experiment — no merge needed
+    thresholds_data = d_all["summary"]["thresholds"]
 
-    method_order = [
-        ("ours", "Ours"),
-        ("qiskit_4th", "Qiskit-4th"),
-        ("cirq", "Cirq"),
-        ("tket", "TKET"),
-        ("pennylane", "PennyLane"),
-        ("paulihedral", "Paulihedral"),
-    ]
-    color_key = {"qiskit_4th": "qiskit4"}
-    marker_key = {"qiskit_4th": "qiskit4"}
-
-    for method, label in method_order:
-        if method not in summary:
-            continue
-        metric = summary[method]
-        x_mean = float(metric["depth"]["mean"])
-        y_mean = float(metric["fidelity"]["mean"])
-        x_std = float(metric["depth"]["std"])
-        y_std = float(metric["fidelity"]["std"])
-        c_key = color_key.get(method, method)
-
-        # Per-seed trajectory (if available), used as a lightweight "curve" view.
-        seed_points = []
-        for seed_payload in per_seed:
-            m = seed_payload.get("methods", {}).get(method)
-            if m is None:
-                continue
-            seed_points.append(
-                (
-                    float(m["depth"]["mean"]),
-                    float(m["fidelity"]["mean"]),
-                )
-            )
-        if len(seed_points) >= 2:
-            seed_points = sorted(seed_points, key=lambda p: p[0])
-            xs = [p[0] for p in seed_points]
-            ys = [p[1] for p in seed_points]
-            ax.plot(xs, ys, color=COLORS.get(c_key, COLORS["neutral"]), alpha=0.4, linewidth=1.2)
-
-        ax.scatter(
-            x_mean,
-            y_mean,
-            color=COLORS.get(c_key, COLORS["neutral"]),
-            marker=MARKERS.get(marker_key.get(method, method), MARKERS["baseline"]),
-            s=90,
-            label=label,
-            zorder=3,
-        )
-        ax.errorbar(
-            x_mean,
-            y_mean,
-            xerr=x_std,
-            yerr=y_std,
-            fmt="none",
-            color=COLORS.get(c_key, COLORS["neutral"]),
-            alpha=0.45,
-            capsize=3,
-        )
-
-    ax.set_xlabel("Circuit Depth")
-    ax.set_ylabel("Fidelity")
-    ax.set_title("Pareto Front: Fidelity vs Circuit Depth")
-    ax.set_xscale("log")
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    return save_figure(fig, "fig1_pareto_front", output_dir)
-
-
-# ---------------------------------------------------------------------------
-# 9-B-2: PINN accuracy (proxy error vs PDE residual)
-# ---------------------------------------------------------------------------
-
-def plot_pinn_accuracy(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot PINN validation: proxy error and PDE residual.
-
-    Data source: pinn_checkpoints_phase3e2/pinn_pretrain_report_4q.json
-    Shows: Mean proxy error, PDE residual, and optional external benchmark panel.
-    """
-    # Load PINN report from alternative path
-    import json
-    pinn_report_path = Path("experiments/pinn_checkpoints_phase3e2/pinn_pretrain_report_4q.json")
-    if not pinn_report_path.exists():
-        raise FileNotFoundError(f"PINN report not found: {pinn_report_path}")
-
-    with open(pinn_report_path) as f:
-        pinn_data = json.load(f)
-
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(16, 4.5))
-
-    # Left: PDE residual
-    pde_residuals = pinn_data["pde_residuals"]
-    ax1.bar(range(len(pde_residuals)), pde_residuals, color=COLORS["ours"], alpha=0.7)
-    ax1.axhline(1e-4, color="red", linestyle="--", linewidth=1.5, label="Threshold (1e-4)")
-    ax1.set_xlabel("Hamiltonian Index")
-    ax1.set_ylabel("PDE Residual")
-    ax1.set_title("PINN PDE Residual")
-    ax1.set_yscale("log")
-    ax1.legend()
-    ax1.grid(True, alpha=0.3, axis="y")
-
-    # Right: Proxy error
-    mean_error = pinn_data["mean_proxy_abs_error"]
-    ax2.bar([0], [mean_error], color=COLORS["ours"], alpha=0.7, width=0.5)
-    ax2.axhline(0.01, color="red", linestyle="--", linewidth=1.5, label="Threshold (0.01)")
-    ax2.set_ylabel("Mean Proxy Absolute Error")
-    ax2.set_title("PINN Proxy Accuracy")
-    ax2.set_xticks([0])
-    ax2.set_xticklabels(["Mean Error"])
-    ax2.legend()
-    ax2.grid(True, alpha=0.3, axis="y")
-
-    # Right: Optional external test panel (prefer latest GPU benchmark report)
-    benchmark_candidates = [
-        Path("experiments/benchmark_results/benchmark_evaluation_results_paulihedral_gpu.json"),
-        Path("experiments/benchmark_results/benchmark_evaluation_results.json"),
-    ]
-    benchmark_path = next((p for p in benchmark_candidates if p.exists()), None)
-    if benchmark_path is not None:
-        with open(benchmark_path) as f:
-            benchmark = json.load(f)
-        summary = benchmark.get("summary", {}).get("methods", {})
-        method_label_pairs = [
-            ("ours", "Ours"),
-            ("qiskit_4th", "Qiskit-4th"),
-            ("paulihedral", "Paulihedral"),
-        ]
-        methods = [m for m, _ in method_label_pairs if m in summary]
-        labels = [lab for m, lab in method_label_pairs if m in summary]
-        if methods:
-            vals = [float(summary[m]["fidelity"]["mean"]) for m in methods]
-            stds = [float(summary[m]["fidelity"]["std"]) for m in methods]
-            colors = [COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods]
-            x = np.arange(len(methods))
-            ax3.bar(x, vals, yerr=stds, capsize=4, color=colors, alpha=0.8)
-            ax3.set_xticks(x)
-            ax3.set_xticklabels(labels, rotation=15, ha="right")
-            ax3.set_ylim([0.0, 1.05])
-            ax3.set_ylabel("Fidelity")
-            ax3.set_title("External Test Set (Benchmark)")
-            ax3.grid(True, alpha=0.3, axis="y")
-        else:
-            ax3.text(0.5, 0.5, "No benchmark methods found", ha="center", va="center", color="gray")
-            ax3.set_axis_off()
-    else:
-        ax3.text(0.5, 0.5, "Benchmark result not found", ha="center", va="center", color="gray")
-        ax3.set_axis_off()
-
-    fig.suptitle("PINN Evaluator Validation (M2 Milestone + External Test)", y=1.04)
-    fig.tight_layout()
-
-    return save_figure(fig, "fig2_pinn_accuracy", output_dir)
-
-
-# ---------------------------------------------------------------------------
-# 9-B-3: Training convergence (closed-loop fidelity over iterations)
-# ---------------------------------------------------------------------------
-
-def plot_training_convergence(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot closed-loop training convergence.
-
-    Data source: 6d_poc_results.json (6d1_trend)
-    Shows: Fidelity evolution over 50 iterations.
-    """
-    import json
-    poc_path = Path("experiments/benchmark_results/6d_poc_results.json")
-    if not poc_path.exists():
-        raise FileNotFoundError(f"PoC results not found: {poc_path}")
-
-    with open(poc_path) as f:
-        poc_data = json.load(f)
-
-    trend = poc_data["6d1_trend"]
-    fidelities = trend["all_fidelities"]
-
-    fig, ax = plt.subplots(figsize=FIG_SINGLE)
-
-    ax.plot(fidelities, color=COLORS["ours"], linewidth=2, label="Fidelity")
-    ax.axhline(trend["min_final_fidelity_threshold"], color="red", linestyle="--",
-               linewidth=1.5, label=f"Threshold ({trend['min_final_fidelity_threshold']})")
-
-    # Highlight initial and final windows
-    window_size = 10
-    ax.axvspan(0, window_size, alpha=0.1, color="green", label="Initial window")
-    ax.axvspan(len(fidelities) - window_size, len(fidelities), alpha=0.1, color="blue", label="Final window")
-
-    ax.set_xlabel("Iteration")
-    ax.set_ylabel("Mean Fidelity")
-    ax.set_title("Closed-Loop Training Convergence (6-D-1)")
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-
-    return save_figure(fig, "fig3_training_convergence", output_dir)
-
-
-# ---------------------------------------------------------------------------
-# 9-B-4: Method comparison (bar chart: fidelity, depth, latency)
-# ---------------------------------------------------------------------------
-
-def plot_method_comparison(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot method comparison: fidelity, depth, latency.
-
-    Data source: benchmark_evaluation_results.json
-    Shows: Bar chart comparing Ours vs Qiskit-4th/Cirq/TKET/PennyLane.
-    """
-    bench = _preferred_benchmark_payload(data["sources"])
-    summary = bench["summary"]["methods"]
-
-    method_label_pairs = [
-        ("ours", "Ours"),
-        ("qiskit_4th", "Qiskit-4th"),
-        ("cirq", "Cirq"),
-        ("tket", "TKET"),
-        ("pennylane", "PennyLane"),
-        ("paulihedral", "Paulihedral"),
-    ]
-    methods = [m for m, _ in method_label_pairs if m in summary]
-    labels = [lab for m, lab in method_label_pairs if m in summary]
-
-    fidelities = [summary[m]["fidelity"]["mean"] for m in methods]
-    depths = [summary[m]["depth"]["mean"] for m in methods]
-    latencies = [summary[m]["latency"]["mean"] for m in methods]
-
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4))
-
-    x = np.arange(len(methods))
-    width = 0.6
-
-    # Fidelity
-    bars1 = ax1.bar(
-        x,
-        fidelities,
-        width,
-        color=[COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods],
-    )
-    ax1.set_ylabel("Fidelity")
-    ax1.set_title("Fidelity Comparison")
-    ax1.set_xticks(x)
-    ax1.set_xticklabels(labels, rotation=15, ha="right")
-    ax1.set_ylim([0, 1.05])
-    ax1.grid(True, alpha=0.3, axis="y")
-
-    # Depth
-    bars2 = ax2.bar(
-        x,
-        depths,
-        width,
-        color=[COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods],
-    )
-    ax2.set_ylabel("Circuit Depth")
-    ax2.set_title("Circuit Depth Comparison")
-    ax2.set_xticks(x)
-    ax2.set_xticklabels(labels, rotation=15, ha="right")
-    ax2.grid(True, alpha=0.3, axis="y")
-
-    # Latency (log scale)
-    bars3 = ax3.bar(
-        x,
-        latencies,
-        width,
-        color=[COLORS.get("qiskit4" if m == "qiskit_4th" else m, COLORS["neutral"]) for m in methods],
-    )
-    ax3.set_ylabel("Latency (s)")
-    ax3.set_title("Latency Comparison")
-    ax3.set_xticks(x)
-    ax3.set_xticklabels(labels, rotation=15, ha="right")
-    ax3.set_yscale("log")
-    ax3.grid(True, alpha=0.3, axis="y")
-
-    fig.suptitle("Method Comparison (500 Test Hamiltonians)", y=1.02)
-    fig.tight_layout()
-
-    return save_figure(fig, "fig4_method_comparison", output_dir)
-
-
-# ---------------------------------------------------------------------------
-# 9-B-5: Ablation study (bar chart: fidelity drop per component)
-# ---------------------------------------------------------------------------
-
-def plot_ablation_study(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot ablation study: fidelity drop when removing each component.
-
-    Data source: ablation_summary.json
-    Shows: Bar chart of fidelity for each ablation profile.
-    """
-    import json
-    ablation_path = Path("experiments/benchmark_results/ablation_summary.json")
-    if ablation_path.exists():
-        with open(ablation_path) as f:
-            ablation = json.load(f)["results"]
-    else:
-        ablation = data["sources"].get("ablation_summary.json", {}).get("results", {})
-
-    profile_label_pairs = [
-        ("full_model", "Full Model"),
-        ("no_pinn_guidance", "No PINN\nGuidance"),
-        ("no_cfg", "No CFG"),
-        ("no_structured_matrix", "No Structured\nMatrix"),
-        ("no_gnn_encoder", "No GNN\nEncoder"),
-        ("no_gumbel_estimator", "No Gumbel\nEstimator"),
-    ]
-    pairs = [(p, lab) for p, lab in profile_label_pairs if p in ablation]
-    if not pairs:
-        raise ValueError("ablation summary contains none of the expected profiles")
-    profiles = [p for p, _ in pairs]
-    labels = [lab for _, lab in pairs]
-
-    fidelities = [ablation[p]["summary"]["methods"]["ours"]["fidelity"]["mean"] for p in profiles]
-    stds = [ablation[p]["summary"]["methods"]["ours"]["fidelity"]["std"] for p in profiles]
+    methods_to_show = FIG1_METHODS
 
     fig, ax = plt.subplots(figsize=FIG_WIDE)
 
-    x = np.arange(len(profiles))
-    bars = ax.bar(x, fidelities, yerr=stds, capsize=5, color=COLORS["ours"], alpha=0.7)
+    x = np.arange(len(THRESHOLDS))
+    n_methods = len(methods_to_show)
+    total_width = 0.90
+    bar_width = total_width / n_methods
 
-    # Highlight full model
-    bars[0].set_color(COLORS["baseline"])
-    bars[0].set_alpha(1.0)
+    for i, method in enumerate(methods_to_show):
+        means = []
+        stds = []
+        for t_key in THRESHOLDS:
+            t_data = thresholds_data.get(t_key, {})
+            m_data = t_data.get(method)
+            if m_data is None or m_data.get("reachable", 0) == 0:
+                means.append(0)
+                stds.append(0)
+            else:
+                depth_mean, depth_std = _safe_mean_std(m_data, "depth")
+                means.append(depth_mean)
+                stds.append(depth_std)
 
-    ax.set_ylabel("Mean Fidelity")
-    ax.set_title("Ablation Study: Component Contribution")
+        offset = (i - n_methods / 2 + 0.5) * bar_width
+        bars = ax.bar(
+            x + offset,
+            means,
+            bar_width,
+            yerr=stds,
+            capsize=2,
+            color=_get_method_color(method),
+            label=_get_method_label(method),
+            alpha=0.85,
+        )
+
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, rotation=0, ha="center", fontsize=9)
-    ax.set_ylim([0, max(fidelities) * 1.2])
+    ax.set_xticklabels([f"Fidelity $\\geq$ {t}" for t in THRESHOLD_FLOATS])
+    ax.set_ylabel("Circuit Depth")
+    ax.set_title("Circuit Depth at Fidelity Thresholds")
+    ax.set_yscale("log")
+    ax.legend(loc="upper left", fontsize=7, ncol=2)
     ax.grid(True, alpha=0.3, axis="y")
 
-    # Add value labels on bars
-    for i, (bar, val) in enumerate(zip(bars, fidelities)):
-        height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width() / 2, height + stds[i] + 0.01,
-                f"{val:.3f}", ha="center", va="bottom", fontsize=8)
-
-    return save_figure(fig, "fig5_ablation_study", output_dir)
+    fig.tight_layout()
+    return save_figure(fig, "fig3_fidelity_matched_depth", output_dir)
 
 
 # ---------------------------------------------------------------------------
-# 9-B-6: Error scaling (fidelity vs n_qubits, if Heisenberg data available)
+# Figure 2: Best-of-N sensitivity (CORE)
 # ---------------------------------------------------------------------------
 
-def plot_error_scaling(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot error scaling: fidelity vs n_qubits.
+def plot_best_of_n(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
+    """Reachability vs number of candidates N (log scale), with fidelity on twin axis.
 
-    Data source: heisenberg_scan.json (if available)
-    Shows: Fidelity degradation as system size increases.
+    Uses n_sensitivity_results.json.
     """
-    # Check if Heisenberg data exists
-    import json
-    heisenberg_path = Path("experiments/benchmark_results/heisenberg_scan.json")
-    if not heisenberg_path.exists():
-        fig, ax = plt.subplots(figsize=FIG_SINGLE)
-        ax.text(0.5, 0.5, "Heisenberg scan data not available\n(Stage 8-3 pending)",
-                ha="center", va="center", fontsize=12, color="gray")
-        ax.set_xlim([0, 1])
-        ax.set_ylim([0, 1])
-        ax.axis("off")
-        return save_figure(fig, "fig6_error_scaling", output_dir)
+    d = _load_json("n_sensitivity_results.json")
+    results = d["results"]
+    n_values = sorted(int(k) for k in results.keys())
 
-    with open(heisenberg_path) as f:
-        heisenberg_data = json.load(f)
+    n_array = np.array(n_values)
 
-    results = heisenberg_data["results"]
+    fig, ax1 = plt.subplots(figsize=FIG_SINGLE)
 
-    # Group by n_qubits
-    n_qubits_list = sorted(set(r["n_qubits"] for r in results))
-    ours_fid_by_n = {n: [] for n in n_qubits_list}
-    base_fid_by_n = {n: [] for n in n_qubits_list}
+    threshold_styles = {
+        "0.9": {"color": COLORS["ours"], "marker": "o", "linestyle": "-"},
+        "0.95": {"color": COLORS["qiskit4"], "marker": "^", "linestyle": "--"},
+        "0.99": {"color": COLORS["pennylane"], "marker": "s", "linestyle": "-."},
+    }
 
-    for r in results:
-        n = r["n_qubits"]
-        ours_fid_by_n[n].append(r["ours"]["fidelity"])
-        base_fid_by_n[n].append(r["qiskit_4th"]["fidelity"])
+    for t_key, style in threshold_styles.items():
+        reach_means = []
+        reach_stds = []
+        for n in n_values:
+            n_key = str(n)
+            t_data = results.get(n_key, {}).get(t_key, {})
+            reach_means.append(t_data.get("reachability_mean", 0))
+            reach_stds.append(t_data.get("reachability_std", 0))
 
-    ours_means = [np.mean(ours_fid_by_n[n]) for n in n_qubits_list]
-    ours_stds = [np.std(ours_fid_by_n[n]) for n in n_qubits_list]
-    base_means = [np.mean(base_fid_by_n[n]) for n in n_qubits_list]
-    base_stds = [np.std(base_fid_by_n[n]) for n in n_qubits_list]
+        reach_means = np.array(reach_means)
+        reach_stds = np.array(reach_stds)
+
+        ax1.plot(
+            n_array, reach_means,
+            color=style["color"], marker=style["marker"],
+            linestyle=style["linestyle"], linewidth=2,
+            label=f"Reachability (fid $\geq$ {THRESHOLD_FLOATS[THRESHOLDS.index(t_key)]})",
+        )
+        ax1.fill_between(
+            n_array,
+            np.clip(reach_means - reach_stds, 0, 1),
+            np.clip(reach_means + reach_stds, 0, 1),
+            color=style["color"], alpha=0.12,
+        )
+
+    # Annotate N=32
+    n32_reach = results.get("32", {}).get("0.9", {}).get("reachability_mean", 0)
+    ax1.annotate(
+        f"N=32: {n32_reach:.1%}",
+        xy=(32, n32_reach),
+        xytext=(32, n32_reach + 0.08),
+        arrowprops=dict(arrowstyle="->", color="black", lw=1.2),
+        fontsize=9,
+        ha="center",
+    )
+
+    ax1.set_xlabel("Number of Candidates (N)")
+    ax1.set_ylabel("Reachability")
+    ax1.set_xscale("log")
+    ax1.set_xticks(n_values)
+    ax1.get_xaxis().set_major_formatter(mticker.ScalarFormatter())
+    ax1.set_ylim(0, 1.05)
+    ax1.legend(fontsize=8, loc="lower right")
+    ax1.grid(True, alpha=0.3)
+
+    # Twin axis for best fidelity
+    ax2 = ax1.twinx()
+    best_fids = []
+    best_fid_stds = []
+    for n in n_values:
+        bf = results.get(str(n), {}).get("_best_fid", {})
+        best_fids.append(bf.get("mean", 0))
+        best_fid_stds.append(bf.get("std", 0))
+
+    ax2.plot(
+        n_array, best_fids,
+        color=COLORS["neutral"], marker="D", linestyle=":",
+        linewidth=1.5, label="Best Fidelity",
+    )
+    ax2.set_ylabel("Best Fidelity", color=COLORS["neutral"])
+    ax2.tick_params(axis="y", labelcolor=COLORS["neutral"])
+    ax2.set_ylim(0, 1.05)
+
+    ax1.set_title("Best-of-N: Reachability vs Candidate Count")
+
+    fig.tight_layout()
+    return save_figure(fig, "fig2_best_of_n", output_dir)
+
+
+# ---------------------------------------------------------------------------
+# Figure 3: Component ablation — two panels (CORE)
+# ---------------------------------------------------------------------------
+
+def plot_component_ablation(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
+    """Two-panel ablation: (left) branch ablation, (right) CFG ablation.
+
+    Left: Full model vs fixed_order vs uniform_time (reachability at thresholds).
+    Right: Full model vs cfg_gs1 (reachability at thresholds).
+
+    Note: branch_ablation_both_fixed.json does not exist, so we skip it.
+    """
+    # Load data
+    full = _load_json("fidelity_matched_all_baselines_20260604.json")
+    fixed_order = _load_json("branch_ablation_fixed_order.json")
+    uniform_time = _load_json("branch_ablation_uniform_time.json")
+    cfg_gs1 = _load_json("cfg_ablation_gs1.json")
+
+    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=FIG_DOUBLE)
+
+    # --- Left: Branch ablation ---
+    ablations_left = [
+        ("Full Model", full, "ours"),
+        ("Fixed Order", fixed_order, "ours"),
+        ("Uniform Time", uniform_time, "ours"),
+    ]
+    left_colors = [COLORS["ours"], COLORS["qiskit4"], COLORS["pennylane"]]
+
+    x = np.arange(len(THRESHOLDS))
+    n_bars = len(ablations_left)
+    bar_width = 0.8 / n_bars
+
+    for i, (label, dset, method_key) in enumerate(ablations_left):
+        reach = []
+        ts = dset["summary"]["thresholds"]
+        for t_key in THRESHOLDS:
+            m = ts.get(t_key, {}).get(method_key)
+            if m is None:
+                reach.append(0)
+            else:
+                n_total = dset["config"].get("n_test_hamiltonians", 1)
+                reachable = m.get("reachable", 0)
+                reach.append(reachable / n_total if n_total > 0 else 0)
+
+        offset = (i - n_bars / 2 + 0.5) * bar_width
+        ax_left.bar(
+            x + offset, reach, bar_width,
+            color=left_colors[i], label=label, alpha=0.85,
+        )
+
+    ax_left.set_xticks(x)
+    ax_left.set_xticklabels([f"Fid $\geq$ {t}" for t in THRESHOLD_FLOATS])
+    ax_left.set_ylabel("Reachability")
+    ax_left.set_title("Branch Ablation")
+    ax_left.set_ylim(0, 1.05)
+    ax_left.legend(fontsize=8)
+    ax_left.grid(True, alpha=0.3, axis="y")
+
+    # --- Right: CFG ablation ---
+    ablations_right = [
+        ("Full Model (CFG)", full, "ours"),
+        ("No CFG (gs=1.0)", cfg_gs1, "ours"),
+    ]
+    right_colors = [COLORS["ours"], COLORS["cirq"]]
+
+    bar_width_r = 0.8 / len(ablations_right)
+
+    for i, (label, dset, method_key) in enumerate(ablations_right):
+        reach = []
+        ts = dset["summary"]["thresholds"]
+        for t_key in THRESHOLDS:
+            m = ts.get(t_key, {}).get(method_key)
+            if m is None:
+                reach.append(0)
+            else:
+                n_total = dset["config"].get("n_test_hamiltonians", 1)
+                reachable = m.get("reachable", 0)
+                reach.append(reachable / n_total if n_total > 0 else 0)
+
+        offset = (i - len(ablations_right) / 2 + 0.5) * bar_width_r
+        ax_right.bar(
+            x + offset, reach, bar_width_r,
+            color=right_colors[i], label=label, alpha=0.85,
+        )
+
+    ax_right.set_xticks(x)
+    ax_right.set_xticklabels([f"Fid $\geq$ {t}" for t in THRESHOLD_FLOATS])
+    ax_right.set_ylabel("Reachability")
+    ax_right.set_title("CFG Ablation")
+    ax_right.set_ylim(0, 1.05)
+    ax_right.legend(fontsize=8)
+    ax_right.grid(True, alpha=0.3, axis="y")
+
+    fig.suptitle("Component Ablation Study", y=1.01)
+    fig.tight_layout()
+    return save_figure(fig, "fig4_component_ablation", output_dir)
+
+
+# ---------------------------------------------------------------------------
+# Figure 4: Per-type boundary analysis (CORE)
+# ---------------------------------------------------------------------------
+
+def plot_per_type_boundary(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
+    """Two panels: (left) reachability by Hamiltonian type at 3 thresholds,
+    (right) depth reduction ratio vs Paulihedral-4th.
+
+    Uses per_type_tfim.json, per_type_heisenberg.json, per_type_random.json.
+    """
+    per_type_data = {
+        "TFIM": _load_json("per_type_tfim.json"),
+        "Heisenberg": _load_json("per_type_heisenberg.json"),
+        "Random": _load_json("per_type_random.json"),
+    }
+
+    type_colors = {"TFIM": COLORS["ours"], "Heisenberg": COLORS["qiskit4"], "Random": COLORS["pennylane"]}
+
+    fig, (ax_left, ax_right) = plt.subplots(1, 2, figsize=FIG_DOUBLE)
+
+    # --- Left: Reachability by type ---
+    x = np.arange(len(THRESHOLDS))
+    n_types = len(per_type_data)
+    bar_width = 0.8 / n_types
+
+    for i, (htype, dset) in enumerate(per_type_data.items()):
+        reach = []
+        ts = dset["summary"]["thresholds"]
+        for t_key in THRESHOLDS:
+            m = ts.get(t_key, {}).get("ours")
+            if m is None:
+                reach.append(0)
+            else:
+                n_total = dset["config"].get("n_test_hamiltonians", 1)
+                reachable = m.get("reachable", 0)
+                reach.append(reachable / n_total if n_total > 0 else 0)
+
+        offset = (i - n_types / 2 + 0.5) * bar_width
+        ax_left.bar(
+            x + offset, reach, bar_width,
+            color=type_colors[htype], label=htype, alpha=0.85,
+        )
+
+    ax_left.set_xticks(x)
+    ax_left.set_xticklabels([f"Fid $\geq$ {t}" for t in THRESHOLD_FLOATS])
+    ax_left.set_ylabel("Reachability")
+    ax_left.set_title("Reachability by Hamiltonian Type")
+    ax_left.set_ylim(0, 1.05)
+    ax_left.legend(fontsize=8)
+    ax_left.grid(True, alpha=0.3, axis="y")
+
+    # --- Right: Depth reduction vs Paulihedral-4th ---
+    x2 = np.arange(len(THRESHOLDS))
+    bar_width_r = 0.8 / n_types
+
+    for i, (htype, dset) in enumerate(per_type_data.items()):
+        ratios = []
+        ts = dset["summary"]["thresholds"]
+        for t_key in THRESHOLDS:
+            ratio = ts.get(t_key, {}).get("depth_reduction_vs_paulihedral_4th", 0)
+            if ratio is None:
+                ratio = 0
+            ratios.append(float(ratio))
+
+        offset = (i - n_types / 2 + 0.5) * bar_width_r
+        ax_right.bar(
+            x2 + offset, ratios, bar_width_r,
+            color=type_colors[htype], label=htype, alpha=0.85,
+        )
+
+    ax_right.set_xticks(x2)
+    ax_right.set_xticklabels([f"Fid $\geq$ {t}" for t in THRESHOLD_FLOATS])
+    ax_right.set_ylabel("Depth Reduction vs Paulihedral-4th")
+    ax_right.set_title("Depth Reduction Ratio")
+    ax_right.legend(fontsize=8)
+    ax_right.grid(True, alpha=0.3, axis="y")
+    # Use log scale for potentially large ratios
+    ax_right.set_yscale("log")
+
+    fig.suptitle("Per-Type Boundary Analysis", y=1.01)
+    fig.tight_layout()
+    return save_figure(fig, "fig6_per_type_boundary", output_dir)
+
+
+# ---------------------------------------------------------------------------
+# Figure 5: Noisy hardware comparison (CORE)
+# ---------------------------------------------------------------------------
+
+def plot_noisy_hardware(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
+    """Grouped bar: noiseless vs noisy fidelity for ours, paulihedral, qiskit_4th.
+
+    Annotates circuit depth on noisy bars.
+
+    Uses noisy_hardware_results.json.
+    """
+    d = _load_json("noisy_hardware_results.json")
+    methods_data = d["methods"]
+
+    methods_to_show = ["ours", "paulihedral", "qiskit_4th"]
+    labels = [_get_method_label(m) for m in methods_to_show]
+    colors = [_get_method_color(m) for m in methods_to_show]
+
+    x = np.arange(len(methods_to_show))
+    bar_width = 0.35
+
+    noiseless_fids = []
+    noiseless_stds = []
+    noisy_fids = []
+    noisy_stds = []
+    depths = []
+
+    for method in methods_to_show:
+        m = methods_data.get(method, {})
+        fid = m.get("fidelity", {})
+        noise_fid = m.get("noise_fidelity", {})
+        depth_val = m.get("depth", {}).get("mean", 0)
+
+        noiseless_fids.append(float(fid.get("mean", 0)))
+        noiseless_stds.append(float(fid.get("std", 0)))
+        noisy_fids.append(float(noise_fid.get("mean", 0)))
+        noisy_stds.append(float(noise_fid.get("std", 0)))
+        depths.append(float(depth_val))
 
     fig, ax = plt.subplots(figsize=FIG_SINGLE)
 
-    ax.errorbar(n_qubits_list, ours_means, yerr=ours_stds, marker=MARKERS["ours"],
-                color=COLORS["ours"], label="Ours", capsize=4, linewidth=2)
-    ax.errorbar(n_qubits_list, base_means, yerr=base_stds, marker=MARKERS["qiskit4"],
-                color=COLORS["qiskit4"], label="Qiskit-4th", capsize=4, linewidth=2)
+    bars1 = ax.bar(
+        x - bar_width / 2, noiseless_fids, bar_width,
+        yerr=noiseless_stds, capsize=4,
+        color=[_lighten(c, 0.5) for c in colors],
+        label="Noiseless", alpha=0.85,
+    )
 
-    ax.set_xlabel("Number of Qubits")
-    ax.set_ylabel("Mean Fidelity")
-    ax.set_title("Error Scaling: Heisenberg Model")
-    ax.legend()
-    ax.grid(True, alpha=0.3)
+    bars2 = ax.bar(
+        x + bar_width / 2, noisy_fids, bar_width,
+        yerr=noisy_stds, capsize=4,
+        color=colors,
+        label="Noisy (IBM Jakarta)", alpha=0.85,
+    )
 
-    return save_figure(fig, "fig6_error_scaling", output_dir)
+    # Annotate depth on noisy bars
+    for i, (bar, depth) in enumerate(zip(bars2, depths)):
+        height = bar.get_height()
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            max(height + noisy_stds[i], height * 1.05) + 0.02,
+            f"d={depth:.0f}",
+            ha="center", va="bottom", fontsize=8, fontweight="bold",
+        )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels)
+    ax.set_ylabel("Fidelity")
+    ax.set_title("Noisy Hardware: Fidelity Comparison")
+    ax.set_ylim(0, 1.15)
+    ax.legend(fontsize=9)
+    ax.grid(True, alpha=0.3, axis="y")
+
+    fig.tight_layout()
+    return save_figure(fig, "fig7_noisy_hardware", output_dir)
+
+
+def _lighten(hex_color: str, factor: float = 0.5) -> str:
+    """Lighten a hex color by mixing with white."""
+    hex_color = hex_color.lstrip("#")
+    r, g, b = int(hex_color[:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+    r = int(r + (255 - r) * factor)
+    g = int(g + (255 - g) * factor)
+    b = int(b + (255 - b) * factor)
+    return f"#{r:02x}{g:02x}{b:02x}"
 
 
 # ---------------------------------------------------------------------------
-# 9-B-7: Grouping heatmap (strategy visualization)
+# Figure 6: Strategy diversity (OPTIONAL)
 # ---------------------------------------------------------------------------
 
-def plot_grouping_heatmap(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot grouping heatmap: visualize a sample strategy.
+def plot_strategy_diversity(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
+    """Three panels: unique ratio, Jaccard distance, order/time diversity.
 
-    Data source: benchmark_evaluation_results.json (sample_strategies if available)
-    Shows: Heatmap of Pauli term grouping.
+    Uses strategy_diversity.json (aggregate summary statistics only).
+    Since per-hamiltonian distributions are not available, shows summary bars.
     """
-    # For now, create a synthetic example since sample strategies may not be in JSON
-    fig, ax = plt.subplots(figsize=FIG_SQUARE)
+    d = _load_json("strategy_diversity.json")
+    s = d["summary"]
 
-    # Synthetic 8-term, 4-group example
-    M, K = 8, 4
-    grouping = [[0, 3], [1, 4, 6], [2, 5], [7]]
-    orders = [2, 4, 2, 1]
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4.2))
 
-    grid = np.zeros((M, K))
-    for g_idx, group in enumerate(grouping):
-        for term_idx in group:
-            grid[term_idx, g_idx] = g_idx + 1
+    # Panel 1: Unique patterns
+    n_unique_mean = s.get("n_unique_mean", 0)
+    n_unique_std = s.get("n_unique_std", 0)
+    n_total = d["config"].get("n_candidates", 100)
+    unique_ratio = n_unique_mean / n_total if n_total > 0 else 0
+    unique_ratio_std = n_unique_std / n_total if n_total > 0 else 0
 
-    cmap = plt.get_cmap("tab10")
-    im = ax.imshow(grid, aspect="auto", cmap=cmap, vmin=0, vmax=9, origin="upper")
+    ax1.bar(
+        [0], [unique_ratio * 100],
+        yerr=[unique_ratio_std * 100],
+        color=COLORS["ours"], alpha=0.7, capsize=5, width=0.4,
+    )
+    ax1.set_ylabel("Unique Patterns (%)")
+    ax1.set_title("Strategy Uniqueness")
+    ax1.set_xticks([0])
+    ax1.set_xticklabels([f"N={n_total}"])
+    ax1.set_ylim(0, 105)
+    ax1.grid(True, alpha=0.3, axis="y")
 
-    # Annotate orders
-    for g_idx, order in enumerate(orders):
-        ax.text(g_idx, -0.5, f"k={order}", ha="center", va="top", fontsize=10, fontweight="bold")
+    # Panel 2: Jaccard distance + Order entropy
+    metrics = [
+        ("Jaccard\nDistance", s.get("jaccard_mean", 0), s.get("jaccard_std", 0)),
+        ("Order\nEntropy", s.get("order_entropy_mean", 0), s.get("order_entropy_std", 0)),
+        ("Time\nCV", s.get("time_cv_mean", 0), s.get("time_cv_std", 0)),
+    ]
+    metric_labels = [m[0] for m in metrics]
+    metric_means = [m[1] for m in metrics]
+    metric_stds = [m[2] for m in metrics]
+    metric_colors = [COLORS["ours"], COLORS["qiskit4"], COLORS["pennylane"]]
 
-    ax.set_xlabel("Group Index")
-    ax.set_ylabel("Pauli Term Index")
-    ax.set_title("Strategy Grouping Heatmap (Example)")
-    ax.set_xticks(range(K))
-    ax.set_yticks(range(M))
+    x2 = np.arange(len(metrics))
+    ax2.bar(x2, metric_means, yerr=metric_stds, capsize=5, color=metric_colors, alpha=0.7)
+    ax2.set_xticks(x2)
+    ax2.set_xticklabels(metric_labels)
+    ax2.set_ylabel("Value")
+    ax2.set_title("Diversity Metrics")
+    ax2.set_ylim(0, 1.15)
+    ax2.grid(True, alpha=0.3, axis="y")
 
-    plt.colorbar(im, ax=ax, label="Group ID")
+    # Panel 3: Text summary
+    ax3.axis("off")
+    summary_lines = [
+        f"Jaccard distance: {s.get('jaccard_mean', 0):.3f} +/- {s.get('jaccard_std', 0):.3f}",
+        f"Unique patterns: {n_unique_mean:.1f} / {n_total} ({unique_ratio*100:.1f}%)",
+        f"Order entropy: {s.get('order_entropy_mean', 0):.3f} +/- {s.get('order_entropy_std', 0):.3f}",
+        f"Time CV: {s.get('time_cv_mean', 0):.3f} +/- {s.get('time_cv_std', 0):.3f}",
+        f"",
+        f"Hamiltonians: {d['config'].get('n_hamiltonians', '?')}",
+        f"Guidance scale: {d['config'].get('guidance_scale', '?')}",
+    ]
+    for i, line in enumerate(summary_lines):
+        ax3.text(0.1, 0.9 - i * 0.08, line, fontsize=10, fontfamily="monospace",
+                 transform=ax3.transAxes, va="top")
+    ax3.set_title("Summary Statistics")
 
-    return save_figure(fig, "fig7_grouping_heatmap", output_dir)
+    fig.suptitle("Strategy Diversity Analysis", y=1.02)
+    fig.tight_layout()
+    return save_figure(fig, "fig5_strategy_diversity", output_dir)
 
 
 # ---------------------------------------------------------------------------
-# 9-B-8: Molecular generalization (H2/LiH bond scan)
+# Figure 7: REINFORCE training progress (OPTIONAL)
 # ---------------------------------------------------------------------------
 
-def plot_molecular_generalization(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot molecular generalization: H2 and LiH bond scans.
+def plot_reinforce_training(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
+    """Plot REINFORCE training effect using Pareto front and Phase 3 vs Phase 4 comparison.
 
-    Data source: h2_bond_scan.json, lih_bond_scan.json
-    Shows: Fidelity vs bond length for both molecules.
+    Uses closed_loop_checkpoints/pareto_summary.json (Pareto front of fidelity vs depth)
+    and phase3_vs_phase4.json (comparison before/after REINFORCE).
     """
-    import json
+    # Load Pareto front from closed-loop checkpoint directory
+    pareto_path = Path("experiments/closed_loop_checkpoints/pareto_summary.json")
+    if not pareto_path.exists():
+        raise FileNotFoundError(f"Pareto summary not found: {pareto_path}")
 
-    h2_path = Path("experiments/benchmark_results/h2_bond_scan.json")
-    lih_path = Path("experiments/benchmark_results/lih_bond_scan.json")
+    with open(pareto_path) as f:
+        pareto = json.load(f)
 
-    if not h2_path.exists() or not lih_path.exists():
-        fig, ax = plt.subplots(figsize=FIG_DOUBLE)
-        ax.text(0.5, 0.5, "Molecular scan data not available\n(Stage 8-1, 8-2 pending)",
-                ha="center", va="center", fontsize=12, color="gray")
-        ax.set_xlim([0, 1])
-        ax.set_ylim([0, 1])
-        ax.axis("off")
-        return save_figure(fig, "fig8_molecular_generalization", output_dir)
-
-    with open(h2_path) as f:
-        h2_data = json.load(f)
-    with open(lih_path) as f:
-        lih_data = json.load(f)
+    # Load Phase 3 vs Phase 4 comparison
+    p3v4 = _load_json("phase3_vs_phase4.json")
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=FIG_DOUBLE)
 
-    # H2
-    h2_results = h2_data["results"]
-    h2_bonds = [r["bond_length"] for r in h2_results]
-    h2_ours_fid = [r["ours"]["fidelity"] for r in h2_results]
-    h2_base_fid = [r["qiskit_4th"]["fidelity"] for r in h2_results]
+    # --- Left: Pareto front ---
+    front = pareto.get("front", [])
+    if front:
+        fidelities = [p["fidelity"] for p in front]
+        depths = [p["depth"] for p in front]
 
-    ax1.plot(h2_bonds, h2_ours_fid, marker=MARKERS["ours"], color=COLORS["ours"], label="Ours", linewidth=2)
-    ax1.plot(h2_bonds, h2_base_fid, marker=MARKERS["qiskit4"], color=COLORS["qiskit4"], label="Qiskit-4th", linewidth=2)
-    ax1.set_xlabel("Bond Length (Å)")
+        ax1.plot(
+            depths, fidelities,
+            color=COLORS["ours"], marker="o", linewidth=2, markersize=8,
+            label="REINFORCE Pareto Front",
+        )
+        # Annotate best point
+        best_idx = np.argmax(fidelities)
+        ax1.annotate(
+            f"Best: fid={fidelities[best_idx]:.4f}, d={depths[best_idx]}",
+            xy=(depths[best_idx], fidelities[best_idx]),
+            xytext=(depths[best_idx] + 3, fidelities[best_idx] - 0.05),
+            arrowprops=dict(arrowstyle="->", color="black", lw=1.2),
+            fontsize=8,
+        )
+
+    ax1.set_xlabel("Circuit Depth")
     ax1.set_ylabel("Fidelity")
-    ax1.set_title("H$_2$ Bond Scan (STO-3G)")
-    ax1.legend()
+    ax1.set_title("REINFORCE Pareto Front")
+    ax1.legend(fontsize=8)
     ax1.grid(True, alpha=0.3)
 
-    # LiH (proxy fidelity)
-    lih_results = lih_data["results"]
-    lih_bonds = [r["bond_length"] for r in lih_results]
-    lih_ours_proxy = [r["ours"]["proxy_fidelity"] for r in lih_results]
-    lih_base_proxy = [r["qiskit_4th"]["proxy_fidelity"] for r in lih_results]
+    # --- Right: Phase 3 vs Phase 4 ---
+    ts = p3v4["summary"]["thresholds"]
+    methods_to_show = [
+        ("ours", "Phase 4 (REINFORCE)"),
+    ]
+    phase3_key = "ours_phase3"  # Check if this key exists
+    if "ours_phase3" not in ts.get("0.9", {}):
+        # Try alternative keys
+        for possible_key in ["phase3", "ours_pretrain"]:
+            if possible_key in ts.get("0.9", {}):
+                phase3_key = possible_key
+                break
 
-    ax2.plot(lih_bonds, lih_ours_proxy, marker=MARKERS["ours"], color=COLORS["ours"], label="Ours", linewidth=2)
-    ax2.plot(lih_bonds, lih_base_proxy, marker=MARKERS["qiskit4"], color=COLORS["qiskit4"], label="Qiskit-4th", linewidth=2)
-    ax2.set_xlabel("Bond Length (Å)")
-    ax2.set_ylabel("Proxy Fidelity (depth-based)")
-    ax2.set_title("LiH Bond Scan (STO-3G)")
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
+    x3 = np.arange(len(THRESHOLDS))
+    bar_width = 0.3
 
-    fig.suptitle("Molecular Generalization (Stage 8)", y=1.02)
-    fig.tight_layout()
+    for i, (key, label) in enumerate(methods_to_show):
+        depths_list = []
+        for t_key in THRESHOLDS:
+            m = ts.get(t_key, {}).get(key)
+            if m and m.get("reachable", 0) > 0:
+                depths_list.append(float(m.get("depth", {}).get("mean", 0)))
+            else:
+                depths_list.append(0)
+        ax2.bar(x3 + (i - 0.5) * bar_width, depths_list, bar_width,
+                color=COLORS["ours"], label=label, alpha=0.85)
 
-    return save_figure(fig, "fig8_molecular_generalization", output_dir)
-
-
-# ---------------------------------------------------------------------------
-# 9-B-9: Dataset statistics (distribution of n_qubits, J, h)
-# ---------------------------------------------------------------------------
-
-def plot_dataset_statistics(data: dict[str, Any], output_dir: str | Path) -> tuple[Path, Path]:
-    """Plot dataset statistics: distribution of n_qubits, J, h.
-
-    Data source: dataset_tfim.h5 metadata or dataset_report.json
-    Shows: Histograms of dataset parameters.
-    """
-    # Load dataset metadata
-    import h5py
-    dataset_path = Path("data/processed/dataset_tfim.h5")
-
-    if not dataset_path.exists():
-        # Placeholder
-        fig, ax = plt.subplots(figsize=FIG_SINGLE)
-        ax.text(0.5, 0.5, "Dataset file not available",
-                ha="center", va="center", fontsize=12, color="gray")
-        ax.set_xlim([0, 1])
-        ax.set_ylim([0, 1])
-        ax.axis("off")
-        return save_figure(fig, "fig9_dataset_statistics", output_dir)
-
-    with h5py.File(dataset_path, "r") as f:
-        n_samples = len(f.keys())
-        n_qubits_list = []
-        J_list = []
-        h_list = []
-
-        for key in list(f.keys())[:min(1000, n_samples)]:  # Sample first 1000
-            sample = f[key]
-            n_qubits_list.append(sample.attrs.get("n_qubits", 4))
-            J_list.append(sample.attrs.get("J", 1.0))
-            h_list.append(sample.attrs.get("h", 0.5))
-
-    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 4))
-
-    # n_qubits distribution
-    ax1.hist(n_qubits_list, bins=np.arange(3.5, 9.5, 1), color=COLORS["ours"], alpha=0.7, edgecolor="black")
-    ax1.set_xlabel("Number of Qubits")
-    ax1.set_ylabel("Count")
-    ax1.set_title("n_qubits Distribution")
-    ax1.grid(True, alpha=0.3, axis="y")
-
-    # J distribution
-    ax2.hist(J_list, bins=20, color=COLORS["ours"], alpha=0.7, edgecolor="black")
-    ax2.set_xlabel("J (coupling strength)")
-    ax2.set_ylabel("Count")
-    ax2.set_title("J Distribution")
+    ax2.set_xticks(x3)
+    ax2.set_xticklabels([f"Fid $\geq$ {t}" for t in THRESHOLD_FLOATS])
+    ax2.set_ylabel("Circuit Depth")
+    ax2.set_title("Phase 4: Depth at Thresholds")
+    ax2.legend(fontsize=8)
     ax2.grid(True, alpha=0.3, axis="y")
 
-    # h distribution
-    ax3.hist(h_list, bins=20, color=COLORS["ours"], alpha=0.7, edgecolor="black")
-    ax3.set_xlabel("h (transverse field)")
-    ax3.set_ylabel("Count")
-    ax3.set_title("h Distribution")
-    ax3.grid(True, alpha=0.3, axis="y")
-
-    fig.suptitle(f"Dataset Statistics (n={n_samples} samples)", y=1.02)
+    fig.suptitle("REINFORCE Training Progress", y=1.01)
     fig.tight_layout()
-
-    return save_figure(fig, "fig9_dataset_statistics", output_dir)
+    return save_figure(fig, "fig1_reinforce_training", output_dir)
 
 
 # ---------------------------------------------------------------------------
 # Figure registry
 # ---------------------------------------------------------------------------
 
-FIGURE_REGISTRY = {
-    "pareto": plot_pareto_front,
-    "pinn": plot_pinn_accuracy,
-    "training": plot_training_convergence,
-    "comparison": plot_method_comparison,
-    "ablation": plot_ablation_study,
-    "scaling": plot_error_scaling,
-    "grouping": plot_grouping_heatmap,
-    "molecular": plot_molecular_generalization,
-    "dataset": plot_dataset_statistics,
+FIGURE_REGISTRY: dict[str, Any] = {
+    "fidelity_depth": plot_fidelity_matched_depth,
+    "best_of_n": plot_best_of_n,
+    "component_ablation": plot_component_ablation,
+    "per_type_boundary": plot_per_type_boundary,
+    "noisy_hardware": plot_noisy_hardware,
+    "strategy_diversity": plot_strategy_diversity,
+    "reinforce_training": plot_reinforce_training,
 }

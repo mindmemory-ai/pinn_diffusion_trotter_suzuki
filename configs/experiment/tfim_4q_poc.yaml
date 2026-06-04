@@ -1,7 +1,7 @@
 # @package _global_
 defaults:
   - /model: [pinn, gnn_encoder, diffusion]
-  - /training: [phase1_dataset, phase2_pinn_pretrain, phase3_joint_train, phase4_closed_loop]
+  - /training: [phase1_dataset, phase2_pinn_pretrain, phase2b_unified_pinn, phase3_joint_train, phase4_closed_loop]
 
 # TFIM 4-qubit proof-of-concept
 experiment:
@@ -13,10 +13,11 @@ experiment:
   boundary: periodic
   t_total: 2.0
 
-# Override small-scale settings for quick testing
+# Override for correct Phase 1 parameters (later training configs may override defaults)
 training:
-  n_samples: 500
-  n_workers: 4
+  n_samples: 12100
+  n_workers: 8
+  random_ratio: 0.2
   n_iterations: 100
 
 # Benchmark / acceptance-test defaults (5-D-2)
@@ -32,11 +33,19 @@ benchmark:
   fidelity_only: false
   use_wandb: false
   output_filename: "benchmark_evaluation_results.json"
-  methods: "ours,qiskit_4th,cirq,tket,pennylane,paulihedral"
-  baseline_n_steps: 5  # n_steps for cirq/tket/pennylane Trotter baselines
+  methods: "ours,qiskit_4th,qiskit_group_commuting,cirq,tket,pennylane,paulihedral,paulihedral_4th"
+  trotter_order: 4       # Trotter decomposition order: 1 or 4
+  trotter_n_steps: 5     # Number of Trotter steps for ALL baselines (unified)
   paulihedral_scheduler: "depth"  # paulihedral.parallel_bl scheduler: depth or gate_count
   # Restrict transverse field to weak-field regime where single-pass Trotter achieves >0.85
   # Physics: for h>0.5, [H_ZZ, H_X] becomes large enough that K=8 max-group strategies
   # cannot exceed 0.85 fidelity at t_total=2.0; tested upper bound is h_max=0.5
   h_min: 0.1
   h_max: 0.5
+
+  # Head-to-head model comparison (05b_model_comparison.py)
+  model_ckpt_a: ""               # Path to model A checkpoint
+  model_ckpt_b: ""               # Path to model B checkpoint
+  label_a: "model_A"             # Display label for model A
+  label_b: "model_B"             # Display label for model B
+  output_dir: "/home/ga4ss/pdts" # Output directory for comparison report
